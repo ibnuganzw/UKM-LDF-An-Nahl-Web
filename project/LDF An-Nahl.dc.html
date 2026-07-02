@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#f5f8fc;}
+*{box-sizing:border-box;}
+button{font-family:inherit;}
+input{font-family:inherit;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scanline{0%{top:10%}50%{top:86%}100%{top:10%}}
+@keyframes softPulse{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+::selection{background:#dbe7fb;}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#f5f8fc;font-family:Manrope,system-ui,sans-serif;color:#1c2b52;display:flex;flex-direction:column;">
+
+  <!-- ============ HEADER ============ -->
+  <header style="position:sticky;top:0;z-index:60;background:rgba(255,255,255,.88);backdrop-filter:blur(14px);border-bottom:1px solid #e4ebf7;">
+    <div style="max-width:1140px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;">
+      <div onClick="{{ navHome }}" style="display:flex;align-items:center;gap:11px;cursor:pointer;min-width:0;">
+        <img src="assets/logo.png" alt="Logo LDF An-Nahl" style="width:42px;height:42px;border-radius:50%;box-shadow:0 0 0 2px #e7edf9;flex:none;">
+        <div style="min-width:0;">
+          <div style="font-weight:800;font-size:16px;letter-spacing:-0.01em;color:#12275c;line-height:1.15;white-space:nowrap;">LDF An-Nahl</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#93a3c4;white-space:nowrap;">FKH USK</div>
+        </div>
+      </div>
+      <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ true }}">
+        <nav style="display:flex;align-items:center;gap:2px;">
+          <sc-for list="{{ navLinks }}" as="l" hint-placeholder-count="6">
+            <button onClick="{{ l.go }}" style="border:none;background:{{ l.bg }};color:{{ l.color }};font-weight:700;font-size:13.5px;padding:9px 15px;border-radius:999px;cursor:pointer;" style-hover="color:#12275c;">{{ l.label }}</button>
+          </sc-for>
+        </nav>
+      </sc-if>
+      <div style="display:flex;align-items:center;gap:8px;flex:none;">
+        <sc-if value="{{ isLoggedIn }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ navAccount }}" style="display:flex;align-items:center;gap:9px;border:1px solid #e2eaf7;background:#fff;border-radius:999px;padding:5px 14px 5px 5px;cursor:pointer;min-height:44px;" style-hover="border-color:#c8d6f0;">
+            <span style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:#2446ad;color:#fff;font-weight:800;font-size:14px;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);">{{ userInitial }}</span>
+            <span style="font-weight:700;font-size:13.5px;color:#12275c;">{{ userFirst }}</span>
+          </button>
+        </sc-if>
+        <sc-if value="{{ isLoggedOut }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ navLogin }}" style="border:none;background:#2446ad;color:#fff;font-weight:700;font-size:13.5px;padding:11px 20px;border-radius:999px;cursor:pointer;min-height:44px;" style-hover="background:#1c398f;">Masuk</button>
+        </sc-if>
+        <sc-if value="{{ isMobileNav }}" hint-placeholder-val="{{ false }}">
+          <button onClick="{{ toggleMenu }}" aria-label="Menu" style="border:1px solid #e2eaf7;background:#fff;border-radius:12px;width:44px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4.5px;cursor:pointer;">
+            <span style="width:17px;height:2px;background:#12275c;border-radius:2px;"></span>
+            <span style="width:17px;height:2px;background:#12275c;border-radius:2px;"></span>
+            <span style="width:11px;height:2px;background:#c9922e;border-radius:2px;align-self:center;margin-left:6px;"></span>
+          </button>
+        </sc-if>
+      </div>
+    </div>
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="border-top:1px solid #e9effa;background:#fff;padding:10px 20px 18px;display:flex;flex-direction:column;gap:2px;box-shadow:0 24px 40px -24px rgba(18,39,92,.18);">
+        <sc-for list="{{ menuLinks }}" as="m" hint-placeholder-count="7">
+          <button onClick="{{ m.go }}" style="display:flex;align-items:center;gap:10px;border:none;background:transparent;text-align:left;font-weight:700;font-size:15px;color:{{ m.color }};padding:12px 6px;border-radius:10px;cursor:pointer;min-height:44px;">
+            <span style="width:7px;height:8px;background:{{ m.dot }};clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></span>
+            {{ m.label }}
+          </button>
+        </sc-for>
+      </div>
+    </sc-if>
+  </header>
+
+  <main style="flex:1;">
+
+  <!-- ============ BERANDA ============ -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div data-screen-label="Beranda">
+      <section style="position:relative;overflow:hidden;background:linear-gradient(180deg,#ffffff 0%,#eef4fd 78%,#f5f8fc 100%);border-bottom:1px solid #e8eef9;">
+        <sc-if value="{{ showHex }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;top:-40px;right:-30px;width:180px;height:200px;background:#2446ad;opacity:.05;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+          <div style="position:absolute;top:120px;right:150px;width:70px;height:78px;background:#c9922e;opacity:.10;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+          <div style="position:absolute;bottom:-30px;left:-40px;width:150px;height:165px;background:#2446ad;opacity:.04;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+        </sc-if>
+        <div style="max-width:1140px;margin:0 auto;padding:60px 20px 54px;display:flex;flex-wrap:wrap;align-items:center;gap:44px;position:relative;">
+          <div style="flex:1 1 430px;min-width:0;">
+            <div style="display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid #e2eaf7;border-radius:999px;padding:7px 14px;">
+              <span style="width:8px;height:9px;background:#c9922e;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></span>
+              <span style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#5b6b93;">Lembaga Dakwah Fakultas · Kedokteran Hewan USK</span>
+            </div>
+            <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(34px,5.4vw,56px);line-height:1.12;color:#12275c;margin:18px 0 0;letter-spacing:-0.01em;">Serdadu Lebah,<br>Bersenjata Dakwah.</h1>
+            <p style="font-size:16.5px;line-height:1.75;color:#4a5a80;margin:18px 0 0;max-width:52ch;text-wrap:pretty;">Rumah digital LDF An-Nahl — tempat melihat agenda, hadir lewat absensi QR, membaca Al-Qur'an, dan menyerap tulisan-tulisan yang menghidupkan hati.</p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:26px;">
+              <button onClick="{{ navLogin }}" style="border:none;background:#2446ad;color:#fff;font-weight:800;font-size:15px;padding:14px 28px;border-radius:999px;cursor:pointer;min-height:48px;box-shadow:0 12px 24px -12px rgba(36,70,173,.5);" style-hover="background:#1c398f;">Masuk sebagai Anggota</button>
+              <button onClick="{{ navAgenda }}" style="border:1px solid #cdd9ef;background:#fff;color:#12275c;font-weight:800;font-size:15px;padding:14px 26px;border-radius:999px;cursor:pointer;min-height:48px;" style-hover="border-color:#a9bce4;">Lihat Agenda</button>
+            </div>
+          </div>
+          <div style="flex:0 1 360px;margin:0 auto;position:relative;display:flex;align-items:center;justify-content:center;min-height:300px;">
+            <div style="position:absolute;width:290px;height:320px;background:linear-gradient(160deg,#dfe9fb,#f6efdd);clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+            <img src="assets/logo.png" alt="Logo LDF An-Nahl" style="width:216px;height:216px;border-radius:50%;position:relative;box-shadow:0 24px 50px -20px rgba(18,39,92,.35), 0 0 0 8px rgba(255,255,255,.9);">
+            <div style="position:absolute;top:8px;right:0;background:#fff;border:1px solid #e2eaf7;border-radius:14px;padding:9px 14px;box-shadow:0 14px 30px -18px rgba(18,39,92,.25);animation:floaty 5s ease-in-out infinite;">
+              <div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c9922e;">Shalat berikutnya</div>
+              <div style="font-weight:800;color:#12275c;font-size:14px;margin-top:2px;">{{ nextPrayerName }} · {{ nextPrayerTime }}</div>
+            </div>
+            <div style="position:absolute;bottom:14px;left:-6px;background:#fff;border:1px solid #e2eaf7;border-radius:14px;padding:9px 14px;box-shadow:0 14px 30px -18px rgba(18,39,92,.25);animation:floaty 6s ease-in-out .8s infinite;">
+              <div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#2446ad;">Absensi</div>
+              <div style="font-weight:800;color:#12275c;font-size:14px;margin-top:2px;">Hadir cukup pindai QR</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style="max-width:1140px;margin:0 auto;padding:34px 20px 8px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;">
+          <div onClick="{{ navShalat }}" style="background:#fff;border:1px solid #e2eaf7;border-radius:18px;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:15px;" style-hover="border-color:#c8d6f0;box-shadow:0 14px 30px -20px rgba(18,39,92,.25);">
+            <span style="width:44px;height:48px;flex:none;background:#faf3e3;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;font-family:Amiri,serif;font-size:19px;color:#b07f1e;">☾</span>
+            <div style="min-width:0;">
+              <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#93a3c4;">Menuju {{ nextPrayerName }}</div>
+              <div style="font-weight:800;font-size:19px;color:#12275c;font-variant-numeric:tabular-nums;">{{ countdown }}</div>
+            </div>
+          </div>
+          <div onClick="{{ navAgenda }}" style="background:#fff;border:1px solid #e2eaf7;border-radius:18px;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:15px;" style-hover="border-color:#c8d6f0;box-shadow:0 14px 30px -20px rgba(18,39,92,.25);">
+            <span style="width:44px;height:48px;flex:none;background:#e9effc;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#2446ad;">{{ nextAgendaDay }}</span>
+            <div style="min-width:0;">
+              <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#93a3c4;">Agenda terdekat · {{ nextAgendaRel }}</div>
+              <div style="font-weight:800;font-size:15.5px;color:#12275c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ nextAgendaTitle }}</div>
+            </div>
+          </div>
+          <div onClick="{{ navQuran }}" style="background:#fff;border:1px solid #e2eaf7;border-radius:18px;padding:18px 20px;cursor:pointer;display:flex;align-items:center;gap:15px;" style-hover="border-color:#c8d6f0;box-shadow:0 14px 30px -20px rgba(18,39,92,.25);">
+            <span style="width:44px;height:48px;flex:none;background:#e9effc;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;font-family:Amiri,serif;font-size:20px;color:#2446ad;">ق</span>
+            <div style="min-width:0;">
+              <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#93a3c4;">Al-Qur'an</div>
+              <div style="font-weight:800;font-size:15.5px;color:#12275c;">Mulai dari Al-Fatihah</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section style="max-width:1140px;margin:0 auto;padding:52px 20px 10px;">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+          <div>
+            <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Agenda</div>
+            <h2 style="font-family:Lora,serif;font-weight:600;font-size:clamp(24px,3.4vw,34px);color:#12275c;margin:6px 0 0;">Agenda terdekat</h2>
+          </div>
+          <button onClick="{{ navAgenda }}" style="border:none;background:transparent;color:#2446ad;font-weight:800;font-size:14px;cursor:pointer;padding:10px 0;">Semua agenda →</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+          <sc-for list="{{ soonAgendas }}" as="a" hint-placeholder-count="3">
+            <div onClick="{{ a.open }}" style="background:#fff;border:1px solid #e2eaf7;border-radius:20px;padding:22px;cursor:pointer;display:flex;flex-direction:column;gap:12px;" style-hover="border-color:#c8d6f0;box-shadow:0 18px 36px -22px rgba(18,39,92,.28);transform:translateY(-2px);">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                <span style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:{{ a.typeColor }};background:{{ a.typeSoft }};padding:5px 11px;border-radius:999px;">{{ a.type }}</span>
+                <span style="font-size:12px;font-weight:800;color:{{ a.statusColor }};">{{ a.statusLabel }}</span>
+              </div>
+              <div style="font-family:Lora,serif;font-weight:600;font-size:19px;line-height:1.35;color:#12275c;text-wrap:pretty;">{{ a.title }}</div>
+              <div style="display:flex;flex-direction:column;gap:6px;font-size:13.5px;color:#5b6b93;font-weight:600;">
+                <div>{{ a.dateLabel }} · {{ a.timeLabel }}</div>
+                <div>{{ a.location }}</div>
+              </div>
+              <div style="border-top:1px dashed #e4ebf7;padding-top:11px;font-size:13px;color:#93a3c4;font-weight:700;">{{ a.footerLabel }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="max-width:1140px;margin:0 auto;padding:52px 20px 0;">
+        <div style="position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(150deg,#1b3a95 0%,#12275c 100%);padding:clamp(36px,6vw,64px) clamp(24px,6vw,72px);text-align:center;">
+          <sc-if value="{{ showHex }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;top:-30px;left:-20px;width:120px;height:132px;background:#c9922e;opacity:.14;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+            <div style="position:absolute;bottom:-40px;right:-10px;width:150px;height:165px;background:#ffffff;opacity:.06;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+          </sc-if>
+          <div style="font-family:Amiri,serif;font-size:clamp(26px,4.2vw,40px);color:#f2e7c9;line-height:1.8;" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+          <div style="font-family:Lora,serif;font-weight:600;font-size:clamp(22px,3vw,30px);color:#fff;margin-top:14px;">Sediakan waktu untuk Al-Qur'an hari ini</div>
+          <p style="color:#b9c6e8;font-size:15px;line-height:1.7;max-width:56ch;margin:12px auto 0;text-wrap:pretty;">Ruang baca yang lapang dan tenang — mushaf, terjemahan, dan tadabbur dalam satu tempat.</p>
+          <button onClick="{{ navQuran }}" style="margin-top:24px;border:none;background:#fff;color:#12275c;font-weight:800;font-size:15px;padding:14px 30px;border-radius:999px;cursor:pointer;min-height:48px;" style-hover="background:#f2e7c9;">Mulai Membaca</button>
+        </div>
+      </section>
+
+      <section style="max-width:1140px;margin:0 auto;padding:60px 20px 10px;">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px;">
+          <div>
+            <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Bacaan</div>
+            <h2 style="font-family:Lora,serif;font-weight:600;font-size:clamp(24px,3.4vw,34px);color:#12275c;margin:6px 0 0;">Islam Veteriner · Kisah · Renungan</h2>
+          </div>
+          <button onClick="{{ navKonten }}" style="border:none;background:transparent;color:#2446ad;font-weight:800;font-size:14px;cursor:pointer;padding:10px 0;">Semua tulisan →</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+          <sc-for list="{{ catCards }}" as="c" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #e2eaf7;border-radius:20px;padding:24px;display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="width:11px;height:12px;background:{{ c.color }};clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></span>
+                <span style="font-weight:800;font-size:15px;color:#12275c;">{{ c.name }}</span>
+              </div>
+              <p style="margin:0;font-size:13.5px;line-height:1.65;color:#5b6b93;text-wrap:pretty;">{{ c.blurb }}</p>
+              <div style="display:flex;flex-direction:column;border-top:1px solid #eef2fb;">
+                <sc-for list="{{ c.articles }}" as="t" hint-placeholder-count="2">
+                  <button onClick="{{ t.open }}" style="border:none;border-bottom:1px solid #eef2fb;background:transparent;text-align:left;cursor:pointer;padding:12px 2px;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:44px;" style-hover="background:#f8fafe;">
+                    <span style="font-weight:700;font-size:14px;color:#2b3d6b;line-height:1.4;">{{ t.title }}</span>
+                    <span style="flex:none;font-size:12px;font-weight:700;color:#93a3c4;">{{ t.mins }} mnt</span>
+                  </button>
+                </sc-for>
+              </div>
+              <button onClick="{{ c.go }}" style="align-self:flex-start;border:none;background:transparent;color:{{ c.color }};font-weight:800;font-size:13.5px;cursor:pointer;padding:4px 0;">Jelajahi {{ c.name }} →</button>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section style="max-width:1140px;margin:0 auto;padding:60px 20px 70px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:stretch;">
+        <div style="background:#fff;border:1px solid #e2eaf7;border-radius:24px;padding:clamp(26px,4vw,40px);display:flex;flex-direction:column;justify-content:center;gap:14px;">
+          <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Mengapa An-Nahl</div>
+          <div style="font-family:Lora,serif;font-style:italic;font-weight:500;font-size:clamp(18px,2.4vw,22px);line-height:1.65;color:#12275c;text-wrap:pretty;">“Dan Tuhanmu mewahyukan kepada lebah: buatlah sarang di gunung-gunung, di pohon-pohon kayu, dan di tempat-tempat yang dibuat manusia.”</div>
+          <div style="font-size:13px;font-weight:800;color:#93a3c4;">QS. An-Nahl : 68</div>
+          <button onClick="{{ navProfil }}" style="align-self:flex-start;border:none;background:transparent;color:#2446ad;font-weight:800;font-size:14px;cursor:pointer;padding:6px 0;">Kenali organisasi kami →</button>
+        </div>
+        <div style="position:relative;overflow:hidden;background:linear-gradient(150deg,#fdf8ec,#eef4fd);border:1px solid #eadfc2;border-radius:24px;padding:clamp(26px,4vw,40px);display:flex;flex-direction:column;justify-content:center;gap:14px;">
+          <sc-if value="{{ showHex }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;top:-24px;right:-18px;width:100px;height:110px;background:#c9922e;opacity:.12;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+          </sc-if>
+          <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#b07f1e;">Bergabung</div>
+          <div style="font-family:Lora,serif;font-weight:600;font-size:clamp(20px,2.6vw,26px);color:#12275c;line-height:1.4;">Satu sarang, satu tujuan. Jadilah bagian dari koloni dakwah FKH.</div>
+          <p style="margin:0;font-size:14px;line-height:1.7;color:#5b6b93;">Open Recruitment anggota baru dibuka setiap awal kepengurusan. Daftarkan dirimu dan tumbuh bersama.</p>
+          <button onClick="{{ navRegister }}" style="align-self:flex-start;border:none;background:#12275c;color:#fff;font-weight:800;font-size:14.5px;padding:13px 26px;border-radius:999px;cursor:pointer;min-height:48px;" style-hover="background:#1b3a95;">Daftar Anggota</button>
+        </div>
+      </section>
+    </div>
+  </sc-if>
+
+  <!-- ============ AGENDA LIST ============ -->
+  <sc-if value="{{ isAgenda }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Agenda" style="max-width:900px;margin:0 auto;padding:44px 20px 70px;">
+      <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Agenda</div>
+      <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(28px,4vw,40px);color:#12275c;margin:6px 0 6px;">Kegiatan LDF An-Nahl</h1>
+      <p style="color:#5b6b93;font-size:15px;margin:0 0 22px;line-height:1.7;">Dari kajian dan mentoring sampai rihlah dan gotong royong — semua agenda koloni ada di sini.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
+        <sc-for list="{{ filterChips }}" as="f" hint-placeholder-count="5">
+          <button onClick="{{ f.pick }}" style="border:1px solid {{ f.border }};background:{{ f.bg }};color:{{ f.color }};font-weight:800;font-size:13px;padding:9px 16px;border-radius:999px;cursor:pointer;min-height:40px;">{{ f.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <sc-for list="{{ agendaRows }}" as="a" hint-placeholder-count="6">
+          <div onClick="{{ a.open }}" style="background:#fff;border:1px solid #e2eaf7;border-radius:18px;padding:16px 18px;cursor:pointer;display:flex;align-items:center;gap:16px;" style-hover="border-color:#c8d6f0;box-shadow:0 16px 32px -22px rgba(18,39,92,.28);">
+            <div style="flex:none;width:60px;height:64px;border-radius:14px;background:{{ a.typeSoft }};display:flex;flex-direction:column;align-items:center;justify-content:center;">
+              <div style="font-weight:800;font-size:21px;color:{{ a.typeColor }};line-height:1;">{{ a.dayNum }}</div>
+              <div style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:{{ a.typeColor }};margin-top:3px;">{{ a.monShort }}</div>
+            </div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:{{ a.typeColor }};background:{{ a.typeSoft }};padding:3px 9px;border-radius:999px;">{{ a.type }}</span>
+                <span style="font-size:11.5px;font-weight:800;color:{{ a.statusColor }};background:{{ a.statusSoft }};padding:3px 9px;border-radius:999px;">{{ a.statusLabel }}</span>
+                <sc-if value="{{ a.qrActive }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:11.5px;font-weight:800;color:#178a63;background:#178a6314;padding:3px 9px;border-radius:999px;animation:softPulse 2s infinite;">● QR aktif</span>
+                </sc-if>
+              </div>
+              <div style="font-weight:800;font-size:16px;color:#12275c;line-height:1.35;text-wrap:pretty;">{{ a.title }}</div>
+              <div style="font-size:13px;color:#93a3c4;font-weight:600;">{{ a.timeLabel }} · {{ a.location }}</div>
+            </div>
+            <div style="flex:none;color:#c3cfe8;font-size:20px;font-weight:800;">›</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ AGENDA DETAIL ============ -->
+  <sc-if value="{{ isAgendaDetail }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Detail Agenda" style="max-width:760px;margin:0 auto;padding:36px 20px 70px;">
+      <button onClick="{{ navAgenda }}" style="border:none;background:transparent;color:#5b6b93;font-weight:800;font-size:14px;cursor:pointer;padding:8px 0;min-height:44px;">← Semua agenda</button>
+      <div style="background:#fff;border:1px solid #e2eaf7;border-radius:24px;padding:clamp(24px,4vw,38px);margin-top:8px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:{{ det.typeColor }};background:{{ det.typeSoft }};padding:5px 12px;border-radius:999px;">{{ det.type }}</span>
+          <span style="font-size:12px;font-weight:800;color:{{ det.statusColor }};background:{{ det.statusSoft }};padding:5px 12px;border-radius:999px;">{{ det.statusLabel }}</span>
+          <sc-if value="{{ det.qrActive }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:12px;font-weight:800;color:#178a63;background:#178a6314;padding:5px 12px;border-radius:999px;animation:softPulse 2s infinite;">● QR absensi aktif</span>
+          </sc-if>
+        </div>
+        <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(24px,3.6vw,34px);line-height:1.3;color:#12275c;margin:16px 0 10px;text-wrap:pretty;">{{ det.title }}</h1>
+        <p style="color:#4a5a80;font-size:15px;line-height:1.75;margin:0 0 22px;text-wrap:pretty;">{{ det.desc }}</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;">
+          <div style="background:#f8fafe;border:1px solid #eef2fb;border-radius:14px;padding:14px 16px;">
+            <div style="font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#93a3c4;">Waktu</div>
+            <div style="font-weight:800;font-size:14.5px;color:#12275c;margin-top:4px;">{{ det.dateLabel }}</div>
+            <div style="font-weight:700;font-size:13px;color:#5b6b93;margin-top:2px;">{{ det.timeLabel }}</div>
+          </div>
+          <div style="background:#f8fafe;border:1px solid #eef2fb;border-radius:14px;padding:14px 16px;">
+            <div style="font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#93a3c4;">Lokasi</div>
+            <div style="font-weight:800;font-size:14.5px;color:#12275c;margin-top:4px;">{{ det.location }}</div>
+          </div>
+          <div style="background:#f8fafe;border:1px solid #eef2fb;border-radius:14px;padding:14px 16px;">
+            <div style="font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#93a3c4;">Penanggung jawab</div>
+            <div style="font-weight:800;font-size:14.5px;color:#12275c;margin-top:4px;">{{ det.pj }}</div>
+          </div>
+          <sc-if value="{{ det.hasPemateri }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#faf3e3;border:1px solid #eadfc2;border-radius:14px;padding:14px 16px;">
+              <div style="font-size:10.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b07f1e;">Pemateri</div>
+              <div style="font-weight:800;font-size:14.5px;color:#12275c;margin-top:4px;">{{ det.pemateriLabel }}</div>
+            </div>
+          </sc-if>
+        </div>
+        <div style="margin-top:22px;border-top:1px dashed #e4ebf7;padding-top:20px;">
+          <sc-if value="{{ detAttended }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:10px;color:#178a63;font-weight:800;font-size:14.5px;"><span style="width:26px;height:26px;border-radius:50%;background:#178a6318;display:flex;align-items:center;justify-content:center;">✓</span> Kehadiranmu sudah tercatat. Alhamdulillah.</div>
+          </sc-if>
+          <sc-if value="{{ detCanAbsen }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ det.absen }}" style="border:none;background:#178a63;color:#fff;font-weight:800;font-size:15px;padding:14px 28px;border-radius:999px;cursor:pointer;min-height:48px;box-shadow:0 12px 24px -12px rgba(23,138,99,.5);" style-hover="background:#137251;">Absen Sekarang — Pindai QR</button>
+          </sc-if>
+          <sc-if value="{{ detNeedLogin }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <span style="font-size:14px;color:#5b6b93;font-weight:600;">QR absensi sedang aktif — masuk untuk mencatat kehadiranmu.</span>
+              <button onClick="{{ navLogin }}" style="border:none;background:#2446ad;color:#fff;font-weight:800;font-size:14px;padding:12px 22px;border-radius:999px;cursor:pointer;min-height:44px;">Masuk</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ detNoQr }}" hint-placeholder-val="{{ true }}">
+            <div style="font-size:13.5px;color:#93a3c4;font-weight:600;line-height:1.6;">QR absensi belum dibuka. Admin akan mengaktifkan QR di lokasi saat acara berlangsung.</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ PROFIL ============ -->
+  <sc-if value="{{ isProfil }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Profil Organisasi" style="max-width:960px;margin:0 auto;padding:44px 20px 70px;">
+      <div style="text-align:center;max-width:640px;margin:0 auto 40px;">
+        <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Profil Organisasi</div>
+        <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(28px,4vw,42px);color:#12275c;margin:8px 0 10px;">Mengenal LDF An-Nahl</h1>
+        <p style="color:#5b6b93;font-size:15px;line-height:1.75;margin:0;text-wrap:pretty;">Lembaga Dakwah Fakultas di Fakultas Kedokteran Hewan Universitas Syiah Kuala. Bergerak seperti lebah: teratur, bermanfaat, dan tidak merusak.</p>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-bottom:44px;">
+        <div style="background:linear-gradient(150deg,#fdf8ec,#fff);border:1px solid #eadfc2;border-radius:22px;padding:28px;position:relative;overflow:hidden;">
+          <sc-if value="{{ showHex }}" hint-placeholder-val="{{ true }}">
+            <div style="position:absolute;top:-20px;right:-16px;width:90px;height:99px;background:#c9922e;opacity:.1;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+          </sc-if>
+          <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#b07f1e;">Makna Nama</div>
+          <div style="font-family:Amiri,serif;font-size:34px;color:#12275c;margin:10px 0 2px;" dir="rtl">النَّحْل</div>
+          <div style="font-family:Lora,serif;font-weight:600;font-size:19px;color:#12275c;">An-Nahl — Lebah</div>
+          <p style="font-size:14px;line-height:1.75;color:#4a5a80;margin:12px 0 0;text-wrap:pretty;">Diambil dari surah ke-16 Al-Qur'an. Lebah hanya hinggap di tempat yang baik, mengambil yang baik, dan menghasilkan yang bermanfaat — begitulah cita-cita gerak dakwah kami di kampus.</p>
+        </div>
+        <div style="background:#fff;border:1px solid #e2eaf7;border-radius:22px;padding:28px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#2446ad;">Sejarah Singkat</div>
+          <div style="display:flex;flex-direction:column;gap:0;margin-top:16px;">
+            <sc-for list="{{ sejarahItems }}" as="s" hint-placeholder-count="3">
+              <div style="display:flex;gap:14px;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <span style="width:11px;height:12px;flex:none;background:#2446ad;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);margin-top:4px;"></span>
+                  <span style="width:2px;flex:1;background:#e4ebf7;"></span>
+                </div>
+                <div style="padding-bottom:18px;">
+                  <div style="font-weight:800;font-size:14.5px;color:#12275c;">{{ s.title }}</div>
+                  <div style="font-size:13px;line-height:1.65;color:#5b6b93;margin-top:3px;">{{ s.text }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-bottom:52px;">
+        <div style="background:linear-gradient(150deg,#1b3a95,#12275c);border-radius:22px;padding:28px;color:#fff;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f2e7c9;">Visi</div>
+          <div style="font-family:Lora,serif;font-weight:500;font-size:19px;line-height:1.6;margin-top:12px;text-wrap:pretty;">“Terwujudnya generasi dokter hewan muslim yang beriman, berilmu, dan bermanfaat bagi umat.”</div>
+          <div style="font-size:11.5px;font-weight:700;color:#8fa0c9;margin-top:14px;">Teks contoh — sesuaikan dengan visi resmi organisasi.</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e2eaf7;border-radius:22px;padding:28px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#2446ad;">Misi</div>
+          <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px;">
+            <sc-for list="{{ misiList }}" as="m" hint-placeholder-count="4">
+              <div style="display:flex;gap:11px;align-items:flex-start;">
+                <span style="flex:none;width:22px;height:24px;background:#e9effc;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#2446ad;">{{ m.n }}</span>
+                <span style="font-size:14px;line-height:1.6;color:#4a5a80;font-weight:600;">{{ m.text }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-bottom:26px;">
+        <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Struktur</div>
+        <h2 style="font-family:Lora,serif;font-weight:600;font-size:clamp(24px,3.4vw,32px);color:#12275c;margin:6px 0 0;">Susunan Kepengurusan</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;">
+        <div style="background:#fff;border:1px solid #e2eaf7;border-radius:20px;padding:20px 34px;text-align:center;box-shadow:0 18px 36px -24px rgba(18,39,92,.3);">
+          <div style="width:58px;height:58px;border-radius:50%;background:linear-gradient(150deg,#2446ad,#12275c);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin:0 auto 10px;">K</div>
+          <div style="font-weight:800;font-size:15.5px;color:#12275c;">Nama Ketua Umum</div>
+          <div style="font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#c9922e;margin-top:3px;">Ketua Umum</div>
+        </div>
+        <div style="width:2px;height:26px;background:#dbe4f5;"></div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
+          <sc-for list="{{ strukturInti }}" as="p" hint-placeholder-count="2">
+            <div style="background:#fff;border:1px solid #e2eaf7;border-radius:18px;padding:16px 26px;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#e9effc;color:#2446ad;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;margin:0 auto 8px;">{{ p.initial }}</div>
+              <div style="font-weight:800;font-size:14px;color:#12275c;">{{ p.name }}</div>
+              <div style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#93a3c4;margin-top:2px;">{{ p.role }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="width:2px;height:26px;background:#dbe4f5;"></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;width:100%;">
+          <sc-for list="{{ strukturDept }}" as="d" hint-placeholder-count="6">
+            <div style="background:#fff;border:1px solid #e2eaf7;border-radius:18px;padding:20px;display:flex;gap:14px;align-items:flex-start;" style-hover="border-color:#c8d6f0;">
+              <span style="flex:none;width:40px;height:44px;background:{{ d.soft }};clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:{{ d.color }};">{{ d.initial }}</span>
+              <div>
+                <div style="font-weight:800;font-size:14.5px;color:#12275c;">{{ d.name }}</div>
+                <div style="font-size:12.5px;line-height:1.55;color:#5b6b93;margin-top:3px;">{{ d.desc }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:#a9b6d2;margin-top:18px;text-align:center;">Nama pengurus masih placeholder — akan diisi sesuai SK kepengurusan.</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ WAKTU SHALAT ============ -->
+  <sc-if value="{{ isShalat }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Waktu Shalat" style="max-width:680px;margin:0 auto;padding:44px 20px 70px;">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Waktu Shalat</div>
+        <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(26px,4vw,36px);color:#12275c;margin:8px 0 4px;">{{ dateStr }}</h1>
+        <div style="font-size:14px;font-weight:700;color:#93a3c4;">{{ hijriStr }} · {{ kota }}</div>
+      </div>
+      <div style="position:relative;overflow:hidden;background:linear-gradient(160deg,#1b3a95,#12275c);border-radius:26px;padding:36px 28px;text-align:center;color:#fff;margin-bottom:16px;">
+        <sc-if value="{{ showHex }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;top:-26px;right:-20px;width:110px;height:121px;background:#c9922e;opacity:.13;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+          <div style="position:absolute;bottom:-30px;left:-24px;width:120px;height:132px;background:#fff;opacity:.05;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+        </sc-if>
+        <div style="font-size:11.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#f2e7c9;">Shalat berikutnya</div>
+        <div style="font-family:Lora,serif;font-weight:600;font-size:clamp(38px,7vw,52px);margin-top:8px;">{{ nextPrayerName }}</div>
+        <div style="font-weight:800;font-size:22px;color:#b9c6e8;margin-top:2px;">{{ nextPrayerTime }} WIB</div>
+        <div style="display:inline-block;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:9px 22px;margin-top:18px;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums;letter-spacing:.04em;">− {{ countdown }}</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e2eaf7;border-radius:22px;overflow:hidden;">
+        <sc-for list="{{ prayerRows }}" as="p" hint-placeholder-count="6">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #f1f4fb;background:{{ p.bg }};">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="width:9px;height:10px;background:{{ p.dot }};clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></span>
+              <span style="font-weight:800;font-size:15.5px;color:{{ p.color }};">{{ p.name }}</span>
+              <span style="font-size:11px;font-weight:700;color:#b9c2d8;">{{ p.note }}</span>
+            </div>
+            <span style="font-weight:800;font-size:15.5px;color:{{ p.color }};font-variant-numeric:tabular-nums;">{{ p.time }}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="text-align:center;font-size:12px;font-weight:700;color:#a9b6d2;margin-top:14px;line-height:1.6;">Jadwal contoh. Pada versi penuh akan terhubung ke sumber jadwal shalat resmi sesuai lokasi.</div>
+      <div style="background:#faf3e3;border:1px solid #eadfc2;border-radius:18px;padding:20px 24px;margin-top:22px;text-align:center;">
+        <div style="font-family:Lora,serif;font-style:italic;font-size:15.5px;line-height:1.7;color:#6b5320;">“Sesungguhnya shalat itu mencegah dari perbuatan keji dan mungkar.”</div>
+        <div style="font-size:12px;font-weight:800;color:#b07f1e;margin-top:6px;">QS. Al-'Ankabut : 45</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ AL-QUR'AN LIST ============ -->
+  <sc-if value="{{ isQuran }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Al-Quran" style="max-width:760px;margin:0 auto;padding:44px 20px 70px;">
+      <div style="text-align:center;margin-bottom:26px;">
+        <div style="font-family:Amiri,serif;font-size:30px;color:#c9922e;line-height:1.6;" dir="rtl">القُرْآنُ الكَرِيمُ</div>
+        <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(26px,4vw,36px);color:#12275c;margin:6px 0 8px;">Al-Qur'anul Karim</h1>
+        <p style="color:#5b6b93;font-size:14.5px;line-height:1.7;max-width:52ch;margin:0 auto;">Ruang baca yang lapang dan tenang. Pilih surah untuk mulai membaca.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <sc-for list="{{ surahRows }}" as="s" hint-placeholder-count="8">
+          <div onClick="{{ s.open }}" style="background:{{ s.cardBg }};border:1px solid {{ s.cardBorder }};border-radius:18px;padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:16px;" style-hover="border-color:#c8d6f0;box-shadow:0 14px 30px -22px rgba(18,39,92,.28);">
+            <span style="flex:none;width:42px;height:46px;background:#e9effc;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:#2446ad;">{{ s.no }}</span>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-weight:800;font-size:16px;color:#12275c;">{{ s.name }}</span>
+                <sc-if value="{{ s.special }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#b07f1e;background:#faf3e3;padding:3px 9px;border-radius:999px;">Surah kami</span>
+                </sc-if>
+              </div>
+              <div style="font-size:12.5px;font-weight:700;color:#93a3c4;margin-top:2px;">{{ s.arti }} · {{ s.ayat }} ayat · {{ s.tempat }}</div>
+            </div>
+            <div style="font-family:Amiri,serif;font-size:24px;color:#2b3d6b;" dir="rtl">{{ s.ar }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#f8fafe;border:1px dashed #c8d6f0;border-radius:18px;padding:20px 24px;margin-top:16px;text-align:center;font-size:13px;font-weight:700;color:#5b6b93;line-height:1.7;">
+        Daftar 114 surah lengkap dengan teks resmi akan dihubungkan ke sumber mushaf digital resmi (mis. Kemenag / KFGQPC) pada versi penuh.
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ AL-QUR'AN READER ============ -->
+  <sc-if value="{{ isQuranRead }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Baca Al-Quran" style="max-width:760px;margin:0 auto;padding:36px 20px 80px;">
+      <button onClick="{{ navQuran }}" style="border:none;background:transparent;color:#5b6b93;font-weight:800;font-size:14px;cursor:pointer;padding:8px 0;min-height:44px;">← Daftar surah</button>
+      <div style="background:linear-gradient(160deg,#1b3a95,#12275c);border-radius:24px;padding:32px 28px;text-align:center;color:#fff;margin:8px 0 26px;position:relative;overflow:hidden;">
+        <sc-if value="{{ showHex }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;top:-24px;left:-18px;width:100px;height:110px;background:#c9922e;opacity:.13;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+        </sc-if>
+        <div style="font-family:Amiri,serif;font-size:40px;line-height:1.5;" dir="rtl">سُورَةُ {{ rdAr }}</div>
+        <div style="font-family:Lora,serif;font-weight:600;font-size:22px;margin-top:4px;">{{ rdName }}</div>
+        <div style="font-size:13px;font-weight:800;color:#b9c6e8;margin-top:6px;">{{ rdMeta }}</div>
+      </div>
+      <sc-if value="{{ rdReady }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <sc-for list="{{ rdAyat }}" as="y" hint-placeholder-count="7">
+            <div style="background:#fff;border:1px solid #e9eef9;border-radius:20px;padding:26px clamp(20px,4vw,34px);">
+              <div dir="rtl" style="font-family:Amiri,serif;font-size:clamp(26px,4.4vw,32px);line-height:2.2;color:#152c63;text-align:right;">{{ y.ar }} <span style="display:inline-flex;align-items:center;justify-content:center;width:34px;height:37px;background:#faf3e3;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);font-size:14px;color:#b07f1e;vertical-align:middle;">{{ y.n }}</span></div>
+              <div style="border-top:1px dashed #eef2fb;margin-top:16px;padding-top:14px;font-size:14.5px;line-height:1.8;color:#5b6b93;">{{ y.id }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="text-align:center;font-size:12px;font-weight:700;color:#a9b6d2;margin-top:18px;line-height:1.6;">Teks Arab & terjemahan ayat di atas asli. Terjemahan final akan mengikuti terjemahan resmi Kemenag RI.</div>
+      </sc-if>
+      <sc-if value="{{ rdLocked }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px dashed #c8d6f0;border-radius:22px;padding:44px 28px;text-align:center;">
+          <div style="width:54px;height:59px;margin:0 auto 14px;background:#e9effc;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;font-family:Amiri,serif;font-size:24px;color:#2446ad;">ق</div>
+          <div style="font-family:Lora,serif;font-weight:600;font-size:20px;color:#12275c;">Teks surah ini belum dimuat</div>
+          <p style="font-size:14px;line-height:1.75;color:#5b6b93;max-width:46ch;margin:10px auto 0;">Pada prototype ini hanya Al-Fatihah yang ditampilkan sebagai contoh. Di versi penuh, seluruh mushaf terhubung ke sumber resmi — tanpa teks karangan.</p>
+          <button onClick="{{ openFatihah }}" style="margin-top:20px;border:none;background:#2446ad;color:#fff;font-weight:800;font-size:14px;padding:13px 24px;border-radius:999px;cursor:pointer;min-height:46px;">Baca Al-Fatihah</button>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ============ KONTEN ============ -->
+  <sc-if value="{{ isKonten }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Konten" style="max-width:1000px;margin:0 auto;padding:44px 20px 70px;">
+      <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Bacaan</div>
+      <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(28px,4vw,40px);color:#12275c;margin:6px 0 6px;">Tulisan An-Nahl</h1>
+      <p style="color:#5b6b93;font-size:15px;margin:0 0 22px;line-height:1.7;max-width:60ch;">Islam Veteriner, Kisah, dan Renungan — tulisan ringan yang menghubungkan iman, ilmu, dan amanah profesi.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;">
+        <sc-for list="{{ kontenChips }}" as="k" hint-placeholder-count="4">
+          <button onClick="{{ k.pick }}" style="border:1px solid {{ k.border }};background:{{ k.bg }};color:{{ k.color }};font-weight:800;font-size:13px;padding:9px 16px;border-radius:999px;cursor:pointer;min-height:40px;">{{ k.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+        <sc-for list="{{ kontenRows }}" as="t" hint-placeholder-count="6">
+          <div onClick="{{ t.open }}" style="background:#fff;border:1px solid #e2eaf7;border-radius:20px;padding:24px;cursor:pointer;display:flex;flex-direction:column;gap:12px;" style-hover="border-color:#c8d6f0;box-shadow:0 18px 36px -22px rgba(18,39,92,.28);transform:translateY(-2px);">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <span style="display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:{{ t.color }};background:{{ t.soft }};padding:5px 11px;border-radius:999px;"><span style="width:7px;height:8px;background:{{ t.color }};clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></span>{{ t.cat }}</span>
+              <span style="font-size:12px;font-weight:700;color:#93a3c4;">{{ t.mins }} mnt baca</span>
+            </div>
+            <div style="font-family:Lora,serif;font-weight:600;font-size:19px;line-height:1.4;color:#12275c;text-wrap:pretty;">{{ t.title }}</div>
+            <p style="margin:0;font-size:13.5px;line-height:1.7;color:#5b6b93;text-wrap:pretty;">{{ t.excerpt }}</p>
+            <div style="margin-top:auto;font-size:13px;font-weight:800;color:#2446ad;">Baca selengkapnya →</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ ARTIKEL ============ -->
+  <sc-if value="{{ isArtikel }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Artikel" style="max-width:680px;margin:0 auto;padding:36px 20px 80px;">
+      <button onClick="{{ navKonten }}" style="border:none;background:transparent;color:#5b6b93;font-weight:800;font-size:14px;cursor:pointer;padding:8px 0;min-height:44px;">← Semua tulisan</button>
+      <div style="margin-top:10px;">
+        <span style="display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:{{ art.color }};background:{{ art.soft }};padding:6px 13px;border-radius:999px;"><span style="width:7px;height:8px;background:{{ art.color }};clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></span>{{ art.cat }}</span>
+        <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(26px,4.4vw,38px);line-height:1.28;color:#12275c;margin:16px 0 10px;text-wrap:pretty;">{{ art.title }}</h1>
+        <div style="font-size:13px;font-weight:700;color:#93a3c4;padding-bottom:20px;border-bottom:1px solid #e9eef9;">Tim Media An-Nahl · {{ art.mins }} menit baca · Konten contoh</div>
+        <div style="margin-top:24px;display:flex;flex-direction:column;gap:18px;">
+          <sc-for list="{{ art.body }}" as="p" hint-placeholder-count="3">
+            <p style="margin:0;font-size:16px;line-height:1.9;color:#33436b;text-wrap:pretty;">{{ p.text }}</p>
+          </sc-for>
+        </div>
+        <div style="background:#f8fafe;border:1px dashed #c8d6f0;border-radius:16px;padding:16px 20px;margin-top:28px;font-size:12.5px;font-weight:700;color:#5b6b93;line-height:1.7;">Ini konten contoh untuk prototype — struktur dan tampilannya siap diisi tulisan asli tim redaksi An-Nahl.</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ LOGIN ============ -->
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Masuk" style="max-width:430px;margin:0 auto;padding:48px 20px 80px;">
+      <div style="background:#fff;border:1px solid #e2eaf7;border-radius:26px;padding:34px 30px;box-shadow:0 24px 50px -30px rgba(18,39,92,.3);">
+        <div style="text-align:center;margin-bottom:24px;">
+          <img src="assets/logo.png" alt="Logo" style="width:62px;height:62px;border-radius:50%;box-shadow:0 0 0 5px #eef4fd;">
+          <h1 style="font-family:Lora,serif;font-weight:600;font-size:26px;color:#12275c;margin:16px 0 4px;">Ahlan wa sahlan</h1>
+          <div style="font-size:13.5px;font-weight:600;color:#93a3c4;">Masuk untuk melihat dashboard & absen kegiatan</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#5b6b93;margin-bottom:6px;">Nama / NIM</div>
+            <input value="{{ formName }}" onChange="{{ onFormName }}" placeholder="cth. Raihan — bebas, ini demo" style="width:100%;border:1.5px solid #e2eaf7;border-radius:13px;padding:13px 16px;font-size:15px;color:#12275c;outline:none;background:#fbfcff;" style-focus="border-color:#2446ad;background:#fff;">
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#5b6b93;margin-bottom:6px;">Kata sandi</div>
+            <input type="password" value="{{ formPass }}" onChange="{{ onFormPass }}" placeholder="apa saja (mock)" style="width:100%;border:1.5px solid #e2eaf7;border-radius:13px;padding:13px 16px;font-size:15px;color:#12275c;outline:none;background:#fbfcff;" style-focus="border-color:#2446ad;background:#fff;">
+          </div>
+          <button onClick="{{ submitLogin }}" style="border:none;background:#2446ad;color:#fff;font-weight:800;font-size:15px;padding:14px;border-radius:999px;cursor:pointer;min-height:48px;margin-top:6px;" style-hover="background:#1c398f;">Masuk</button>
+          <button onClick="{{ loginAdmin }}" style="border:1px solid #e2eaf7;background:#fff;color:#5b6b93;font-weight:800;font-size:13.5px;padding:12px;border-radius:999px;cursor:pointer;min-height:44px;" style-hover="border-color:#c8d6f0;color:#12275c;">Masuk sebagai Admin (demo)</button>
+        </div>
+        <div style="text-align:center;font-size:13.5px;font-weight:600;color:#93a3c4;margin-top:20px;">Belum punya akun? <span onClick="{{ navRegister }}" style="color:#2446ad;font-weight:800;cursor:pointer;">Daftar anggota</span></div>
+      </div>
+      <div style="text-align:center;font-size:12px;font-weight:700;color:#a9b6d2;margin-top:16px;line-height:1.6;">Login mock untuk prototype — belum terhubung ke sistem akun sungguhan.</div>
+    </div>
+  </sc-if>
+
+  <!-- ============ REGISTER ============ -->
+  <sc-if value="{{ isRegister }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Daftar" style="max-width:430px;margin:0 auto;padding:48px 20px 80px;">
+      <div style="background:#fff;border:1px solid #e2eaf7;border-radius:26px;padding:34px 30px;box-shadow:0 24px 50px -30px rgba(18,39,92,.3);">
+        <div style="text-align:center;margin-bottom:24px;">
+          <div style="width:56px;height:61px;margin:0 auto;background:#faf3e3;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;font-size:22px;color:#b07f1e;font-family:Amiri,serif;">ن</div>
+          <h1 style="font-family:Lora,serif;font-weight:600;font-size:26px;color:#12275c;margin:16px 0 4px;">Gabung ke koloni</h1>
+          <div style="font-size:13.5px;font-weight:600;color:#93a3c4;">Daftar sebagai anggota LDF An-Nahl</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#5b6b93;margin-bottom:6px;">Nama lengkap</div>
+            <input value="{{ formName }}" onChange="{{ onFormName }}" placeholder="Nama sesuai KTM" style="width:100%;border:1.5px solid #e2eaf7;border-radius:13px;padding:13px 16px;font-size:15px;color:#12275c;outline:none;background:#fbfcff;" style-focus="border-color:#2446ad;background:#fff;">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div>
+              <div style="font-size:12px;font-weight:800;color:#5b6b93;margin-bottom:6px;">NIM</div>
+              <input placeholder="2XXX…" style="width:100%;border:1.5px solid #e2eaf7;border-radius:13px;padding:13px 16px;font-size:15px;color:#12275c;outline:none;background:#fbfcff;" style-focus="border-color:#2446ad;background:#fff;">
+            </div>
+            <div>
+              <div style="font-size:12px;font-weight:800;color:#5b6b93;margin-bottom:6px;">Angkatan</div>
+              <input placeholder="2024" style="width:100%;border:1.5px solid #e2eaf7;border-radius:13px;padding:13px 16px;font-size:15px;color:#12275c;outline:none;background:#fbfcff;" style-focus="border-color:#2446ad;background:#fff;">
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12px;font-weight:800;color:#5b6b93;margin-bottom:6px;">Kata sandi</div>
+            <input type="password" value="{{ formPass }}" onChange="{{ onFormPass }}" placeholder="apa saja (mock)" style="width:100%;border:1.5px solid #e2eaf7;border-radius:13px;padding:13px 16px;font-size:15px;color:#12275c;outline:none;background:#fbfcff;" style-focus="border-color:#2446ad;background:#fff;">
+          </div>
+          <button onClick="{{ submitLogin }}" style="border:none;background:#12275c;color:#fff;font-weight:800;font-size:15px;padding:14px;border-radius:999px;cursor:pointer;min-height:48px;margin-top:6px;" style-hover="background:#1b3a95;">Daftar & Masuk</button>
+        </div>
+        <div style="text-align:center;font-size:13.5px;font-weight:600;color:#93a3c4;margin-top:20px;">Sudah punya akun? <span onClick="{{ navLogin }}" style="color:#2446ad;font-weight:800;cursor:pointer;">Masuk</span></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ DASHBOARD ============ -->
+  <sc-if value="{{ isDashboard }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Dashboard Anggota" style="max-width:960px;margin:0 auto;padding:40px 20px 70px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px;">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:#93a3c4;">{{ greeting }},</div>
+          <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(26px,4vw,36px);color:#12275c;margin:2px 0 0;">Assalamu'alaikum, {{ userFirst }}</h1>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <sc-if value="{{ isAdminUser }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ navAdmin }}" style="border:1px solid #e2eaf7;background:#fff;color:#12275c;font-weight:800;font-size:13.5px;padding:11px 18px;border-radius:999px;cursor:pointer;min-height:44px;" style-hover="border-color:#c8d6f0;">Panel Admin</button>
+          </sc-if>
+          <button onClick="{{ logout }}" style="border:1px solid #f0dede;background:#fff;color:#b05252;font-weight:800;font-size:13.5px;padding:11px 18px;border-radius:999px;cursor:pointer;min-height:44px;" style-hover="background:#fdf7f7;">Keluar</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:28px;">
+        <div style="background:linear-gradient(150deg,#2446ad,#1b3a95);border-radius:20px;padding:22px 24px;color:#fff;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b9c6e8;">Total kehadiran</div>
+          <div style="font-weight:800;font-size:34px;margin-top:4px;">{{ statHadir }}</div>
+          <div style="font-size:12.5px;font-weight:700;color:#b9c6e8;margin-top:2px;">kegiatan tercatat</div>
+        </div>
+        <div style="background:#fff;border:1px solid #e2eaf7;border-radius:20px;padding:22px 24px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#93a3c4;">Agenda mendatang</div>
+          <div style="font-weight:800;font-size:34px;color:#12275c;margin-top:4px;">{{ statUpcoming }}</div>
+          <div style="font-size:12.5px;font-weight:700;color:#93a3c4;margin-top:2px;">dalam waktu dekat</div>
+        </div>
+        <div style="background:#fff;border:1px solid #eadfc2;border-radius:20px;padding:22px 24px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#b07f1e;">Menuju {{ nextPrayerName }}</div>
+          <div style="font-weight:800;font-size:26px;color:#12275c;margin-top:8px;font-variant-numeric:tabular-nums;">{{ countdown }}</div>
+          <div onClick="{{ navShalat }}" style="font-size:12.5px;font-weight:800;color:#b07f1e;margin-top:4px;cursor:pointer;">Jadwal shalat →</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;align-items:start;">
+        <div style="background:#fff;border:1px solid #e2eaf7;border-radius:22px;padding:24px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+            <div style="font-weight:800;font-size:16px;color:#12275c;">Absensi kegiatan</div>
+            <span style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#93a3c4;">Pindai QR di lokasi</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <sc-for list="{{ absenRows }}" as="a" hint-placeholder-count="3">
+              <div style="border:1px solid #eef2fb;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;">
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:800;font-size:14px;color:#12275c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ a.title }}</div>
+                  <div style="font-size:12px;font-weight:700;color:#93a3c4;margin-top:2px;">{{ a.relLabel }} · {{ a.time }} · {{ a.qrChip }}</div>
+                </div>
+                <sc-if value="{{ a.attended }}" hint-placeholder-val="{{ false }}">
+                  <span style="flex:none;font-size:12px;font-weight:800;color:#178a63;background:#178a6314;padding:8px 14px;border-radius:999px;">Hadir ✓</span>
+                </sc-if>
+                <sc-if value="{{ a.canAbsen }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ a.absen }}" style="flex:none;border:none;background:{{ a.btnBg }};color:{{ a.btnColor }};font-weight:800;font-size:13px;padding:11px 18px;border-radius:999px;cursor:pointer;min-height:44px;">Absen</button>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:#a9b6d2;margin-top:12px;line-height:1.6;">Tombol absen membuka pemindai QR. QR hanya aktif jika admin sudah membukanya di lokasi acara.</div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:#fff;border:1px solid #e2eaf7;border-radius:22px;padding:24px;">
+            <div style="font-weight:800;font-size:16px;color:#12275c;margin-bottom:14px;">Riwayat kehadiran</div>
+            <div style="display:flex;flex-direction:column;">
+              <sc-for list="{{ attRows }}" as="h" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #f1f4fb;">
+                  <span style="flex:none;width:30px;height:33px;background:#178a6314;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);display:flex;align-items:center;justify-content:center;color:#178a63;font-weight:800;font-size:13px;">✓</span>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:800;font-size:13.5px;color:#12275c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ h.title }}</div>
+                    <div style="font-size:12px;font-weight:700;color:#93a3c4;">{{ h.dateLabel }}</div>
+                  </div>
+                  <span style="flex:none;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:{{ h.typeColor }};background:{{ h.typeSoft }};padding:3px 9px;border-radius:999px;">{{ h.type }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div onClick="{{ navQuran }}" style="background:linear-gradient(150deg,#1b3a95,#12275c);border-radius:22px;padding:22px 24px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;" style-hover="box-shadow:0 18px 36px -20px rgba(18,39,92,.5);">
+            <div>
+              <div style="font-family:Amiri,serif;font-size:20px;color:#f2e7c9;" dir="rtl">وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا</div>
+              <div style="font-weight:800;font-size:14px;margin-top:6px;">Lanjutkan membaca Al-Qur'an →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ SCAN QR ============ -->
+  <sc-if value="{{ isScan }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Absen QR" style="max-width:460px;margin:0 auto;padding:36px 20px 80px;">
+      <button onClick="{{ backFromScan }}" style="border:none;background:transparent;color:#5b6b93;font-weight:800;font-size:14px;cursor:pointer;padding:8px 0;min-height:44px;">← Kembali</button>
+      <div style="background:#fff;border:1px solid #e2eaf7;border-radius:26px;padding:28px;text-align:center;box-shadow:0 24px 50px -30px rgba(18,39,92,.3);">
+        <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#c9922e;">Absensi QR</div>
+        <div style="font-family:Lora,serif;font-weight:600;font-size:20px;color:#12275c;margin:8px 0 2px;line-height:1.35;">{{ scanTitle }}</div>
+        <div style="font-size:13px;font-weight:700;color:#93a3c4;margin-bottom:20px;">{{ scanMeta }}</div>
+
+        <sc-if value="{{ scanShowCam }}" hint-placeholder-val="{{ true }}">
+          <div style="position:relative;width:min(280px,72vw);aspect-ratio:1;margin:0 auto;background:linear-gradient(160deg,#101f4a,#0b1633);border-radius:24px;overflow:hidden;">
+            <div style="position:absolute;top:16px;left:16px;width:34px;height:34px;border-top:3px solid #fff;border-left:3px solid #fff;border-radius:8px 0 0 0;opacity:.9;"></div>
+            <div style="position:absolute;top:16px;right:16px;width:34px;height:34px;border-top:3px solid #fff;border-right:3px solid #fff;border-radius:0 8px 0 0;opacity:.9;"></div>
+            <div style="position:absolute;bottom:16px;left:16px;width:34px;height:34px;border-bottom:3px solid #fff;border-left:3px solid #fff;border-radius:0 0 0 8px;opacity:.9;"></div>
+            <div style="position:absolute;bottom:16px;right:16px;width:34px;height:34px;border-bottom:3px solid #fff;border-right:3px solid #fff;border-radius:0 0 8px 0;opacity:.9;"></div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:70px;height:77px;background:#c9922e;opacity:.16;clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></div>
+            <sc-if value="{{ scanScanning }}" hint-placeholder-val="{{ false }}">
+              <div style="position:absolute;left:10%;right:10%;height:3px;background:linear-gradient(90deg,transparent,#f2c94c,transparent);border-radius:3px;animation:scanline 2s ease-in-out infinite;box-shadow:0 0 18px 2px rgba(242,201,76,.5);"></div>
+            </sc-if>
+            <div style="position:absolute;bottom:0;left:0;right:0;padding:14px;font-size:11.5px;font-weight:700;color:rgba(255,255,255,.55);">{{ scanHint }}</div>
+          </div>
+          <button onClick="{{ doScan }}" style="margin-top:22px;border:none;background:{{ scanBtnBg }};color:#fff;font-weight:800;font-size:15px;padding:14px 30px;border-radius:999px;cursor:pointer;min-height:48px;width:100%;" style-hover="opacity:.92;">{{ scanBtnLabel }}</button>
+          <div style="font-size:12px;font-weight:700;color:#a9b6d2;margin-top:12px;line-height:1.6;">Simulasi pemindaian — di versi penuh, kamera HP memindai QR yang ditampilkan admin di lokasi.</div>
+        </sc-if>
+
+        <sc-if value="{{ scanSuccess }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:10px 0;">
+            <div style="width:84px;height:84px;margin:0 auto;border-radius:50%;background:#178a6316;display:flex;align-items:center;justify-content:center;">
+              <div style="width:58px;height:58px;border-radius:50%;background:#178a63;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;">✓</div>
+            </div>
+            <div style="font-family:Lora,serif;font-weight:600;font-size:22px;color:#12275c;margin-top:16px;">Alhamdulillah, tercatat!</div>
+            <p style="font-size:14px;line-height:1.7;color:#5b6b93;margin:8px 0 0;">Kehadiranmu pada agenda ini sudah masuk ke riwayat. Jazakumullahu khairan sudah hadir.</p>
+            <button onClick="{{ navDashboard }}" style="margin-top:20px;border:none;background:#2446ad;color:#fff;font-weight:800;font-size:14.5px;padding:13px 26px;border-radius:999px;cursor:pointer;min-height:48px;width:100%;">Kembali ke Dashboard</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ scanFail }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:10px 0;">
+            <div style="width:84px;height:84px;margin:0 auto;border-radius:50%;background:#c0392b14;display:flex;align-items:center;justify-content:center;">
+              <div style="width:58px;height:58px;border-radius:50%;background:#c0524a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;">✕</div>
+            </div>
+            <div style="font-family:Lora,serif;font-weight:600;font-size:22px;color:#12275c;margin-top:16px;">QR belum aktif</div>
+            <p style="font-size:14px;line-height:1.7;color:#5b6b93;margin:8px 0 0;">Admin belum membuka QR absensi untuk agenda ini. Absen hanya bisa dilakukan di lokasi saat QR ditampilkan.</p>
+            <div style="display:flex;gap:10px;margin-top:20px;">
+              <button onClick="{{ scanAgain }}" style="flex:1;border:1px solid #e2eaf7;background:#fff;color:#12275c;font-weight:800;font-size:14px;padding:13px;border-radius:999px;cursor:pointer;min-height:48px;">Coba lagi</button>
+              <button onClick="{{ navDashboard }}" style="flex:1;border:none;background:#2446ad;color:#fff;font-weight:800;font-size:14px;padding:13px;border-radius:999px;cursor:pointer;min-height:48px;">Dashboard</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ ADMIN ============ -->
+  <sc-if value="{{ isAdmin }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="Panel Admin" style="max-width:820px;margin:0 auto;padding:40px 20px 70px;">
+      <sc-if value="{{ adminDenied }}" hint-placeholder-val="{{ false }}">
+        <div style="background:#fff;border:1px solid #e2eaf7;border-radius:24px;padding:44px 30px;text-align:center;max-width:460px;margin:20px auto;">
+          <div style="font-family:Lora,serif;font-weight:600;font-size:22px;color:#12275c;">Khusus admin</div>
+          <p style="font-size:14px;color:#5b6b93;line-height:1.7;margin:10px 0 0;">Halaman ini untuk pengurus yang mengelola QR absensi. Masuk sebagai admin untuk mencoba.</p>
+          <button onClick="{{ loginAdmin }}" style="margin-top:20px;border:none;background:#2446ad;color:#fff;font-weight:800;font-size:14px;padding:13px 26px;border-radius:999px;cursor:pointer;min-height:48px;">Masuk sebagai Admin (demo)</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ adminOk }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:space-between;margin-bottom:6px;">
+          <div>
+            <div style="font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#c9922e;">Panel Admin</div>
+            <h1 style="font-family:Lora,serif;font-weight:600;font-size:clamp(26px,4vw,36px);color:#12275c;margin:6px 0 0;">QR Absensi Kegiatan</h1>
+          </div>
+          <button onClick="{{ navDashboard }}" style="border:1px solid #e2eaf7;background:#fff;color:#12275c;font-weight:800;font-size:13.5px;padding:11px 18px;border-radius:999px;cursor:pointer;min-height:44px;">← Dashboard</button>
+        </div>
+        <p style="color:#5b6b93;font-size:14.5px;margin:8px 0 24px;line-height:1.7;max-width:64ch;">Buat QR untuk agenda yang sedang berlangsung, lalu tampilkan di lokasi. Anggota hanya bisa absen dengan memindai QR ini.</p>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <sc-for list="{{ adminRows }}" as="a" hint-placeholder-count="5">
+            <div style="background:#fff;border:1px solid #e2eaf7;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:220px;">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px;">
+                  <span style="font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:{{ a.typeColor }};background:{{ a.typeSoft }};padding:3px 9px;border-radius:999px;">{{ a.type }}</span>
+                  <span style="font-size:11.5px;font-weight:800;color:{{ a.statusColor }};">{{ a.statusLabel }}</span>
+                </div>
+                <div style="font-weight:800;font-size:15px;color:#12275c;line-height:1.35;">{{ a.title }}</div>
+                <div style="font-size:12.5px;font-weight:700;color:#93a3c4;margin-top:3px;">{{ a.dateLabel }} · {{ a.time }} · {{ a.location }}</div>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;flex:none;">
+                <sc-if value="{{ a.qrActive }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:11.5px;font-weight:800;color:#178a63;background:#178a6314;padding:7px 13px;border-radius:999px;animation:softPulse 2s infinite;">● Aktif</span>
+                  <button onClick="{{ a.viewQR }}" style="border:none;background:#12275c;color:#fff;font-weight:800;font-size:13px;padding:11px 18px;border-radius:999px;cursor:pointer;min-height:44px;">Lihat QR</button>
+                </sc-if>
+                <sc-if value="{{ a.qrInactive }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ a.makeQR }}" style="border:none;background:#2446ad;color:#fff;font-weight:800;font-size:13px;padding:11px 18px;border-radius:999px;cursor:pointer;min-height:44px;" style-hover="background:#1c398f;">Buat QR</button>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <!-- ============ ADMIN QR VIEW ============ -->
+  <sc-if value="{{ isAdminQR }}" hint-placeholder-val="{{ false }}">
+    <div data-screen-label="QR Agenda" style="max-width:460px;margin:0 auto;padding:36px 20px 80px;">
+      <button onClick="{{ navAdmin }}" style="border:none;background:transparent;color:#5b6b93;font-weight:800;font-size:14px;cursor:pointer;padding:8px 0;min-height:44px;">← Panel admin</button>
+      <div style="background:#fff;border:1px solid #e2eaf7;border-radius:26px;padding:30px 28px;text-align:center;box-shadow:0 24px 50px -30px rgba(18,39,92,.3);">
+        <span style="font-size:11.5px;font-weight:800;color:#178a63;background:#178a6314;padding:6px 14px;border-radius:999px;animation:softPulse 2s infinite;">● QR absensi aktif</span>
+        <div style="font-family:Lora,serif;font-weight:600;font-size:20px;color:#12275c;margin:14px 0 2px;line-height:1.35;">{{ qrTitle }}</div>
+        <div style="font-size:13px;font-weight:700;color:#93a3c4;margin-bottom:22px;">{{ qrMeta }}</div>
+        <div style="display:grid;grid-template-columns:repeat(21,1fr);grid-auto-rows:1fr;width:min(280px,70vw);aspect-ratio:1;margin:0 auto;background:#fff;padding:14px;border:1px solid #e2eaf7;border-radius:20px;box-shadow:inset 0 0 0 6px #fff;">
+          <sc-for list="{{ qrCells }}" as="c" hint-placeholder-count="0">
+            <div style="background:{{ c.bg }};width:100%;height:100%;"></div>
+          </sc-for>
+        </div>
+        <div style="font-size:13px;font-weight:800;color:#12275c;margin-top:16px;letter-spacing:.08em;font-variant-numeric:tabular-nums;">{{ qrCode }}</div>
+        <div style="font-size:12px;font-weight:700;color:#a9b6d2;margin-top:10px;line-height:1.6;">Tampilkan layar ini di lokasi acara. QR dummy — di versi penuh, QR berganti berkala untuk mencegah titip absen.</div>
+        <button onClick="{{ killQR }}" style="margin-top:20px;border:1px solid #f0dede;background:#fff;color:#b05252;font-weight:800;font-size:14px;padding:13px 24px;border-radius:999px;cursor:pointer;min-height:48px;width:100%;" style-hover="background:#fdf7f7;">Nonaktifkan QR</button>
+      </div>
+    </div>
+  </sc-if>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer style="border-top:1px solid #e4ebf7;background:#fff;">
+    <div style="max-width:1140px;margin:0 auto;padding:40px 20px 30px;display:flex;flex-wrap:wrap;gap:32px;justify-content:space-between;">
+      <div style="max-width:300px;">
+        <div style="display:flex;align-items:center;gap:11px;">
+          <img src="assets/logo.png" alt="Logo" style="width:40px;height:40px;border-radius:50%;">
+          <div>
+            <div style="font-weight:800;font-size:15px;color:#12275c;">LDF An-Nahl</div>
+            <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#93a3c4;">FKH USK</div>
+          </div>
+        </div>
+        <div style="font-family:Lora,serif;font-style:italic;font-size:14px;color:#5b6b93;margin-top:12px;line-height:1.6;">Serdadu Lebah, Bersenjata Dakwah.</div>
+      </div>
+      <div style="display:flex;gap:56px;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#93a3c4;margin-bottom:2px;">Jelajah</div>
+          <span onClick="{{ navAgenda }}" style="font-size:13.5px;font-weight:700;color:#4a5a80;cursor:pointer;">Agenda</span>
+          <span onClick="{{ navQuran }}" style="font-size:13.5px;font-weight:700;color:#4a5a80;cursor:pointer;">Al-Qur'an</span>
+          <span onClick="{{ navShalat }}" style="font-size:13.5px;font-weight:700;color:#4a5a80;cursor:pointer;">Waktu Shalat</span>
+          <span onClick="{{ navKonten }}" style="font-size:13.5px;font-weight:700;color:#4a5a80;cursor:pointer;">Tulisan</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#93a3c4;margin-bottom:2px;">Organisasi</div>
+          <span onClick="{{ navProfil }}" style="font-size:13.5px;font-weight:700;color:#4a5a80;cursor:pointer;">Profil & Struktur</span>
+          <span onClick="{{ navRegister }}" style="font-size:13.5px;font-weight:700;color:#4a5a80;cursor:pointer;">Daftar Anggota</span>
+          <span onClick="{{ navLogin }}" style="font-size:13.5px;font-weight:700;color:#4a5a80;cursor:pointer;">Masuk</span>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid #f1f4fb;">
+      <div style="max-width:1140px;margin:0 auto;padding:16px 20px;font-size:12px;font-weight:700;color:#a9b6d2;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <span>© 1448 H / 2026 LDF An-Nahl · Fakultas Kedokteran Hewan USK</span>
+        <span>Prototype v0.1</span>
+      </div>
+    </div>
+    <sc-if value="{{ isMobileNav }}" hint-placeholder-val="{{ false }}">
+      <div style="height:78px;"></div>
+    </sc-if>
+  </footer>
+
+  <!-- ============ BOTTOM NAV (MOBILE) ============ -->
+  <sc-if value="{{ isMobileNav }}" hint-placeholder-val="{{ false }}">
+    <nav style="position:fixed;bottom:0;left:0;right:0;z-index:70;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-top:1px solid #e4ebf7;display:flex;justify-content:space-around;padding:8px 6px calc(8px + env(safe-area-inset-bottom));">
+      <sc-for list="{{ bottomLinks }}" as="b" hint-placeholder-count="5">
+        <button onClick="{{ b.go }}" style="border:none;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 10px;min-width:56px;min-height:48px;">
+          <span style="width:9px;height:10px;background:{{ b.dot }};clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);"></span>
+          <span style="font-size:11px;font-weight:800;color:{{ b.color }};">{{ b.label }}</span>
+        </button>
+      </sc-for>
+    </nav>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;showHex&quot;: { &quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Identitas visual&quot; },
+  &quot;kota&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Banda Aceh, Aceh&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Waktu shalat&quot; }
+}">
+class Component extends DCLogic {
+  state = {
+    route: 'home', menuOpen: false, user: null,
+    agendaId: null, articleId: null, surahNo: 1,
+    filter: 'Semua', kontenTab: 'Semua',
+    scanAgendaId: null, scanState: 'idle',
+    qrs: {}, att: [],
+    formName: '', formPass: '', now: Date.now(), width: 1200,
+  };
+
+  componentDidMount() {
+    let user = null, qrs = {}, att = null;
+    try {
+      user = JSON.parse(localStorage.getItem('annahl_user') || 'null');
+      qrs = JSON.parse(localStorage.getItem('annahl_qrs') || '{}');
+      att = JSON.parse(localStorage.getItem('annahl_att') || 'null');
+    } catch (e) {}
+    if (!att) {
+      att = [
+        { id: 'p1', ts: this._d(-6).getTime() },
+        { id: 'p3', ts: this._d(-9).getTime() },
+        { id: 'p2', ts: this._d(-12).getTime() },
+      ];
+      this._save('annahl_att', att);
+    }
+    this.setState({ user, qrs, att, width: window.innerWidth });
+    this._onR = () => this.setState({ width: window.innerWidth });
+    window.addEventListener('resize', this._onR);
+    this._tick = setInterval(() => this.setState({ now: Date.now() }), 1000);
+  }
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._onR);
+    clearInterval(this._tick);
+    clearTimeout(this._st);
+  }
+
+  _save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  _d(off) { const x = new Date(); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() + off); return x; }
+  _nav(route, extra) {
+    this.setState(Object.assign({ route, menuOpen: false }, extra || {}));
+    try { window.scrollTo(0, 0); } catch (e) {}
+  }
+
+  _agendas() {
+    const day = this._d(0).getTime();
+    if (this._agCache && this._agDay === day) return this._agCache;
+    const d = (o) => this._d(o);
+    this._agDay = day;
+    this._agCache = [
+      { id: 'a1', title: 'Rapat Koordinasi Pengurus', type: 'Rapat', date: d(0), time: '16:00', end: '17:30', location: 'Sekretariat An-Nahl, FKH USK', pj: 'Sekretaris Umum', desc: 'Sinkronisasi program kerja seluruh departemen menjelang semester ganjil. Setiap kepala departemen membawa ringkasan proker dan kendala yang dihadapi.' },
+      { id: 'a2', title: 'Kajian Rutin: Halal & Thayyib dalam Praktik Veteriner', type: 'Kajian', date: d(1), time: '16:30', end: '18:00', location: 'Mushalla FKH USK', pj: 'Dept. Syiar', pemateri: 'Ustadz — nama menyusul', desc: 'Membahas prinsip halal dan thayyib serta relevansinya dengan amanah profesi dokter hewan — dari kandang hingga meja makan. Terbuka untuk umum.' },
+      { id: 'a3', title: 'Mentoring Pekanan — Kelompok 1–4', type: 'Mentoring', date: d(2), time: '08:00', end: '10:00', location: 'Taman FKH & Mushalla', pj: 'Dept. Kaderisasi', desc: 'Halaqah pekanan: tilawah bersama, setoran hafalan ringan, dan diskusi tema pekan ini di masing-masing kelompok.' },
+      { id: 'a4', title: 'Gotong Royong Bersih Mushalla', type: 'Sosial', date: d(3), time: '07:30', end: '09:30', location: 'Mushalla FKH USK', pj: 'Biro Kemushallaan', desc: 'Bersih-bersih mushalla bersama: karpet, rak mukena, dan tempat wudhu. Sarapan disediakan untuk semua yang ikut.' },
+      { id: 'a5', title: 'Riyadhah: Futsal & Jogging Pagi', type: 'Olahraga', date: d(3), time: '16:30', end: '18:00', location: 'Lapangan USK', pj: 'Dept. Kaderisasi', desc: 'Olahraga bersama untuk menjaga ukhuwah dan kebugaran. Terbuka untuk seluruh anggota, bawa perlengkapan masing-masing.' },
+      { id: 'a6', title: 'Rihlah & Bakar-Bakar Kepengurusan', type: 'Rihlah', date: d(10), time: '09:00', end: '17:00', location: 'Pantai Lampuuk, Aceh Besar', pj: 'Panitia Rihlah', desc: 'Rihlah akhir semester: tadabbur alam, games ukhuwah, dan bakar-bakar. Kumpul dan berangkat bersama dari FKH.' },
+      { id: 'a7', title: 'Open Recruitment Anggota Baru', type: 'Open Recruitment', date: d(18), time: '09:00', end: '15:00', location: 'Aula FKH USK', pj: 'Panitia Oprec', desc: 'Penyambutan dan pendaftaran anggota baru LDF An-Nahl. Ajak teman seangkatanmu bergabung ke koloni!' },
+      { id: 'p1', title: 'Kajian: Adab Menuntut Ilmu', type: 'Kajian', date: d(-6), time: '16:30', end: '18:00', location: 'Mushalla FKH USK', pj: 'Dept. Syiar', pemateri: 'Ustadz — contoh', desc: 'Kajian rutin pekan lalu tentang adab-adab penuntut ilmu.' },
+      { id: 'p3', title: 'Mentoring Pekanan — Kelompok 1–4', type: 'Mentoring', date: d(-9), time: '08:00', end: '10:00', location: 'Taman FKH', pj: 'Dept. Kaderisasi', desc: 'Halaqah pekanan.' },
+      { id: 'p2', title: 'Rapat & Evaluasi Bulanan', type: 'Rapat', date: d(-12), time: '16:00', end: '17:30', location: 'Sekretariat An-Nahl', pj: 'Sekretaris Umum', desc: 'Evaluasi program bulan lalu.' },
+    ];
+    return this._agCache;
+  }
+
+  _login(role) {
+    const name = role === 'admin' ? 'Admin An-Nahl' : (this.state.formName.trim() || 'Sahabat An-Nahl');
+    const user = { name, role };
+    this._save('annahl_user', user);
+    this.setState({ user, formName: '', formPass: '' });
+    this._nav(role === 'admin' ? 'admin' : 'dashboard');
+  }
+  _logout() {
+    try { localStorage.removeItem('annahl_user'); } catch (e) {}
+    this.setState({ user: null });
+    this._nav('home');
+  }
+
+  _makeQR(id) {
+    const qrs = Object.assign({}, this.state.qrs);
+    if (!qrs[id]) qrs[id] = 'ANH-' + id.toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+    this._save('annahl_qrs', qrs);
+    this.setState({ qrs });
+    this._nav('adminQR', { agendaId: id });
+  }
+  _killQR(id) {
+    const qrs = Object.assign({}, this.state.qrs);
+    delete qrs[id];
+    this._save('annahl_qrs', qrs);
+    this.setState({ qrs });
+    this._nav('admin');
+  }
+
+  _scan() {
+    if (this.state.scanState === 'scanning') return;
+    this.setState({ scanState: 'scanning' });
+    clearTimeout(this._st);
+    this._st = setTimeout(() => {
+      const id = this.state.scanAgendaId;
+      if (id && this.state.qrs[id]) {
+        let att = this.state.att.slice();
+        if (!att.some((x) => x.id === id)) att.push({ id, ts: Date.now() });
+        this._save('annahl_att', att);
+        this.setState({ scanState: 'success', att });
+      } else {
+        this.setState({ scanState: 'fail' });
+      }
+    }, 1600);
+  }
+
+  _qrCells(code) {
+    let h = 2166136261;
+    for (let i = 0; i < code.length; i++) { h ^= code.charCodeAt(i); h = Math.imul(h, 16777619); }
+    let s = h >>> 0;
+    const rnd = () => { s |= 0; s = (s + 0x6D2B79F5) | 0; let t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const n = 21, cells = [];
+    const inFinder = (r, c) => {
+      const corners = [[0, 0], [0, n - 7], [n - 7, 0]];
+      for (const [cr, cc] of corners) {
+        if (r >= cr && r < cr + 7 && c >= cc && c < cc + 7) {
+          const rr = r - cr, ccc = c - cc;
+          const ring = rr === 0 || rr === 6 || ccc === 0 || ccc === 6;
+          const core = rr >= 2 && rr <= 4 && ccc >= 2 && ccc <= 4;
+          return ring || core ? 1 : 2;
+        }
+      }
+      return 0;
+    };
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      const f = inFinder(r, c);
+      const on = f === 1 ? true : f === 2 ? false : rnd() > 0.52;
+      cells.push({ bg: on ? '#12275c' : 'transparent' });
+    }
+    return cells;
+  }
+
+  renderVals() {
+    const S = this.state;
+    const DAYS = ['Ahad', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+    const MON = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const TYPE_C = { Kajian: '#2f55c9', Rapat: '#5b6b8c', Mentoring: '#178a63', Sosial: '#c9922e', Olahraga: '#0f8aa3', Rihlah: '#9a63c0', 'Open Recruitment': '#c05f8a' };
+    const CAT_C = { 'Islam Veteriner': '#2446ad', 'Kisah': '#c9922e', 'Renungan': '#0f8aa3' };
+
+    const nav = (r, x) => () => this._nav(r, x);
+    const today = this._d(0).getTime();
+    const tomorrow = this._d(1).getTime();
+    const nowD = new Date(S.now);
+
+    // ---- agendas ----
+    const enrich = (a) => {
+      const c = TYPE_C[a.type] || '#2f55c9';
+      const t = a.date.getTime();
+      const [sl, scol] = t < today ? ['Selesai', '#8a94ab'] : t === today ? ['Hari ini', '#178a63'] : ['Akan datang', '#2f55c9'];
+      const rel = t === today ? 'Hari ini' : t === tomorrow ? 'Besok' : DAYS[a.date.getDay()] + ', ' + a.date.getDate() + ' ' + MON3[a.date.getMonth()];
+      const qrActive = !!S.qrs[a.id];
+      const attended = S.att.some((x) => x.id === a.id);
+      return Object.assign({}, a, {
+        typeColor: c, typeSoft: c + '14',
+        dateLabel: DAYS[a.date.getDay()] + ', ' + a.date.getDate() + ' ' + MON[a.date.getMonth()],
+        dayNum: a.date.getDate(), monShort: MON3[a.date.getMonth()],
+        relLabel: rel, statusLabel: sl, statusColor: scol, statusSoft: scol + '14',
+        timeLabel: a.time + '–' + a.end + ' WIB',
+        hasPemateri: !!a.pemateri, pemateriLabel: a.pemateri || '',
+        footerLabel: a.pemateri ? 'Pemateri: ' + a.pemateri : 'PJ: ' + a.pj,
+        qrActive, qrInactive: !qrActive,
+        qrChip: qrActive ? 'QR aktif' : 'QR belum aktif',
+        attended,
+        canAbsen: !attended,
+        btnBg: qrActive ? '#178a63' : '#e9effc',
+        btnColor: qrActive ? '#ffffff' : '#5b6b93',
+        open: nav('agendaDetail', { agendaId: a.id }),
+        absen: nav('scan', { scanAgendaId: a.id, scanState: 'idle' }),
+        makeQR: () => this._makeQR(a.id),
+        viewQR: nav('adminQR', { agendaId: a.id }),
+      });
+    };
+    const all = this._agendas().map(enrich);
+    const upcoming = all.filter((a) => a.date.getTime() >= today).sort((x, y) => x.date - y.date);
+    const past = all.filter((a) => a.date.getTime() < today).sort((x, y) => y.date - x.date);
+    const soonAgendas = upcoming.slice(0, 3);
+    const nextAgenda = upcoming[0] || null;
+
+    const FILTERS = ['Semua', 'Kajian', 'Rapat', 'Mentoring', 'Sosial', 'Olahraga', 'Rihlah', 'Open Recruitment'];
+    const filterChips = FILTERS.map((f) => {
+      const act = S.filter === f;
+      return { label: f, pick: () => this.setState({ filter: f }), bg: act ? '#2446ad' : '#fff', color: act ? '#fff' : '#5b6b93', border: act ? '#2446ad' : '#dfe7f4' };
+    });
+    const agendaRows = upcoming.concat(past).filter((a) => S.filter === 'Semua' || a.type === S.filter);
+
+    const det = all.find((a) => a.id === S.agendaId) || all[0];
+    const loggedIn = !!S.user;
+
+    // ---- prayers ----
+    const PRAY = [['Subuh', '05:12'], ['Syuruq', '06:29'], ['Dzuhur', '12:41'], ['Ashar', '16:05'], ['Maghrib', '18:48'], ['Isya', '20:01']];
+    const nowSec = nowD.getHours() * 3600 + nowD.getMinutes() * 60 + nowD.getSeconds();
+    let nextIdx = -1;
+    for (let i = 0; i < PRAY.length; i++) {
+      if (i === 1) continue;
+      const [hh, mm] = PRAY[i][1].split(':').map(Number);
+      if (hh * 3600 + mm * 60 > nowSec) { nextIdx = i; break; }
+    }
+    let target;
+    if (nextIdx === -1) { nextIdx = 0; const [hh, mm] = PRAY[0][1].split(':').map(Number); target = hh * 3600 + mm * 60 + 86400 - nowSec; }
+    else { const [hh, mm] = PRAY[nextIdx][1].split(':').map(Number); target = hh * 3600 + mm * 60 - nowSec; }
+    const pad = (x) => String(x).padStart(2, '0');
+    const countdown = pad(Math.floor(target / 3600)) + ':' + pad(Math.floor((target % 3600) / 60)) + ':' + pad(target % 60);
+    const prayerRows = PRAY.map(([n, t], i) => {
+      const active = i === nextIdx;
+      return { name: n, time: t, note: i === 1 ? 'terbit' : '', bg: active ? '#faf3e3' : 'transparent', color: active ? '#12275c' : '#4a5a80', dot: active ? '#c9922e' : '#dbe4f5' };
+    });
+
+    // ---- articles ----
+    const ARTICLES = [
+      { id: 'v1', cat: 'Islam Veteriner', title: 'Halal dan Thayyib: Amanah dari Kandang hingga Meja Makan', mins: 5, excerpt: 'Profesi veteriner memegang mata rantai penting dalam memastikan pangan asal hewan halal dan thayyib bagi umat.', body: ['Sebelum sepotong daging sampai ke piring seorang muslim, ada rantai panjang yang harus dijaga: kesehatan ternak, cara penyembelihan, hingga penanganan pasca-panen. Di setiap titik itu, ada tangan dokter hewan.', 'Halal berbicara tentang kebolehan, sedangkan thayyib berbicara tentang kebaikan — sehat, bersih, dan tidak membahayakan. Keduanya tidak bisa dipisahkan, dan keduanya membutuhkan ilmu veteriner yang diamalkan dengan jujur.', 'Maka bagi mahasiswa FKH, belajar bukan sekadar mengejar gelar. Setiap praktikum dan setiap ujian adalah bagian dari menyiapkan diri memikul amanah umat.'] },
+      { id: 'v2', cat: 'Islam Veteriner', title: 'Kesejahteraan Hewan adalah Bagian dari Ihsan', mins: 4, excerpt: 'Islam mengajarkan berbuat baik kepada segala sesuatu — termasuk hewan yang kita rawat dan tangani.', body: ['Rasulullah ﷺ mengabarkan bahwa seorang wanita masuk neraka karena mengurung seekor kucing, dan seorang lelaki diampuni dosanya karena memberi minum seekor anjing. Islam menempatkan perlakuan terhadap hewan sebagai perkara besar.', 'Dalam dunia veteriner modern, prinsip ini dikenal sebagai animal welfare. Jauh sebelum istilah itu ada, Islam sudah mengajarkan ihsan: berbuat sebaik-baiknya, bahkan kepada hewan yang akan disembelih.', 'Merawat pasien dengan lembut, meminimalkan rasa sakit, dan tidak menelantarkan — semua itu bukan hanya etika profesi, tetapi juga ibadah.'] },
+      { id: 'v3', cat: 'Islam Veteriner', title: 'Zoonosis dan Tanggung Jawab Menjaga Kehidupan', mins: 6, excerpt: 'Kesehatan masyarakat veteriner adalah wujud nyata menjaga jiwa manusia — salah satu maqashid syariah.', body: ['Banyak penyakit manusia berawal dari hewan. Rabies, flu burung, antraks — di sinilah dokter hewan berdiri sebagai garda terdepan yang sering tidak terlihat.', 'Menjaga jiwa (hifzhun nafs) adalah salah satu tujuan besar syariat. Ketika seorang dokter hewan memutus rantai penularan zoonosis, ia sedang mengamalkan maqashid itu dengan keilmuannya.', 'Profesi ini adalah ladang pahala yang luas: satu vaksinasi, satu edukasi peternak, satu pemeriksaan daging kurban — semuanya bernilai jika diniatkan karena Allah.'] },
+      { id: 'k1', cat: 'Kisah', title: 'Belajar dari Lebah: Tadabbur Surah An-Nahl', mins: 4, excerpt: 'Lebah hanya mengambil yang baik dan hanya memberi yang bermanfaat. Begitulah seharusnya seorang dai.', body: ['Dalam Surah An-Nahl, Allah mewahyukan kepada lebah untuk membangun sarang lalu memakan dari buah-buahan yang baik. Dari perutnya keluar minuman yang menyembuhkan manusia.', 'Para ulama sering menjadikan lebah sebagai perumpamaan seorang mukmin: ia tidak makan kecuali yang baik, tidak menghasilkan kecuali yang baik, dan ketika hinggap di ranting ia tidak mematahkannya.', 'Nama An-Nahl dipilih dengan harapan itu — menjadi koloni yang teratur, bergerak bersama, dan kehadirannya membawa manfaat bagi sekitar.'] },
+      { id: 'k2', cat: 'Kisah', title: 'Tangan di Atas: Kedermawanan Abdurrahman bin Auf', mins: 5, excerpt: 'Saudagar besar yang datang ke Madinah tanpa apa-apa, lalu membangun segalanya dari nol — dan memberikannya kembali.', body: ['Ketika hijrah ke Madinah, Abdurrahman bin Auf ditawari separuh harta oleh saudaranya dari kaum Anshar. Ia menolak dengan santun dan hanya berkata: tunjukkan aku jalan ke pasar.', 'Dari pasar itu ia membangun kembali kekayaannya, dan dari kekayaan itu ia menopang dakwah: kafilah dagangnya pernah ia sedekahkan seluruhnya untuk penduduk Madinah.', 'Kemandirian dan kedermawanan bisa berjalan bersama. Bagi organisasi dakwah kampus, kisah ini adalah pengingat bahwa dana usaha pun bagian dari perjuangan.'] },
+      { id: 'k3', cat: 'Kisah', title: 'Sajadah di Pojok Laboratorium', mins: 3, excerpt: 'Cerita kecil dari mahasiswa koas yang menjaga shalatnya di tengah jadwal jaga yang padat.', body: ['Jadwal koas tidak kenal waktu — operasi bisa berlangsung berjam-jam, dan pasien datang tanpa janji. Tapi di pojok laboratorium itu selalu ada sajadah yang terlipat rapi.', 'Pemiliknya tidak pernah berceramah. Ia hanya selalu pamit sebentar ketika azan berkumandang, lalu kembali melanjutkan pekerjaannya dengan tenang.', 'Bertahun kemudian, teman-temannya bercerita: dakwah yang paling membekas bukan kata-katanya, melainkan sajadah yang tidak pernah absen itu.'] },
+      { id: 'r1', cat: 'Renungan', title: 'Yang Kecil, yang Istiqamah', mins: 2, excerpt: 'Amal yang paling dicintai Allah bukan yang paling besar, melainkan yang paling berkesinambungan.', body: ['Kita sering menunda kebaikan karena menunggu mampu melakukannya secara sempurna. Menunggu bisa tilawah satu juz, akhirnya tidak membaca sama sekali.', 'Padahal amal yang paling dicintai Allah adalah yang dikerjakan terus-menerus meskipun sedikit. Dua ayat yang dijaga setiap hari lebih berat timbangannya daripada semangat besar yang padam sepekan.', 'Mulailah dari yang kecil hari ini. Istiqamah itu bukan bakat — ia dilatih.'] },
+      { id: 'r2', cat: 'Renungan', title: 'Pulang Sebelum Maghrib', mins: 3, excerpt: 'Tentang jeda, langit sore, dan mengingat bahwa hari ini pun akan dihisab.', body: ['Ada waktu-waktu yang sengaja Allah buat indah, seolah mengajak kita berhenti sejenak. Langit menjelang maghrib adalah salah satunya.', 'Di tengah deadline laporan dan jadwal praktikum, cobalah pulang sedikit lebih awal sesekali. Duduk, tarik napas, dan hitung: hari ini lebih banyak mana, yang bermanfaat atau yang sia-sia?', 'Muhasabah tidak butuh tempat khusus. Ia hanya butuh kejujuran beberapa menit sebelum matahari terbenam.'] },
+      { id: 'r3', cat: 'Renungan', title: 'Niat di Pagi Hari', mins: 2, excerpt: 'Amal yang sama bisa bernilai langit atau debu — pembedanya ada di dalam hati.', body: ['Setiap pagi kita berangkat ke kampus yang sama, duduk di kelas yang sama, mengerjakan tugas yang sama. Yang membedakan nilainya di sisi Allah adalah niat yang menyertainya.', 'Belajar bisa menjadi ibadah jika diniatkan menyiapkan diri untuk bermanfaat. Bahkan tidur pun bisa bernilai jika diniatkan agar kuat beribadah esok hari.', 'Maka sebelum membuka buku hari ini, luruskan dulu satu kalimat kecil di hati: untuk apa semua ini kulakukan?'] },
+    ];
+    const enrichArt = (t) => Object.assign({}, t, {
+      color: CAT_C[t.cat], soft: CAT_C[t.cat] + '12',
+      body: t.body.map((p) => ({ text: p })),
+      open: nav('artikel', { articleId: t.id }),
+    });
+    const arts = ARTICLES.map(enrichArt);
+    const art = arts.find((t) => t.id === S.articleId) || arts[0];
+
+    const CATS = [
+      { name: 'Islam Veteriner', blurb: 'Nilai Islam bertemu dunia kedokteran hewan: amanah profesi, halal-thayyib, kesejahteraan hewan, dan kesmavet.' },
+      { name: 'Kisah', blurb: 'Cerita yang menghidupkan: sahabat, ulama, perjuangan dakwah, dan kisah keseharian mahasiswa.' },
+      { name: 'Renungan', blurb: 'Refleksi singkat dan tadabbur ringan — bacaan dua menit yang menenangkan hati.' },
+    ];
+    const catCards = CATS.map((c) => ({
+      name: c.name, blurb: c.blurb, color: CAT_C[c.name],
+      articles: arts.filter((t) => t.cat === c.name).slice(0, 2),
+      go: () => this._nav('konten', { kontenTab: c.name }),
+    }));
+    const KCHIPS = ['Semua', 'Islam Veteriner', 'Kisah', 'Renungan'];
+    const kontenChips = KCHIPS.map((k) => {
+      const act = S.kontenTab === k;
+      const col = CAT_C[k] || '#2446ad';
+      return { label: k, pick: () => this.setState({ kontenTab: k }), bg: act ? col : '#fff', color: act ? '#fff' : '#5b6b93', border: act ? col : '#dfe7f4' };
+    });
+    const kontenRows = arts.filter((t) => S.kontenTab === 'Semua' || t.cat === S.kontenTab);
+
+    // ---- quran ----
+    const SURAHS = [
+      { no: 1, name: 'Al-Fatihah', ar: 'الفاتحة', arti: 'Pembukaan', ayat: 7, tempat: 'Makkiyah', ready: true },
+      { no: 2, name: 'Al-Baqarah', ar: 'البقرة', arti: 'Sapi Betina', ayat: 286, tempat: 'Madaniyah' },
+      { no: 16, name: 'An-Nahl', ar: 'النحل', arti: 'Lebah', ayat: 128, tempat: 'Makkiyah', special: true },
+      { no: 18, name: 'Al-Kahf', ar: 'الكهف', arti: 'Gua', ayat: 110, tempat: 'Makkiyah' },
+      { no: 36, name: 'Yasin', ar: 'يس', arti: 'Yasin', ayat: 83, tempat: 'Makkiyah' },
+      { no: 55, name: 'Ar-Rahman', ar: 'الرحمن', arti: 'Maha Pengasih', ayat: 78, tempat: 'Madaniyah' },
+      { no: 67, name: 'Al-Mulk', ar: 'الملك', arti: 'Kerajaan', ayat: 30, tempat: 'Makkiyah' },
+      { no: 112, name: 'Al-Ikhlas', ar: 'الإخلاص', arti: 'Ikhlas', ayat: 4, tempat: 'Makkiyah' },
+    ];
+    const surahRows = SURAHS.map((s) => Object.assign({}, s, {
+      special: !!s.special,
+      cardBg: s.special ? 'linear-gradient(120deg,#fdf8ec,#ffffff)' : '#ffffff',
+      cardBorder: s.special ? '#eadfc2' : '#e2eaf7',
+      open: nav('quranRead', { surahNo: s.no }),
+    }));
+    const rd = SURAHS.find((s) => s.no === S.surahNo) || SURAHS[0];
+    const FATIHAH = [
+      { n: 1, ar: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ', id: 'Dengan nama Allah Yang Maha Pengasih, Maha Penyayang.' },
+      { n: 2, ar: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ', id: 'Segala puji bagi Allah, Tuhan seluruh alam.' },
+      { n: 3, ar: 'الرَّحْمَٰنِ الرَّحِيمِ', id: 'Yang Maha Pengasih, Maha Penyayang.' },
+      { n: 4, ar: 'مَالِكِ يَوْمِ الدِّينِ', id: 'Pemilik hari pembalasan.' },
+      { n: 5, ar: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ', id: 'Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami mohon pertolongan.' },
+      { n: 6, ar: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ', id: 'Tunjukilah kami jalan yang lurus.' },
+      { n: 7, ar: 'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ', id: '(Yaitu) jalan orang-orang yang telah Engkau beri nikmat; bukan (jalan) mereka yang dimurkai, dan bukan (pula jalan) mereka yang sesat.' },
+    ];
+
+    // ---- profil ----
+    const sejarahItems = [
+      { title: '20XX — Cikal bakal', text: 'Berawal dari halaqah kecil mahasiswa FKH yang rindu suasana mushalla hidup. (Placeholder — isi dengan sejarah asli.)' },
+      { title: '20XX — Resmi berdiri', text: 'Dikukuhkan sebagai UKM Lembaga Dakwah Fakultas di FKH USK. (Placeholder.)' },
+      { title: 'Hari ini', text: 'Terus bergerak melalui kajian, kaderisasi, media, dan pelayanan mushalla — satu sarang, satu tujuan.' },
+    ];
+    const misiList = [
+      { n: 1, text: 'Menghidupkan syiar Islam di lingkungan FKH USK. (contoh)' },
+      { n: 2, text: 'Membina anggota melalui mentoring dan kaderisasi berjenjang. (contoh)' },
+      { n: 3, text: 'Menebar manfaat melalui media, kajian, dan kegiatan sosial. (contoh)' },
+      { n: 4, text: 'Menjadi wadah ukhuwah bagi seluruh civitas muslim FKH. (contoh)' },
+    ];
+    const strukturInti = [
+      { role: 'Sekretaris Umum', name: 'Nama Pengurus', initial: 'S' },
+      { role: 'Bendahara Umum', name: 'Nama Pengurus', initial: 'B' },
+    ];
+    const DEPTS = [
+      ['Kaderisasi', 'Mentoring pekanan & pembinaan anggota berjenjang.', '#178a63'],
+      ['Syiar', 'Kajian rutin, PHBI, dan dakwah kreatif kampus.', '#2f55c9'],
+      ['Media & Informasi', 'Konten dakwah, publikasi, dan pengelolaan media sosial.', '#0f8aa3'],
+      ['Dana & Usaha', 'Kemandirian finansial melalui usaha halal.', '#c9922e'],
+      ['Kemuslimahan', 'Pembinaan dan kegiatan khusus muslimah FKH.', '#c05f8a'],
+      ['Biro Kemushallaan', 'Kemakmuran, kebersihan, dan fasilitas mushalla.', '#9a63c0'],
+    ];
+    const strukturDept = DEPTS.map(([name, desc, color]) => ({ name, desc, color, soft: color + '14', initial: name.charAt(0) }));
+
+    // ---- nav ----
+    const grp = { home: 'home', agenda: 'agenda', agendaDetail: 'agenda', profil: 'profil', shalat: 'shalat', quran: 'quran', quranRead: 'quran', konten: 'konten', artikel: 'konten', login: 'akun', register: 'akun', dashboard: 'akun', admin: 'akun', adminQR: 'akun', scan: 'akun' }[S.route] || 'home';
+    const LINKS = [['Beranda', 'home'], ['Agenda', 'agenda'], ["Al-Qur'an", 'quran'], ['Konten', 'konten'], ['Shalat', 'shalat'], ['Profil', 'profil']];
+    const navLinks = LINKS.map(([label, r]) => ({ label, go: nav(r), bg: grp === r ? '#e9effc' : 'transparent', color: grp === r ? '#12275c' : '#5b6b93' }));
+    const user = S.user;
+    const menuExtra = [];
+    if (user && user.role === 'admin') menuExtra.push(['Panel Admin', 'admin']);
+    if (user) menuExtra.push(['Dashboard', 'dashboard']);
+    const menuLinks = LINKS.concat(menuExtra.map(([l, r]) => [l, r])).map(([label, r]) => ({ label, go: nav(r), color: grp === r ? '#2446ad' : '#12275c', dot: grp === r ? '#c9922e' : '#dbe4f5' }));
+    const accountRoute = user ? (user.role === 'admin' ? 'admin' : 'dashboard') : 'login';
+    const BLINKS = [['Beranda', 'home'], ['Agenda', 'agenda'], ["Qur'an", 'quran'], ['Konten', 'konten'], ['Akun', accountRoute]];
+    const bottomLinks = BLINKS.map(([label, r]) => {
+      const act = (label === 'Akun' && grp === 'akun') || grp === r;
+      return { label, go: nav(r), color: act ? '#2446ad' : '#93a3c4', dot: act ? '#c9922e' : '#dbe4f5' };
+    });
+
+    // ---- dashboard / scan / admin ----
+    const attRows = S.att.slice().sort((x, y) => y.ts - x.ts).map((x) => {
+      const a = all.find((g) => g.id === x.id);
+      return a ? { title: a.title, dateLabel: a.dateLabel, type: a.type, typeColor: a.typeColor, typeSoft: a.typeSoft } : null;
+    }).filter(Boolean);
+    const absenRows = upcoming.slice(0, 4);
+    const scanAgenda = all.find((a) => a.id === S.scanAgendaId) || null;
+    const scanning = S.scanState === 'scanning';
+    const qrAgenda = all.find((a) => a.id === S.agendaId) || null;
+    const qrCode = qrAgenda && S.qrs[qrAgenda.id] ? S.qrs[qrAgenda.id] : 'ANH-XXXX';
+    const adminRows = upcoming;
+
+    const hour = nowD.getHours();
+    const greeting = hour < 11 ? 'Selamat pagi' : hour < 15 ? 'Selamat siang' : hour < 19 ? 'Selamat sore' : 'Selamat malam';
+
+    return {
+      // layout / nav
+      isDesktop: S.width >= 920, isMobileNav: S.width < 920,
+      menuOpen: S.menuOpen, toggleMenu: () => this.setState({ menuOpen: !S.menuOpen }),
+      navLinks, menuLinks, bottomLinks,
+      navHome: nav('home'), navAgenda: nav('agenda'), navProfil: nav('profil'), navShalat: nav('shalat'),
+      navQuran: nav('quran'), navKonten: nav('konten'), navLogin: nav('login'), navRegister: nav('register'),
+      navDashboard: nav('dashboard'), navAdmin: nav('admin'), navAccount: nav(accountRoute),
+      // route flags
+      isHome: S.route === 'home', isAgenda: S.route === 'agenda', isAgendaDetail: S.route === 'agendaDetail',
+      isProfil: S.route === 'profil', isShalat: S.route === 'shalat', isQuran: S.route === 'quran',
+      isQuranRead: S.route === 'quranRead', isKonten: S.route === 'konten', isArtikel: S.route === 'artikel',
+      isLogin: S.route === 'login', isRegister: S.route === 'register', isDashboard: S.route === 'dashboard',
+      isScan: S.route === 'scan', isAdmin: S.route === 'admin', isAdminQR: S.route === 'adminQR',
+      // user
+      isLoggedIn: !!user, isLoggedOut: !user,
+      isAdminUser: !!user && user.role === 'admin',
+      userFirst: user ? user.name.split(' ')[0] : '', userInitial: user ? user.name.charAt(0).toUpperCase() : '',
+      logout: () => this._logout(),
+      greeting,
+      // props / tweaks
+      showHex: this.props.showHex ?? true,
+      kota: this.props.kota ?? 'Banda Aceh, Aceh',
+      // date & prayers
+      dateStr: DAYS[nowD.getDay()] + ', ' + nowD.getDate() + ' ' + MON[nowD.getMonth()] + ' ' + nowD.getFullYear(),
+      hijriStr: '± 8 Muharram 1448 H',
+      nextPrayerName: PRAY[nextIdx][0], nextPrayerTime: PRAY[nextIdx][1], countdown, prayerRows,
+      // agenda
+      soonAgendas, agendaRows, filterChips,
+      nextAgendaTitle: nextAgenda ? nextAgenda.title : 'Belum ada agenda',
+      nextAgendaRel: nextAgenda ? nextAgenda.relLabel : '',
+      nextAgendaDay: nextAgenda ? String(nextAgenda.dayNum) : '–',
+      det,
+      detAttended: det.attended && loggedIn,
+      detCanAbsen: loggedIn && det.qrActive && !det.attended,
+      detNeedLogin: !loggedIn && det.qrActive,
+      detNoQr: !det.qrActive && !(det.attended && loggedIn),
+      // konten
+      catCards, kontenChips, kontenRows, art,
+      // quran
+      surahRows,
+      rdName: rd.name, rdAr: rd.ar, rdMeta: rd.arti + ' · ' + rd.ayat + ' ayat · ' + rd.tempat,
+      rdReady: !!rd.ready, rdLocked: !rd.ready, rdAyat: FATIHAH,
+      openFatihah: nav('quranRead', { surahNo: 1 }),
+      // profil
+      sejarahItems, misiList, strukturInti, strukturDept,
+      // login
+      formName: S.formName, formPass: S.formPass,
+      onFormName: (e) => this.setState({ formName: e.target.value }),
+      onFormPass: (e) => this.setState({ formPass: e.target.value }),
+      submitLogin: () => this._login('member'),
+      loginAdmin: () => this._login('admin'),
+      // dashboard
+      statHadir: attRows.length, statUpcoming: upcoming.length, absenRows, attRows,
+      // scan
+      scanTitle: scanAgenda ? scanAgenda.title : 'Pilih agenda dari dashboard',
+      scanMeta: scanAgenda ? scanAgenda.relLabel + ' · ' + scanAgenda.time + ' · ' + scanAgenda.location : '',
+      scanShowCam: S.scanState === 'idle' || scanning,
+      scanScanning: scanning,
+      scanSuccess: S.scanState === 'success',
+      scanFail: S.scanState === 'fail',
+      scanHint: scanning ? 'Mencari QR…' : 'Arahkan kamera ke QR yang ditampilkan admin',
+      scanBtnLabel: scanning ? 'Memindai…' : 'Simulasikan Pindai QR',
+      scanBtnBg: scanning ? '#93a3c4' : '#178a63',
+      doScan: () => this._scan(),
+      scanAgain: () => this.setState({ scanState: 'idle' }),
+      backFromScan: nav('dashboard'),
+      // admin
+      adminOk: !!user && user.role === 'admin',
+      adminDenied: !user || user.role !== 'admin',
+      adminRows,
+      qrTitle: qrAgenda ? qrAgenda.title : '',
+      qrMeta: qrAgenda ? qrAgenda.dateLabel + ' · ' + qrAgenda.timeLabel + ' · ' + qrAgenda.location : '',
+      qrCode,
+      qrCells: this._qrCells(qrCode),
+      killQR: () => qrAgenda && this._killQR(qrAgenda.id),
+    };
+  }
+}
+</script>
+</body>
+</html>
