@@ -1,0 +1,19 @@
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--text-heading);
+  margin: 8px 0 0;
+  line-height: 1.05;
+}
+
+.center {
+  text-align: center;
+}

@@ -1,0 +1,113 @@
+import type { CSSProperties } from 'react';
+import styles from './Hero.module.css';
+import { Button } from '../ui';
+import { cx } from '../../lib/cx';
+
+interface BeeProps {
+  className: string;
+  style: CSSProperties;
+  wings: CSSProperties[];
+}
+
+function Bee({ className, style, wings }: BeeProps) {
+  return (
+    <span className={cx(styles.bee, className)} style={style}>
+      <span className={styles.beeBody} />
+      {wings.map((wingStyle, i) => (
+        <span key={i} className={styles.beeWing} style={wingStyle} />
+      ))}
+    </span>
+  );
+}
+
+const HEX_BACKDROPS: CSSProperties[] = [
+  { top: -8, left: 34, background: 'rgba(232,199,102,.10)' },
+  { top: -8, left: 190, background: 'rgba(232,199,102,.05)' },
+  { top: 120, left: 112, background: 'rgba(232,199,102,.14)' },
+  { top: 120, left: -44, background: 'rgba(232,199,102,.04)' },
+];
+
+export interface HeroProps {
+  nextPrayerName: string;
+  nextPrayerTime: string;
+}
+
+export function Hero({ nextPrayerName, nextPrayerTime }: HeroProps) {
+  return (
+    <section className={styles.hero}>
+      <div className={styles.textureOverlay} />
+      <div className={cx('breath', styles.glowTop)} />
+      <div className={cx('breathB', styles.glowBottom)} />
+
+      <div className={styles.inner}>
+        <div className={styles.textCol}>
+          <div className={styles.eyebrow}>
+            <span className={styles.star} />
+            <span className={styles.eyebrowLabel}>Lembaga Dakwah Fakultas · FKH USK</span>
+          </div>
+          <h1 className={styles.heading}>
+            Serdadu Lebah,
+            <br />
+            Bersenjata <em className={styles.headingEm}>Dakwah.</em>
+          </h1>
+          <p className={styles.lead}>
+            Dari mushalla FKH Universitas Syiah Kuala — menghidupkan kajian, merawat ukhuwah, dan menebar ilmu yang
+            bermanfaat bagi kampus dan umat.
+          </p>
+          <div className={styles.ctaRow}>
+            <Button to="/agenda" variant="primary">Lihat Agenda</Button>
+            <Button to="/profil" variant="secondary">Kenali An-Nahl</Button>
+          </div>
+        </div>
+
+        <div className={styles.visualCol}>
+          {HEX_BACKDROPS.map((s, i) => (
+            <div key={i} className={styles.hexBackdrop} style={s} />
+          ))}
+          <div className={cx('breath', styles.logoGlow)} />
+          <img src="/assets/logo.png" alt="Logo LDF An-Nahl" className={cx('lfloat', styles.logo)} />
+
+          <Bee
+            className="beeA"
+            style={{ top: '12%', left: '8%', width: 22, height: 13, opacity: .75 }}
+            wings={[
+              { top: -6, left: 5, width: 8, height: 8, background: 'rgba(245,239,220,.4)' },
+              { top: -4, left: 11, width: 6, height: 6, background: 'rgba(245,239,220,.3)' },
+            ]}
+          />
+          <Bee
+            className="beeB"
+            style={{ top: '70%', right: '4%', width: 18, height: 11, opacity: .6 }}
+            wings={[{ top: -5, left: 4, width: 7, height: 7, background: 'rgba(245,239,220,.35)' }]}
+          />
+          <Bee
+            className="beeC"
+            style={{ top: '4%', right: '18%', width: 14, height: 9, opacity: .5 }}
+            wings={[{ top: -4, left: 3, width: 6, height: 6, background: 'rgba(245,239,220,.35)' }]}
+          />
+
+          <div className={cx('chipF', styles.chip)} style={{ top: 6, right: -6 }}>
+            <div className={styles.chipLabel}>Shalat berikutnya</div>
+            <div className={styles.chipValue}>{nextPrayerName} · {nextPrayerTime}</div>
+          </div>
+          <div className={cx('chipF2', styles.chip)} style={{ bottom: 18, left: -14 }}>
+            <div className={styles.chipLabel}>Kajian rutin</div>
+            <div className={styles.chipValue}>Setiap pekan · Mushalla FKH</div>
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.horizonWrap}>
+        <div className={styles.silhouette}>
+          <div className={styles.dome} />
+          <div className={styles.domeBase} />
+          <div className={styles.minaretTallL} />
+          <div className={styles.minaretTallR} />
+          <div className={styles.minaretShortL} />
+          <div className={styles.minaretShortR} />
+        </div>
+      </div>
+      <div className={styles.baseline} />
+    </section>
+  );
+}

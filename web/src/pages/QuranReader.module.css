@@ -1,0 +1,159 @@
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px 20px 90px;
+}
+
+.back {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 8px 0;
+  min-height: 44px;
+  letter-spacing: .02em;
+  display: inline-block;
+}
+.back:hover {
+  color: var(--gold-light);
+}
+
+.headerPanel {
+  text-align: center;
+  margin: 8px 0 26px;
+  position: relative;
+  overflow: hidden;
+}
+
+.headerHex {
+  position: absolute;
+  top: -24px;
+  left: -18px;
+  width: 100px;
+  height: 110px;
+  background: #E8C766;
+  opacity: .1;
+  clip-path: var(--hex-clip);
+}
+
+.headerGlow {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;
+  height: 190px;
+  background: radial-gradient(ellipse, rgba(232, 199, 102, .2), transparent 65%);
+  filter: blur(42px);
+  pointer-events: none;
+}
+
+.headerContent {
+  position: relative;
+}
+
+.headerArabic {
+  font-family: var(--font-arabic);
+  font-size: 42px;
+  line-height: 1.5;
+  color: var(--text-heading);
+  text-shadow: 0 0 26px rgba(232, 199, 102, .3);
+}
+
+.headerName {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 26px;
+  margin-top: 4px;
+  color: var(--gold-light);
+}
+
+.headerMeta {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+.ayatList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ayatCard {
+  padding: 26px clamp(20px, 4vw, 34px);
+}
+
+.ayatArabic {
+  font-family: var(--font-arabic);
+  font-size: clamp(26px, 4.4vw, 32px);
+  line-height: 2.2;
+  color: var(--text-heading);
+  text-align: right;
+}
+
+.ayatMarker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 37px;
+  background: rgba(232, 199, 102, .14);
+  clip-path: var(--hex-clip);
+  font-size: 14px;
+  color: var(--gold-light);
+  vertical-align: middle;
+}
+
+.ayatDivider {
+  border-top: 1px dashed rgba(232, 199, 102, .2);
+  margin-top: 16px;
+  padding-top: 14px;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: var(--text-body);
+}
+
+.readerNote {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-faint);
+  margin-top: 18px;
+  line-height: 1.6;
+}
+
+.locked {
+  background: rgba(255, 255, 255, .03);
+  border: 1px dashed rgba(232, 199, 102, .3);
+  border-radius: 24px;
+  padding: 44px 28px;
+  text-align: center;
+}
+
+.lockedIcon {
+  margin: 0 auto 14px;
+}
+
+.lockedTitle {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 24px;
+  color: var(--text-heading);
+}
+
+.lockedText {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-body);
+  max-width: 46ch;
+  margin: 10px auto 0;
+}
+
+.lockedCta {
+  margin-top: 22px;
+}

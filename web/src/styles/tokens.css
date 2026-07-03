@@ -1,0 +1,66 @@
+:root {
+  /* Backgrounds */
+  --bg-page: #0A1128;
+  --bg-header: rgba(8, 14, 34, .82);
+  --bg-deep: #070E22;
+  --bg-deeper: #060D20;
+  --bg-menu-panel: #0B1430;
+  --glass-fill: rgba(255, 255, 255, .045);
+  --glass-fill-soft: rgba(255, 255, 255, .04);
+  --glass-fill-faint: rgba(255, 255, 255, .03);
+
+  /* Text */
+  --text-heading: #F5EFDC;
+  --text-body: #A9B3D1;
+  --text-muted: #8E99BB;
+  --text-faint: #5E6B8F;
+  --text-reading: #C9CFE2;
+  --text-on-gold: #241B04;
+  --text-on-gold-alt: #0A1128;
+
+  /* Gold */
+  --gold-light: #E8C766;
+  --gold-dark: #C9A227;
+  --gold-gradient: linear-gradient(135deg, #E8C766, #C9A227);
+
+  /* Status / semantic */
+  --success-light: #5CCBA0;
+  --success-dark: #2E9C77;
+  --success-scan-btn: #1F8A63;
+  --success-text-on: #06281C;
+  --danger-text: #E58A8A;
+  --danger-solid: #C0524A;
+
+  /* Category / agenda type colors */
+  --type-kajian: #8FAAF5;
+  --type-rapat: #9AA8C9;
+  --type-mentoring: #5CCBA0;
+  --type-sosial: #E8C766;
+  --type-olahraga: #5FC6DE;
+  --type-rihlah: #C39BE8;
+  --type-oprec: #EE9AC0;
+
+  --cat-vet: #8FAAF5;
+  --cat-kisah: #E8C766;
+  --cat-renungan: #5FC6DE;
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: Manrope, system-ui, sans-serif;
+  --font-arabic: Amiri, serif;
+
+  /* Radii */
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* Shape */
+  --hex-clip: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+
+  /* Layout */
+  --header-h: 66px;
+  --bottom-nav-h: 78px;
+  --breakpoint-mobile: 919px;
+}

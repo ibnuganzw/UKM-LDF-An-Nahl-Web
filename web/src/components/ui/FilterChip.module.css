@@ -1,0 +1,15 @@
+.chip {
+  border: 1px solid;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 9px 16px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  min-height: 40px;
+  letter-spacing: .02em;
+  transition: transform .2s ease;
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+}

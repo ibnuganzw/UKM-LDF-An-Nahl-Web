@@ -1,0 +1,183 @@
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 52px 20px 84px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+.dateHeading {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(30px, 4.6vw, 46px);
+  color: var(--text-heading);
+  margin: 10px 0 6px;
+  line-height: 1.1;
+}
+
+.subLine {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.panel {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.panelHex1 {
+  position: absolute;
+  top: -26px;
+  right: -20px;
+  width: 110px;
+  height: 121px;
+  background: #E8C766;
+  opacity: .1;
+  clip-path: var(--hex-clip);
+}
+
+.panelHex2 {
+  position: absolute;
+  bottom: -30px;
+  left: -24px;
+  width: 120px;
+  height: 132px;
+  background: #E8C766;
+  opacity: .05;
+  clip-path: var(--hex-clip);
+}
+
+.panelGlow {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 340px;
+  height: 220px;
+  background: radial-gradient(ellipse, rgba(232, 199, 102, .22), transparent 65%);
+  filter: blur(46px);
+  pointer-events: none;
+}
+
+.panelContent {
+  position: relative;
+}
+
+.panelLabel {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+.prayerName {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(44px, 8vw, 64px);
+  margin-top: 8px;
+  color: var(--text-heading);
+  line-height: 1;
+}
+
+.prayerTime {
+  font-weight: 800;
+  font-size: 22px;
+  color: var(--gold-light);
+  margin-top: 8px;
+}
+
+.countdownPill {
+  display: inline-block;
+  background: rgba(232, 199, 102, .08);
+  border: 1px solid rgba(232, 199, 102, .35);
+  border-radius: 999px;
+  padding: 10px 24px;
+  margin-top: 18px;
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--gold-light);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .06em;
+}
+
+.listPanel {
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+}
+
+.rowLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rowName {
+  font-weight: 800;
+  font-size: 15.5px;
+}
+
+.rowNote {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+
+.rowTime {
+  font-weight: 800;
+  font-size: 15.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.disclaimer {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-faint);
+  margin-top: 14px;
+  line-height: 1.6;
+}
+
+.quoteCard {
+  background: rgba(232, 199, 102, .07);
+  border: 1px solid rgba(232, 199, 102, .26);
+  border-radius: 20px;
+  padding: 22px 26px;
+  margin-top: 22px;
+  text-align: center;
+}
+
+.quoteText {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 19px;
+  line-height: 1.65;
+  color: var(--text-heading);
+}
+
+.quoteCite {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  color: var(--gold-dark);
+  margin-top: 8px;
+}

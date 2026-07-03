@@ -1,0 +1,23 @@
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232, 199, 102, .35));
+}
+
+.lineReverse {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(270deg, transparent, rgba(232, 199, 102, .35));
+}
+
+.cluster {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}

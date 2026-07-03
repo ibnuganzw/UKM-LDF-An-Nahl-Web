@@ -1,0 +1,9 @@
+.hex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  font-weight: 800;
+  clip-path: var(--hex-clip);
+  -webkit-clip-path: var(--hex-clip);
+}

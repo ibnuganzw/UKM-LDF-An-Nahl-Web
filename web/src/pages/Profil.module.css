@@ -1,0 +1,342 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 52px 20px 84px;
+}
+
+.intro {
+  text-align: center;
+  max-width: 660px;
+  margin: 0 auto 44px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+.h1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(34px, 5vw, 56px);
+  color: var(--text-heading);
+  margin: 10px 0 12px;
+  line-height: 1.05;
+}
+
+.introLead {
+  color: var(--text-body);
+  font-size: 15px;
+  line-height: 1.8;
+  text-wrap: pretty;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 16px;
+  margin-bottom: 44px;
+}
+
+.grid2b {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 16px;
+  margin-bottom: 56px;
+}
+
+.maknaCard {
+  position: relative;
+  overflow: hidden;
+}
+
+.maknaHex {
+  position: absolute;
+  top: -20px;
+  right: -16px;
+  width: 90px;
+  height: 99px;
+  background: #E8C766;
+  opacity: .12;
+  clip-path: var(--hex-clip);
+}
+
+.maknaArabic {
+  font-family: var(--font-arabic);
+  font-size: 38px;
+  color: var(--gold-light);
+  margin: 12px 0 2px;
+  text-shadow: 0 0 24px rgba(232, 199, 102, .35);
+}
+
+.maknaName {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 23px;
+  color: var(--text-heading);
+}
+
+.maknaText {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-body);
+  margin: 12px 0 0;
+  text-wrap: pretty;
+}
+
+.cardEyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+.cardEyebrowLight {
+  color: var(--gold-light);
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  margin-top: 18px;
+}
+
+.timelineRow {
+  display: flex;
+  gap: 14px;
+}
+
+.timelineRail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timelineDot {
+  width: 11px;
+  height: 12px;
+  flex: none;
+  background: var(--gold-light);
+  clip-path: var(--hex-clip);
+  margin-top: 4px;
+  box-shadow: 0 0 10px rgba(232, 199, 102, .5);
+}
+
+.timelineLine {
+  width: 1px;
+  flex: 1;
+  background: rgba(232, 199, 102, .2);
+}
+
+.timelineBody {
+  padding-bottom: 18px;
+}
+
+.timelineTitle {
+  font-weight: 800;
+  font-size: 14.5px;
+  color: var(--text-heading);
+}
+
+.timelineText {
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-body);
+  margin-top: 3px;
+}
+
+.visiQuote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 23px;
+  line-height: 1.55;
+  margin-top: 14px;
+  color: var(--text-heading);
+  text-wrap: pretty;
+}
+
+.visiNote {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+.misiList {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  margin-top: 16px;
+}
+
+.misiRow {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.misiNum {
+  flex: none;
+  width: 22px;
+  height: 24px;
+  background: rgba(232, 199, 102, .14);
+  clip-path: var(--hex-clip);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--gold-light);
+}
+
+.misiText {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--text-body);
+  font-weight: 600;
+}
+
+.strukturHead {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.strukturHeading {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(28px, 4vw, 42px);
+  color: var(--text-heading);
+  margin: 8px 0 0;
+  line-height: 1.1;
+}
+
+.strukturWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.ketuaCard {
+  text-align: center;
+  box-shadow: 0 22px 46px -24px rgba(201, 162, 39, .35), inset 0 1px 0 rgba(255, 255, 255, .07);
+}
+
+.ketuaAvatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: var(--gold-gradient);
+  color: var(--text-on-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 20px;
+  margin: 0 auto 10px;
+  box-shadow: 0 0 24px rgba(232, 199, 102, .35);
+}
+
+.ketuaName {
+  font-weight: 800;
+  font-size: 15.5px;
+  color: var(--text-heading);
+}
+
+.ketuaRole {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  margin-top: 3px;
+}
+
+.connector {
+  width: 1px;
+  height: 26px;
+  background: rgba(232, 199, 102, .3);
+}
+
+.intiRow {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.intiCard {
+  text-align: center;
+}
+
+.intiAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(232, 199, 102, .12);
+  color: var(--gold-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 16px;
+  margin: 0 auto 8px;
+}
+
+.intiName {
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text-heading);
+}
+
+.intiRole {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.deptGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+.deptCard {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: border-color .3s;
+}
+.deptCard:hover {
+  border-color: rgba(232, 199, 102, .45);
+}
+
+.deptName {
+  font-weight: 800;
+  font-size: 14.5px;
+  color: var(--text-heading);
+}
+
+.deptDesc {
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text-body);
+  margin-top: 3px;
+}
+
+.strukturNote {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-faint);
+  margin-top: 20px;
+  text-align: center;
+}

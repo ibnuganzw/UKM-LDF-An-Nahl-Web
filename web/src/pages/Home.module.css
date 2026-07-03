@@ -1,0 +1,352 @@
+.section {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 20px 8px;
+}
+
+.quickGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.quickCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.quickLabel {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.quickValue {
+  font-weight: 800;
+  font-size: 23px;
+  color: var(--gold-light);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+.quickValueTitle {
+  font-weight: 800;
+  font-size: 15.5px;
+  color: var(--text-heading);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dividerSection {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 44px 20px 0;
+}
+
+.sectionHeadRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.linkMore {
+  border: none;
+  background: transparent;
+  color: var(--gold-light);
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 10px 0;
+  letter-spacing: .04em;
+}
+.linkMore:hover {
+  text-shadow: 0 0 16px rgba(232, 199, 102, .6);
+}
+
+.agendaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.agendaCard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.agendaBadgeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.agendaStatus {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+}
+
+.agendaTitle {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 1.25;
+  color: var(--text-heading);
+  text-wrap: pretty;
+}
+
+.agendaMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13.5px;
+  color: var(--text-body);
+  font-weight: 600;
+}
+
+.agendaFooter {
+  border-top: 1px dashed rgba(232, 199, 102, .2);
+  padding-top: 12px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.quranBandSection {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 64px 20px 0;
+}
+
+.quranBand {
+  text-align: center;
+  padding: clamp(44px, 7vw, 80px) clamp(24px, 6vw, 80px);
+}
+
+.quranBandTexture {
+  position: absolute;
+  inset: 0;
+  opacity: .045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23E8C766' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23E8C766' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 42px 75px;
+  border-radius: inherit;
+}
+
+.quranBandGlow {
+  position: absolute;
+  top: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 280px;
+  background: radial-gradient(ellipse, rgba(232, 199, 102, .22), transparent 65%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.quranBandInner {
+  position: relative;
+}
+
+.bismillah {
+  font-family: var(--font-arabic);
+  font-size: clamp(30px, 4.6vw, 46px);
+  color: var(--gold-light);
+  line-height: 1.8;
+  text-shadow: 0 0 30px rgba(232, 199, 102, .35);
+}
+
+.quranBandHeading {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(26px, 3.6vw, 40px);
+  color: var(--text-heading);
+  margin-top: 16px;
+  line-height: 1.2;
+}
+
+.quranBandLead {
+  color: var(--text-body);
+  font-size: 15px;
+  line-height: 1.8;
+  max-width: 56ch;
+  margin: 14px auto 0;
+  text-wrap: pretty;
+}
+
+.kontenSection {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 72px 20px 10px;
+}
+
+.kontenGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.kontenCard {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.kontenNameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.kontenName {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 22px;
+  color: var(--text-heading);
+}
+
+.kontenBlurb {
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--text-body);
+  text-wrap: pretty;
+}
+
+.kontenArticleList {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+.kontenArticleRow {
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  padding: 13px 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  text-decoration: none;
+}
+.kontenArticleRow:hover {
+  background: rgba(232, 199, 102, .05);
+}
+
+.kontenArticleTitle {
+  font-weight: 700;
+  font-size: 14px;
+  color: #DCD5C0;
+  line-height: 1.45;
+}
+
+.kontenArticleMins {
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.kontenGoLink {
+  align-self: flex-start;
+  border: none;
+  background: transparent;
+  color: var(--gold-light);
+  font-weight: 800;
+  font-size: 13.5px;
+  cursor: pointer;
+  padding: 4px 0;
+  letter-spacing: .03em;
+  text-decoration: none;
+}
+.kontenGoLink:hover {
+  text-shadow: 0 0 14px rgba(232, 199, 102, .6);
+}
+
+.aboutJoinSection {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 72px 20px 90px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 18px;
+  align-items: stretch;
+}
+
+.aboutCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: clamp(30px, 4.5vw, 46px);
+}
+
+.quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(21px, 2.8vw, 28px);
+  line-height: 1.55;
+  color: var(--text-heading);
+  text-wrap: pretty;
+}
+
+.citation {
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  color: var(--gold-dark);
+}
+
+.joinCard {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: clamp(30px, 4.5vw, 46px);
+}
+
+.joinHexes {
+  position: absolute;
+  top: -26px;
+  right: -14px;
+  display: flex;
+  gap: 2px;
+  opacity: .5;
+}
+
+.joinHex2 {
+  margin-top: 32px;
+}
+
+.joinHeading {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(24px, 3.2vw, 34px);
+  color: var(--text-heading);
+  line-height: 1.3;
+  text-wrap: pretty;
+}
+
+.joinBody {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-body);
+}
