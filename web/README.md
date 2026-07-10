@@ -27,5 +27,5 @@ npm run preview  # preview the production build
 - **Auth** — any name/password "succeeds"; there's a one-tap demo-admin login. Not for production.
 - **QR attendance** — client-side only, stored in `localStorage`. Needs a real backend with server-issued, time-boxed/rotating codes before this ships for real events (the UI copy already flags the "titip absen" risk this needs to solve).
 - **Prayer times** — one static table for "today," not location- or date-aware.
-- **Qur'an** — only Al-Fatihah has real ayat text; the other 7 listed surahs are metadata-only, and only 8 of 114 surahs are listed.
+- **Qur'an** — all 114 surahs have real ayat text (Uthmani script, tajweed markup, transliteration, Indonesian translation), a per-surah encyclopedia ("Informasi Surat"), audio playback, and phonetic/meaning search. Reading data is baked into `public/assets/quran-data/` at build time via `npm run quran:data` (source cache refreshed via `npm run quran:sync`) — no server involved at runtime, so it works the same in dev and in a static production build.
 - **Articles, org history, vision/mission, leadership names** — placeholder/example content, explicitly marked as such in the UI.

@@ -28,6 +28,13 @@
   line-height: 1.1;
 }
 
+.userMeta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
 .headerActions {
   display: flex;
   gap: 8px;

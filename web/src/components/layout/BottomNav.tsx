@@ -4,12 +4,13 @@ import { Hex } from '../ui';
 import { useApp } from '../../state/AppContext';
 import { getNavGroup } from '../../lib/nav';
 import { cx } from '../../lib/cx';
+import { isAdminRole } from '../../lib/roles';
 
 export function BottomNav() {
-  const { user } = useApp();
+  const { profile } = useApp();
   const location = useLocation();
   const group = getNavGroup(location.pathname);
-  const accountRoute = user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/login';
+  const accountRoute = profile ? (isAdminRole(profile) ? '/admin' : '/dashboard') : '/login';
 
   const items: { label: string; to: string; group: string }[] = [
     { label: 'Beranda', to: '/', group: 'home' },

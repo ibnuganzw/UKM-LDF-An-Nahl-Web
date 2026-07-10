@@ -179,6 +179,7 @@
 }
 
 .resultCta {
+  display: inline-block;
   margin-top: 20px;
   border: none;
   font-weight: 800;
@@ -188,6 +189,8 @@
   cursor: pointer;
   min-height: 48px;
   width: 100%;
+  box-sizing: border-box;
+  text-align: center;
   background: var(--gold-gradient);
   color: var(--text-on-gold);
   box-shadow: 0 14px 32px -12px rgba(201, 162, 39, .55);

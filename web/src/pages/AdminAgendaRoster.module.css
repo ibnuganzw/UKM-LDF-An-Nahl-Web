@@ -1,0 +1,133 @@
+.page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 46px 20px 84px;
+}
+
+.back {
+  display: inline-block;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 13.5px;
+  margin-bottom: 18px;
+}
+.back:hover {
+  color: var(--gold-light);
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+.h1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(28px, 4.2vw, 40px);
+  color: var(--text-heading);
+  margin: 8px 0 24px;
+  line-height: 1.1;
+}
+
+.error {
+  color: var(--danger-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  margin-bottom: 14px;
+}
+
+.loading,
+.empty {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  padding: 10px 2px;
+}
+
+.subHeading {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 28px 2px 12px;
+}
+.subHeading:first-child {
+  margin-top: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rowInfo {
+  flex: 1;
+  min-width: 200px;
+}
+
+.rowName {
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--text-heading);
+  line-height: 1.35;
+}
+
+.rowMeta {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.rowActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: none;
+}
+
+.approveBtn {
+  border: none;
+  background: linear-gradient(135deg, var(--success-light), var(--success-dark));
+  color: var(--success-text-on);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.approveBtn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.rejectBtn {
+  border: 1px solid rgba(229, 138, 138, .35);
+  background: transparent;
+  color: var(--danger-text);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.rejectBtn:hover {
+  background: rgba(229, 138, 138, .08);
+}
+.rejectBtn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}

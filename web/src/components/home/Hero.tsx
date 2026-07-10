@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react';
+import { useState, useEffect, type CSSProperties } from 'react';
 import styles from './Hero.module.css';
 import { Button } from '../ui';
 import { cx } from '../../lib/cx';
@@ -27,12 +27,61 @@ const HEX_BACKDROPS: CSSProperties[] = [
   { top: 120, left: -44, background: 'rgba(232,199,102,.04)' },
 ];
 
+const ISLAMIC_HOLIDAYS_2026 = [
+  { name: 'Isra Mikraj', date: new Date('2026-01-16T00:00:00').getTime() },
+  { name: 'Nisfu Sya\'ban', date: new Date('2026-02-03T00:00:00').getTime() },
+  { name: '1 Ramadhan 1447 H', date: new Date('2026-02-19T00:00:00').getTime() },
+  { name: 'Nuzulul Qur\'an', date: new Date('2026-03-07T00:00:00').getTime() },
+  { name: 'Idul Fitri 1447 H', date: new Date('2026-03-21T00:00:00').getTime() },
+  { name: 'Hari Arafah', date: new Date('2026-05-26T00:00:00').getTime() },
+  { name: 'Idul Adha 1447 H', date: new Date('2026-05-27T00:00:00').getTime() },
+  { name: 'Tahun Baru Islam 1448 H', date: new Date('2026-06-16T00:00:00').getTime() },
+  { name: 'Maulid Nabi SAW', date: new Date('2026-08-25T00:00:00').getTime() },
+];
+
+function getNextHoliday() {
+  const now = Date.now();
+  return ISLAMIC_HOLIDAYS_2026.find(h => h.date > now) || ISLAMIC_HOLIDAYS_2026[ISLAMIC_HOLIDAYS_2026.length - 1];
+}
+
 export interface HeroProps {
   nextPrayerName: string;
   nextPrayerTime: string;
 }
 
 export function Hero({ nextPrayerName, nextPrayerTime }: HeroProps) {
+  const [countdown, setCountdown] = useState('');
+  const [holidayName, setHolidayName] = useState('Hari Raya Islam');
+
+  useEffect(() => {
+    const updateCountdown = () => {
+      const nextHoliday = getNextHoliday();
+      setHolidayName(nextHoliday.name);
+      
+      const diff = nextHoliday.date - Date.now();
+      if (diff <= 0) {
+        setCountdown('Hari Ini!');
+        return;
+      }
+      
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      
+      if (days > 0) {
+        setCountdown(`${days} hari ${hours} jam lagi`);
+      } else if (hours > 0) {
+        setCountdown(`${hours} jam ${mins} mnt lagi`);
+      } else {
+        setCountdown(`${mins} mnt lagi`);
+      }
+    };
+    
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 60000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section className={styles.hero}>
       <div className={styles.textureOverlay} />
@@ -91,8 +140,8 @@ export function Hero({ nextPrayerName, nextPrayerTime }: HeroProps) {
             <div className={styles.chipValue}>{nextPrayerName} · {nextPrayerTime}</div>
           </div>
           <div className={cx('chipF2', styles.chip)} style={{ bottom: 18, left: -14 }}>
-            <div className={styles.chipLabel}>Kajian rutin</div>
-            <div className={styles.chipValue}>Setiap pekan · Mushalla FKH</div>
+            <div className={styles.chipLabel}>Menuju {holidayName}</div>
+            <div className={styles.chipValue}>{countdown || '...'}</div>
           </div>
         </div>
       </div>

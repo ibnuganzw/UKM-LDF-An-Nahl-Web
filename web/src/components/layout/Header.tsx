@@ -5,13 +5,15 @@ import { Hex } from '../ui';
 import { useApp } from '../../state/AppContext';
 import { NAV_LINKS, getNavGroup } from '../../lib/nav';
 import { cx } from '../../lib/cx';
+import { isAdminRole } from '../../lib/roles';
 
 export function Header() {
-  const { user } = useApp();
+  const { profile } = useApp();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
   const group = getNavGroup(location.pathname);
-  const accountRoute = user ? (user.role === 'admin' ? '/admin' : '/dashboard') : '/login';
+  const isAdmin = isAdminRole(profile);
+  const accountRoute = profile ? (isAdmin ? '/admin' : '/dashboard') : '/login';
 
   useEffect(() => {
     setMenuOpen(false);
@@ -19,8 +21,8 @@ export function Header() {
 
   const menuLinks = [
     ...NAV_LINKS,
-    ...(user?.role === 'admin' ? [{ label: 'Panel Admin', to: '/admin', group: 'akun' as const }] : []),
-    ...(user ? [{ label: 'Dashboard', to: '/dashboard', group: 'akun' as const }] : []),
+    ...(isAdmin ? [{ label: 'Panel Admin', to: '/admin', group: 'akun' as const }] : []),
+    ...(profile ? [{ label: 'Dashboard', to: '/dashboard', group: 'akun' as const }] : []),
   ];
 
   return (
@@ -43,12 +45,12 @@ export function Header() {
         </nav>
 
         <div className={styles.right}>
-          {user ? (
+          {profile ? (
             <Link to={accountRoute} className={styles.accountPill}>
               <Hex width={34} height={34} bg="linear-gradient(135deg,#E8C766,#C9A227)" color="#241B04" fontSize={14}>
-                {user.name.charAt(0).toUpperCase()}
+                {profile.name.charAt(0).toUpperCase()}
               </Hex>
-              <span className={styles.accountName}>{user.name.split(' ')[0]}</span>
+              <span className={styles.accountName}>{profile.name.split(' ')[0]}</span>
             </Link>
           ) : (
             <Link to="/login" className={styles.loginBtn}>

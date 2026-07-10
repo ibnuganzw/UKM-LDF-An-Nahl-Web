@@ -1,9 +1,21 @@
 import styles from './Profil.module.css';
 import { GlassCard, Hex } from '../components/ui';
-import { KETUA_UMUM, MISI_LIST, SEJARAH_ITEMS, STRUKTUR_DEPT, STRUKTUR_INTI, VISI_TEXT } from '../data/org';
+import { MISI_LIST, SEJARAH_ITEMS, VISI_TEXT } from '../data/org';
 import { soft } from '../lib/colors';
+import { quranText } from '../lib/quranText';
+import { useOrgPositions } from '../hooks/useOrgPositions';
+
+function initialOf(name: string): string {
+  return name.trim().charAt(0).toUpperCase() || '?';
+}
 
 export default function Profil() {
+  const { all } = useOrgPositions();
+  const dosenPembina = all.find((p) => p.tier === 0);
+  const ketuaUmum = all.find((p) => p.tier === 1);
+  const intiDuo = all.filter((p) => p.tier === 2);
+  const divisi = all.filter((p) => p.tier === 3);
+
   return (
     <div className={styles.page}>
       <div className={styles.intro}>
@@ -19,7 +31,9 @@ export default function Profil() {
         <GlassCard variant="featured" radius={24} padding="30px" borderColor="rgba(232,199,102,.3)" className={styles.maknaCard}>
           <div className={styles.maknaHex} />
           <div className={styles.cardEyebrow}>Makna Nama</div>
-          <div className={styles.maknaArabic} dir="rtl">النَّحْل</div>
+          <div className={styles.maknaArabic} dir="rtl" lang="ar">
+            {quranText('النَّحْل')}
+          </div>
           <div className={styles.maknaName}>An-Nahl — Lebah</div>
           <p className={styles.maknaText}>
             Diambil dari surah ke-16 Al-Qur'an. Lebah hanya hinggap di tempat yang baik, mengambil yang baik, dan
@@ -72,39 +86,72 @@ export default function Profil() {
       </div>
 
       <div className={styles.strukturWrap}>
-        <GlassCard radius={22} padding="22px 36px" borderColor="rgba(232,199,102,.35)" className={styles.ketuaCard}>
-          <div className={styles.ketuaAvatar}>{KETUA_UMUM.initial}</div>
-          <div className={styles.ketuaName}>{KETUA_UMUM.name}</div>
-          <div className={styles.ketuaRole}>{KETUA_UMUM.role}</div>
-        </GlassCard>
-
-        <div className={styles.connector} />
-
-        <div className={styles.intiRow}>
-          {STRUKTUR_INTI.map((p) => (
-            <GlassCard key={p.role} radius={20} padding="16px 26px" className={styles.intiCard}>
-              <div className={styles.intiAvatar}>{p.initial}</div>
-              <div className={styles.intiName}>{p.name}</div>
-              <div className={styles.intiRole}>{p.role}</div>
+        {dosenPembina && (
+          <>
+            <GlassCard radius={20} padding="16px 26px" className={styles.intiCard}>
+              {dosenPembina.photoUrl ? (
+                <img src={dosenPembina.photoUrl} alt="" className={styles.intiAvatarPhoto} />
+              ) : (
+                <div className={styles.intiAvatar}>{initialOf(dosenPembina.name)}</div>
+              )}
+              <div className={styles.intiName}>{dosenPembina.name}</div>
+              <div className={styles.intiRole}>{dosenPembina.roleTitle}</div>
             </GlassCard>
-          ))}
-        </div>
+            <div className={styles.connector} />
+          </>
+        )}
 
-        <div className={styles.connector} />
+        {ketuaUmum && (
+          <>
+            <GlassCard radius={22} padding="22px 36px" borderColor="rgba(232,199,102,.35)" className={styles.ketuaCard}>
+              {ketuaUmum.photoUrl ? (
+                <img src={ketuaUmum.photoUrl} alt="" className={styles.ketuaAvatarPhoto} />
+              ) : (
+                <div className={styles.ketuaAvatar}>{initialOf(ketuaUmum.name)}</div>
+              )}
+              <div className={styles.ketuaName}>{ketuaUmum.name}</div>
+              <div className={styles.ketuaRole}>{ketuaUmum.roleTitle}</div>
+            </GlassCard>
+            <div className={styles.connector} />
+          </>
+        )}
+
+        {intiDuo.length > 0 && (
+          <>
+            <div className={styles.intiRow}>
+              {intiDuo.map((p) => (
+                <GlassCard key={p.id} radius={20} padding="16px 26px" className={styles.intiCard}>
+                  {p.photoUrl ? (
+                    <img src={p.photoUrl} alt="" className={styles.intiAvatarPhoto} />
+                  ) : (
+                    <div className={styles.intiAvatar}>{initialOf(p.name)}</div>
+                  )}
+                  <div className={styles.intiName}>{p.name}</div>
+                  <div className={styles.intiRole}>{p.roleTitle}</div>
+                </GlassCard>
+              ))}
+            </div>
+            <div className={styles.connector} />
+          </>
+        )}
 
         <div className={styles.deptGrid}>
-          {STRUKTUR_DEPT.map((d) => (
-            <GlassCard key={d.name} radius={20} padding="20px" borderColor="rgba(232,199,102,.14)" className={styles.deptCard}>
-              <Hex width={40} height={44} bg={soft(d.color)} color={d.color} fontSize={15}>{d.initial}</Hex>
+          {divisi.map((d) => (
+            <GlassCard key={d.id} radius={20} padding="20px" borderColor="rgba(232,199,102,.14)" className={styles.deptCard}>
+              {d.photoUrl ? (
+                <img src={d.photoUrl} alt="" className={styles.deptPhoto} />
+              ) : (
+                <Hex width={40} height={44} bg={soft(d.divisionColor ?? '#8FAAF5')} color={d.divisionColor ?? '#8FAAF5'} fontSize={15}>
+                  {initialOf(d.name)}
+                </Hex>
+              )}
               <div>
                 <div className={styles.deptName}>{d.name}</div>
-                <div className={styles.deptDesc}>{d.desc}</div>
+                <div className={styles.deptDesc}>{d.divisionDesc}</div>
               </div>
             </GlassCard>
           ))}
         </div>
-
-        <div className={styles.strukturNote}>Nama pengurus masih placeholder — akan diisi sesuai SK kepengurusan.</div>
       </div>
     </div>
   );

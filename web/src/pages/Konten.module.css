@@ -48,6 +48,21 @@
   gap: 13px;
 }
 
+.cover {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+
+.loading,
+.empty {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  padding: 10px 2px;
+}
+
 .cardTop {
   display: flex;
   align-items: center;

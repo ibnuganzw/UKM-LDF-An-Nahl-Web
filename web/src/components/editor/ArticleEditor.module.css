@@ -1,0 +1,158 @@
+.wrap {
+  border: 1.5px solid rgba(232, 199, 102, .2);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .05);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 8px;
+  border-bottom: 1px solid rgba(232, 199, 102, .16);
+  background: rgba(255, 255, 255, .03);
+}
+
+.sep {
+  width: 1px;
+  height: 20px;
+  background: rgba(245, 239, 220, .16);
+  margin: 0 2px;
+}
+
+.btn,
+.btnActive {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  min-height: 32px;
+}
+.btn:hover {
+  background: rgba(255, 255, 255, .06);
+  color: var(--text-heading);
+}
+.btnActive {
+  background: rgba(232, 199, 102, .16);
+  color: var(--gold-light);
+  border-color: rgba(232, 199, 102, .3);
+}
+
+.imagePanel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(232, 199, 102, .16);
+  background: rgba(255, 255, 255, .03);
+}
+
+.captionInput {
+  flex: 1;
+  min-width: 180px;
+  border: 1.5px solid rgba(232, 199, 102, .2);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  color: var(--text-heading);
+  background: rgba(255, 255, 255, .05);
+  outline: none;
+  font-family: inherit;
+}
+
+.uploadingText {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+.uploadError {
+  font-size: 12.5px;
+  color: var(--danger-text);
+  font-weight: 700;
+}
+
+.content {
+  padding: 16px;
+  min-height: 260px;
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-body);
+}
+.content :global(.ProseMirror) {
+  outline: none;
+}
+.content :global(.ProseMirror p) {
+  margin: 0 0 14px;
+}
+.content :global(.ProseMirror h2) {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--text-heading);
+  margin: 22px 0 10px;
+}
+.content :global(.ProseMirror h3) {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  color: var(--text-heading);
+  margin: 18px 0 8px;
+}
+.content :global(.ProseMirror ul),
+.content :global(.ProseMirror ol) {
+  margin: 0 0 14px;
+  padding-left: 22px;
+}
+.content :global(.ProseMirror blockquote) {
+  border-left: 3px solid rgba(232, 199, 102, .4);
+  padding-left: 14px;
+  margin: 0 0 14px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.content :global(.ProseMirror a) {
+  color: var(--gold-light);
+  text-decoration: underline;
+}
+.content :global(.ProseMirror figure) {
+  margin: 18px 0;
+}
+.content :global(.ProseMirror figure img) {
+  max-width: 100%;
+  border-radius: 12px;
+  display: block;
+}
+.content :global(.ProseMirror figcaption) {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 6px;
+}
+.content :global(.ProseMirror table) {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0 0 14px;
+  overflow: hidden;
+}
+.content :global(.ProseMirror td),
+.content :global(.ProseMirror th) {
+  border: 1px solid rgba(245, 239, 220, .2);
+  padding: 8px 10px;
+  vertical-align: top;
+  position: relative;
+}
+.content :global(.ProseMirror th) {
+  background: rgba(232, 199, 102, .1);
+  font-weight: 800;
+  text-align: left;
+  color: var(--text-heading);
+}
+.content :global(.ProseMirror .selectedCell) {
+  background: rgba(232, 199, 102, .12);
+}

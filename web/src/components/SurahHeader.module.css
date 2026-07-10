@@ -1,0 +1,210 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 3rem 0;
+}
+
+.frame {
+  --place-x: 17.8%;
+  --title-x: 45.4%;
+  --verse-x: 72.9%;
+
+  position: relative;
+  display: inline-flex;
+  max-width: calc(100vw - 28px);
+  color: var(--text-heading);
+  font-size: clamp(58px, 12vw, 120px);
+  line-height: 1;
+  text-decoration: none;
+  transform: translateX(4.25%);
+}
+
+.frameGlyph {
+  display: block;
+  margin-left: -8.5%;
+  clip-path: inset(0 0 0 8.5%);
+  font-family: 'quran-common';
+  font-feature-settings: "liga" 1, "calt" 1;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.frameContent {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.placeSlot,
+.verseSlot {
+  position: absolute;
+  top: 50%;
+  width: .76em;
+  height: .76em;
+  transform: translate(-50%, -50%);
+}
+
+.placeSlot {
+  left: var(--place-x);
+  display: grid;
+  place-items: center;
+}
+
+.verseSlot {
+  left: var(--verse-x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: var(--text-heading);
+  font-family: var(--font-sans);
+  text-decoration: none;
+  transform: translate(-57%, -50%);
+}
+
+.placeIcon {
+  display: block;
+  color: var(--text-heading);
+  font-family: 'quran-common';
+  font-size: .14em;
+  font-feature-settings: "liga" 1, "calt" 1;
+  line-height: 1;
+  text-decoration: none;
+  margin: 0;
+  transform: translateX(-25%);
+}
+
+.placeSlot svg,
+.placeSlot img {
+  display: block;
+  width: 58%;
+  height: 58%;
+  object-fit: contain;
+  margin: 0;
+  transform: none;
+}
+
+.verseNumber {
+  display: block;
+  font-size: .18em;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+}
+
+.verseLabel {
+  display: block;
+  font-size: .1em;
+  font-weight: 850;
+  line-height: 1;
+  opacity: .9;
+  margin: 0;
+  margin-top: 4px;
+}
+
+.titleSlot {
+  position: absolute;
+  left: var(--title-x);
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45%;
+  min-width: 0;
+  gap: .11em;
+  color: var(--text-heading);
+  line-height: 1;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 0 18px rgba(232, 199, 102, .12);
+  transform: translate(-50%, -50%);
+}
+
+.titleLabel {
+  flex: 0 0 auto;
+  font-family: var(--font-surah-name);
+  font-size: .55em;
+  font-feature-settings: "liga" 1, "calt" 1;
+  font-weight: 400;
+  line-height: 1;
+  opacity: .96;
+  direction: ltr;
+  transform: translateY(.035em);
+}
+
+.titleName {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-family: var(--font-surah-name);
+  font-size: .62em;
+  font-feature-settings: "liga" 1, "calt" 1;
+  font-weight: 400;
+  line-height: .92;
+  white-space: nowrap;
+  direction: ltr;
+}
+
+.bismillah {
+  margin-top: 1.5rem;
+  color: var(--text-heading);
+  font-family: 'quran-common';
+  font-size: clamp(40px, 8vw, 80px);
+  font-feature-settings: "liga" 1, "calt" 1;
+  line-height: 1;
+  text-shadow: none;
+}
+
+@media (max-width: 760px) {
+  .wrapper {
+    margin: 2.3rem 0;
+  }
+
+  .frame {
+    --place-x: 17.7%;
+    --title-x: 45.2%;
+    --verse-x: 72.8%;
+
+    font-size: clamp(43px, 12.8vw, 62px);
+  }
+
+  .placeSlot,
+  .verseSlot {
+    width: .74em;
+    height: .74em;
+  }
+
+  .placeIcon {
+    font-size: .175em;
+  }
+
+  .verseNumber {
+    font-size: .175em;
+  }
+
+  .verseLabel {
+    font-size: .096em;
+  }
+
+  .titleSlot {
+    width: 43%;
+    gap: .09em;
+  }
+
+  .titleLabel {
+    font-size: .48em;
+  }
+
+  .titleName {
+    font-size: .57em;
+  }
+
+  .bismillah {
+    margin-top: 1.1rem;
+    font-size: clamp(38px, 12vw, 58px);
+  }
+}

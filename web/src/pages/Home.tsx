@@ -3,21 +3,49 @@ import styles from './Home.module.css';
 import { Hero } from '../components/home/Hero';
 import { Badge, Button, Divider, GlassCard, Hex, SectionHeader } from '../components/ui';
 import { useAgendas } from '../hooks/useAgendas';
+import { useArticles } from '../hooks/useArticles';
 import { useNow } from '../hooks/useNow';
+import { usePrayerSchedule } from '../hooks/usePrayerSchedule';
 import { getNextPrayer } from '../lib/prayer';
-import { ARTICLES, CATEGORIES } from '../data/articles';
+import { CATEGORIES } from '../data/articles';
 import { CATEGORY_COLORS } from '../lib/colors';
+import { quranText } from '../lib/quranText';
+
+function getReminder(now: Date) {
+  const day = now.getDay();
+  const hours = now.getHours();
+  const isEvening = hours >= 17; // 5 PM onwards
+
+  if (isEvening && (day === 0 || day === 3)) {
+    return {
+      label: 'Pengingat Sunnah',
+      title: 'Besok Puasa Senin-Kamis',
+      icon: '🌙',
+    };
+  }
+  if (isEvening && day === 4) {
+    return {
+      label: 'Malam Jumat',
+      title: 'Waktunya Baca Al-Kahfi',
+      icon: '📖',
+    };
+  }
+  return null;
+}
 
 export default function Home() {
   const { soon, upcoming } = useAgendas();
+  const { all: articles } = useArticles();
   const now = useNow();
-  const prayer = getNextPrayer(now);
+  const schedule = usePrayerSchedule(now);
+  const prayer = getNextPrayer(now, schedule.prayerTimes, schedule.utcOffsetHours);
   const nextAgenda = upcoming[0];
+  const reminder = getReminder(now);
 
   const catCards = CATEGORIES.map((c) => ({
     ...c,
     color: CATEGORY_COLORS[c.name],
-    articles: ARTICLES.filter((a) => a.cat === c.name).slice(0, 2),
+    articles: articles.filter((a) => a.cat === c.name).slice(0, 2),
   }));
 
   return (
@@ -28,7 +56,7 @@ export default function Home() {
       <section className={styles.section}>
         <div className={`rv ${styles.quickGrid}`}>
           <GlassCard to="/shalat" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
-            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={20} fontFamily="Amiri, serif">☾</Hex>
+            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={20} fontFamily="var(--font-arabic-ui)">☾</Hex>
             <div style={{ minWidth: 0 }}>
               <div className={styles.quickLabel}>Menuju {prayer.name}</div>
               <div className={`cdGlow ${styles.quickValue}`}>{prayer.countdown}</div>
@@ -36,17 +64,17 @@ export default function Home() {
           </GlassCard>
 
           <GlassCard to="/agenda" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
-            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={16}>
-              {nextAgenda ? nextAgenda.dayNum : '–'}
+            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={reminder ? 22 : 16}>
+              {reminder ? reminder.icon : (nextAgenda ? nextAgenda.dayNum : '–')}
             </Hex>
             <div style={{ minWidth: 0 }}>
-              <div className={styles.quickLabel}>Agenda terdekat · {nextAgenda ? nextAgenda.relLabel : ''}</div>
-              <div className={styles.quickValueTitle}>{nextAgenda ? nextAgenda.title : 'Belum ada agenda'}</div>
+              <div className={styles.quickLabel}>{reminder ? reminder.label : `Agenda terdekat · ${nextAgenda ? nextAgenda.relLabel : ''}`}</div>
+              <div className={styles.quickValueTitle}>{reminder ? reminder.title : (nextAgenda ? nextAgenda.title : 'Belum ada agenda')}</div>
             </div>
           </GlassCard>
 
           <GlassCard to="/quran" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
-            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={21} fontFamily="Amiri, serif">ق</Hex>
+            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={21} fontFamily="var(--font-arabic-ui)">ق</Hex>
             <div style={{ minWidth: 0 }}>
               <div className={styles.quickLabel}>Al-Qur'an</div>
               <div className={styles.quickValueTitle}>Mulai dari Al-Fatihah</div>
@@ -81,7 +109,7 @@ export default function Home() {
               </div>
               <div className={styles.agendaTitle}>{a.title}</div>
               <div className={styles.agendaMeta}>
-                <div>{a.dateLabel} · {a.time}</div>
+                <div>{a.dateLabel} · {a.startTime}</div>
                 <div>{a.location}</div>
               </div>
               <div className={styles.agendaFooter}>{a.footerLabel}</div>
@@ -97,7 +125,9 @@ export default function Home() {
             <div className={styles.quranBandTexture} />
             <div className={`breathB ${styles.quranBandGlow}`} />
             <div className={styles.quranBandInner}>
-              <div className={styles.bismillah} dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+              <div className={styles.bismillah} dir="rtl" lang="ar">
+                {quranText('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ')}
+              </div>
               <div className={styles.quranBandHeading}>Sediakan waktu untuk Al-Qur'an hari ini</div>
               <p className={styles.quranBandLead}>Ruang baca yang lapang dan tenang — mushaf, terjemahan, dan tadabbur dalam satu tempat.</p>
               <div style={{ marginTop: 30 }}>
@@ -124,7 +154,7 @@ export default function Home() {
               <p className={styles.kontenBlurb}>{c.blurb}</p>
               <div className={styles.kontenArticleList}>
                 {c.articles.map((t) => (
-                  <Link key={t.id} to={`/konten/${t.id}`} className={styles.kontenArticleRow}>
+                  <Link key={t.id} to={`/konten/${t.slug}`} className={styles.kontenArticleRow}>
                     <span className={styles.kontenArticleTitle}>{t.title}</span>
                     <span className={styles.kontenArticleMins}>{t.mins} mnt</span>
                   </Link>

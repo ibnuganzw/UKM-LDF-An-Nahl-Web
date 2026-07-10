@@ -1,4 +1,11 @@
-html, body {
+@font-face {
+  font-family: 'quran-common';
+  src: url('https://static-cdn.tarteel.ai/qul/fonts/common/quran-common.ttf') format('truetype');
+  font-display: swap;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
   background: var(--bg-page);
@@ -14,7 +21,8 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-button, input {
+button,
+input {
   font-family: inherit;
 }
 
@@ -23,7 +31,10 @@ a {
   text-decoration: none;
 }
 
-h1, h2, h3, p {
+h1,
+h2,
+h3,
+p {
   margin: 0;
 }
 
@@ -40,47 +51,137 @@ h1, h2, h3, p {
 
 /* ---------- Keyframes ---------- */
 @keyframes scanline {
-  0% { top: 10%; }
-  50% { top: 86%; }
-  100% { top: 10%; }
+  0% {
+    top: 10%;
+  }
+
+  50% {
+    top: 86%;
+  }
+
+  100% {
+    top: 10%;
+  }
 }
+
 @keyframes softPulse {
-  0%, 100% { opacity: .45; }
-  50% { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: .45;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
+
 @keyframes breath {
-  0%, 100% { opacity: .45; transform: scale(1); }
-  50% { opacity: .9; transform: scale(1.07); }
+
+  0%,
+  100% {
+    opacity: .45;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: .9;
+    transform: scale(1.07);
+  }
 }
+
 @keyframes lf {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
 }
+
 @keyframes beeF {
-  0%, 100% { transform: translate(0, 0) rotate(-8deg); }
-  30% { transform: translate(20px, -16px) rotate(6deg); }
-  60% { transform: translate(38px, 4px) rotate(-4deg); }
-  80% { transform: translate(14px, 14px) rotate(6deg); }
+
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(-8deg);
+  }
+
+  30% {
+    transform: translate(20px, -16px) rotate(6deg);
+  }
+
+  60% {
+    transform: translate(38px, 4px) rotate(-4deg);
+  }
+
+  80% {
+    transform: translate(14px, 14px) rotate(6deg);
+  }
 }
+
 @keyframes cdG {
-  0%, 100% { text-shadow: 0 0 10px rgba(232, 199, 102, .2); }
-  50% { text-shadow: 0 0 24px rgba(232, 199, 102, .65); }
+
+  0%,
+  100% {
+    text-shadow: 0 0 10px rgba(232, 199, 102, .2);
+  }
+
+  50% {
+    text-shadow: 0 0 24px rgba(232, 199, 102, .65);
+  }
 }
+
 @keyframes rvIn {
-  from { opacity: 0; transform: translateY(44px); }
-  to { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateY(44px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ---------- Reusable animation utility classes ---------- */
-.breath { animation: breath 7s ease-in-out infinite; }
-.breathB { animation: breath 9s ease-in-out 2.2s infinite; }
-.lfloat { animation: lf 7s ease-in-out infinite; }
-.chipF { animation: lf 6s ease-in-out infinite; }
-.chipF2 { animation: lf 8s ease-in-out 1.6s infinite; }
-.beeA { animation: beeF 11s ease-in-out infinite; }
-.beeB { animation: beeF 15s ease-in-out 2s infinite reverse; }
-.beeC { animation: beeF 18s ease-in-out 5s infinite; }
-.cdGlow { animation: cdG 2.6s ease-in-out infinite; }
+.breath {
+  animation: breath 7s ease-in-out infinite;
+}
+
+.breathB {
+  animation: breath 9s ease-in-out 2.2s infinite;
+}
+
+.lfloat {
+  animation: lf 7s ease-in-out infinite;
+}
+
+.chipF {
+  animation: lf 6s ease-in-out infinite;
+}
+
+.chipF2 {
+  animation: lf 8s ease-in-out 1.6s infinite;
+}
+
+.beeA {
+  animation: beeF 11s ease-in-out infinite;
+}
+
+.beeB {
+  animation: beeF 15s ease-in-out 2s infinite reverse;
+}
+
+.beeC {
+  animation: beeF 18s ease-in-out 5s infinite;
+}
+
+.cdGlow {
+  animation: cdG 2.6s ease-in-out infinite;
+}
 
 @supports (animation-timeline: view()) {
   .rv {
@@ -91,7 +192,39 @@ h1, h2, h3, p {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .breath, .breathB, .lfloat, .chipF, .chipF2, .beeA, .beeB, .beeC, .cdGlow {
-    animation: none;
+  .breath {
+    animation: breath 12s ease-in-out infinite;
+  }
+
+  .breathB {
+    animation: breath 14s ease-in-out 2.2s infinite;
+  }
+
+  .lfloat {
+    animation: lf 12s ease-in-out infinite;
+  }
+
+  .chipF {
+    animation: lf 10s ease-in-out infinite;
+  }
+
+  .chipF2 {
+    animation: lf 12s ease-in-out 1.6s infinite;
+  }
+
+  .beeA {
+    animation: beeF 18s ease-in-out infinite;
+  }
+
+  .beeB {
+    animation: beeF 22s ease-in-out 2s infinite reverse;
+  }
+
+  .beeC {
+    animation: beeF 26s ease-in-out 5s infinite;
+  }
+
+  .cdGlow {
+    animation: cdG 5s ease-in-out infinite;
   }
 }

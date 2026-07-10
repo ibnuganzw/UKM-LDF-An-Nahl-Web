@@ -1,0 +1,151 @@
+.page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 46px 20px 84px;
+}
+
+.headerRow {
+  margin-bottom: 6px;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+}
+
+.h1 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: clamp(30px, 4.6vw, 46px);
+  color: var(--text-heading);
+  margin: 8px 0 0;
+  line-height: 1.1;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0 20px;
+  flex-wrap: wrap;
+}
+
+.tab,
+.tabActive {
+  border: 1px solid rgba(245, 239, 220, .2);
+  background: rgba(255, 255, 255, .04);
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.tabActive {
+  background: var(--gold-gradient);
+  color: var(--text-on-gold);
+  border-color: transparent;
+}
+
+.error {
+  color: var(--danger-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  margin-bottom: 14px;
+}
+
+.loading,
+.empty {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  padding: 10px 2px;
+}
+
+.subHeading {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 20px 2px 4px;
+}
+.subHeading:first-child {
+  margin-top: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.rowInfo {
+  flex: 1;
+  min-width: 220px;
+}
+
+.rowName {
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--text-heading);
+  line-height: 1.35;
+}
+
+.rowMeta {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 3px;
+}
+
+.rowActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: none;
+}
+
+.approveBtn {
+  border: none;
+  background: linear-gradient(135deg, var(--success-light), var(--success-dark));
+  color: var(--success-text-on);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.approveBtn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.rejectBtn {
+  border: 1px solid rgba(229, 138, 138, .35);
+  background: transparent;
+  color: var(--danger-text);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.rejectBtn:hover {
+  background: rgba(229, 138, 138, .08);
+}
+.rejectBtn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}

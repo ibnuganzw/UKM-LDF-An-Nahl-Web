@@ -160,3 +160,33 @@
 .makeBtn:hover {
   box-shadow: 0 16px 34px -12px rgba(232, 199, 102, .75);
 }
+
+.deleteBtn {
+  border: 1px solid rgba(229, 138, 138, .35);
+  background: transparent;
+  color: var(--danger-text);
+  font-weight: 800;
+  font-size: 13px;
+  padding: 11px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  min-height: 44px;
+}
+.deleteBtn:hover {
+  background: rgba(229, 138, 138, .08);
+}
+
+.subHeading {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 28px 2px 12px;
+}
+
+.empty {
+  color: var(--text-muted);
+  font-size: 13.5px;
+  padding: 10px 2px;
+}

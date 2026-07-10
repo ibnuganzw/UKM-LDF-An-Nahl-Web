@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './Konten.module.css';
 import { Badge, FilterChip, GlassCard, Hex } from '../components/ui';
-import { ARTICLES } from '../data/articles';
+import { useArticles } from '../hooks/useArticles';
 import { CATEGORY_COLORS, soft } from '../lib/colors';
 import { KONTEN_FILTERS } from '../lib/filters';
 import type { ArticleCategory } from '../types';
@@ -11,8 +11,9 @@ export default function Konten() {
   const location = useLocation();
   const initialTab = (location.state as { kontenTab?: ArticleCategory } | null)?.kontenTab ?? 'Semua';
   const [tab, setTab] = useState<'Semua' | ArticleCategory>(initialTab);
+  const { all, loading } = useArticles();
 
-  const rows = ARTICLES.filter((a) => tab === 'Semua' || a.cat === tab);
+  const rows = all.filter((a) => tab === 'Semua' || a.cat === tab);
 
   return (
     <div className={styles.page}>
@@ -37,11 +38,14 @@ export default function Konten() {
         })}
       </div>
 
+      {loading && <div className={styles.loading}>Memuat…</div>}
+
       <div className={styles.grid}>
         {rows.map((t) => {
           const color = CATEGORY_COLORS[t.cat];
           return (
-            <GlassCard key={t.id} to={`/konten/${t.id}`} hover radius={22} padding="26px" className={styles.card}>
+            <GlassCard key={t.id} to={`/konten/${t.slug}`} hover radius={22} padding="26px" className={styles.card}>
+              {t.coverImageUrl && <img src={t.coverImageUrl} alt="" className={styles.cover} />}
               <div className={styles.cardTop}>
                 <Badge color={color} background={soft(color, '12')} style={{ padding: '5px 12px', gap: 7 }}>
                   <Hex width={7} height={8} bg={color} />
@@ -55,6 +59,7 @@ export default function Konten() {
             </GlassCard>
           );
         })}
+        {!loading && rows.length === 0 && <div className={styles.empty}>Belum ada tulisan di kategori ini.</div>}
       </div>
     </div>
   );

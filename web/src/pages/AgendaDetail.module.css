@@ -137,3 +137,16 @@
   font-weight: 600;
   line-height: 1.7;
 }
+
+.registerBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.errorText {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--danger-text);
+}

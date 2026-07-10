@@ -150,6 +150,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: 420px;
+  max-width: calc(100vw - 48px);
   height: 280px;
   background: radial-gradient(ellipse, rgba(232, 199, 102, .22), transparent 65%);
   filter: blur(50px);
@@ -349,4 +350,14 @@
   font-size: 14px;
   line-height: 1.8;
   color: var(--text-body);
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 32px 18px 8px;
+  }
+
+  .dividerSection {
+    padding: 32px 18px 0;
+  }
 }

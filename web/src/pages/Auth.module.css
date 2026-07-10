@@ -117,28 +117,17 @@
   font-family: inherit;
 }
 
-.adminBtn {
-  border: 1px solid rgba(245, 239, 220, .25);
-  background: rgba(255, 255, 255, .04);
-  color: var(--text-body);
-  font-weight: 800;
-  font-size: 13.5px;
-  padding: 12px;
-  border-radius: 999px;
-  cursor: pointer;
-  min-height: 44px;
-  width: 100%;
-}
-.adminBtn:hover {
-  border-color: rgba(232, 199, 102, .5);
-  color: var(--text-heading);
+.errorText {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--danger-text);
+  text-align: center;
 }
 
-.disclaimer {
+.successText {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-body);
   text-align: center;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-faint);
-  margin-top: 16px;
   line-height: 1.6;
 }

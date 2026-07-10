@@ -242,6 +242,16 @@
   box-shadow: 0 0 24px rgba(232, 199, 102, .35);
 }
 
+.ketuaAvatarPhoto {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 10px;
+  box-shadow: 0 0 24px rgba(232, 199, 102, .35);
+}
+
 .ketuaName {
   font-weight: 800;
   font-size: 15.5px;
@@ -288,6 +298,15 @@
   margin: 0 auto 8px;
 }
 
+.intiAvatarPhoto {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto 8px;
+}
+
 .intiName {
   font-weight: 800;
   font-size: 14px;
@@ -320,6 +339,14 @@
   border-color: rgba(232, 199, 102, .45);
 }
 
+.deptPhoto {
+  width: 40px;
+  height: 44px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex: none;
+}
+
 .deptName {
   font-weight: 800;
   font-size: 14.5px;
@@ -331,12 +358,4 @@
   line-height: 1.6;
   color: var(--text-body);
   margin-top: 3px;
-}
-
-.strukturNote {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--text-faint);
-  margin-top: 20px;
-  text-align: center;
 }

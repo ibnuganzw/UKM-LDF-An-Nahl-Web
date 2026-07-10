@@ -4,4 +4,11 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    port: Number(process.env.PORT) || 5174,
+    strictPort: true,
+    watch: {
+      ignored: ['**/node_modules/**', '**/.git/**', '**/public/assets/fonts/**', '**/.cache/**']
+    }
+  },
 })

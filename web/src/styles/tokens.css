@@ -1,3 +1,27 @@
+@font-face {
+  font-family: 'SurahNameV4';
+  src: url('/assets/fonts/surah-name-v4.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AnnahlQuranUthmani';
+  src: url('/assets/fonts/UthmanicHafs1Ver18.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AnnahlQuranIndoPak';
+  src: url('/assets/fonts/indopak-nastaleeq-waqf-lazim-v4.2.1.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Backgrounds */
   --bg-page: #0A1128;
@@ -47,7 +71,11 @@
   /* Typography */
   --font-serif: 'Cormorant Garamond', serif;
   --font-sans: Manrope, system-ui, sans-serif;
-  --font-arabic: Amiri, serif;
+  --font-arabic-uthmani: 'AnnahlQuranUthmani', serif;
+  --font-arabic-indopak: 'AnnahlQuranIndoPak', serif;
+  --font-arabic: var(--font-arabic-indopak);
+  --font-arabic-ui: var(--font-arabic-uthmani);
+  --font-surah-name: 'SurahNameV4', var(--font-arabic-ui);
 
   /* Radii */
   --radius-sm: 12px;

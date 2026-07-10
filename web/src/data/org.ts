@@ -1,4 +1,4 @@
-import type { MisiItem, SejarahItem, StrukturDeptItem, StrukturIntiItem } from '../types';
+import type { MisiItem, SejarahItem } from '../types';
 
 export const SEJARAH_ITEMS: SejarahItem[] = [
   { title: '20XX — Cikal bakal', text: 'Berawal dari halaqah kecil mahasiswa FKH yang rindu suasana mushalla hidup. (Placeholder — isi dengan sejarah asli.)' },
@@ -14,26 +14,3 @@ export const MISI_LIST: MisiItem[] = [
 ];
 
 export const VISI_TEXT = 'Terwujudnya generasi dokter hewan muslim yang beriman, berilmu, dan bermanfaat bagi umat.';
-
-export const KETUA_UMUM = { name: 'Nama Ketua Umum', role: 'Ketua Umum', initial: 'K' };
-
-export const STRUKTUR_INTI: StrukturIntiItem[] = [
-  { role: 'Sekretaris Umum', name: 'Nama Pengurus', initial: 'S' },
-  { role: 'Bendahara Umum', name: 'Nama Pengurus', initial: 'B' },
-];
-
-const DEPTS: [string, string, string][] = [
-  ['Kaderisasi', 'Mentoring pekanan & pembinaan anggota berjenjang.', '#5CCBA0'],
-  ['Syiar', 'Kajian rutin, PHBI, dan dakwah kreatif kampus.', '#8FAAF5'],
-  ['Media & Informasi', 'Konten dakwah, publikasi, dan pengelolaan media sosial.', '#5FC6DE'],
-  ['Dana & Usaha', 'Kemandirian finansial melalui usaha halal.', '#E8C766'],
-  ['Kemuslimahan', 'Pembinaan dan kegiatan khusus muslimah FKH.', '#EE9AC0'],
-  ['Biro Kemushallaan', 'Kemakmuran, kebersihan, dan fasilitas mushalla.', '#C39BE8'],
-];
-
-export const STRUKTUR_DEPT: StrukturDeptItem[] = DEPTS.map(([name, desc, color]) => ({
-  name,
-  desc,
-  color,
-  initial: name.charAt(0),
-}));

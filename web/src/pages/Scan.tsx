@@ -1,33 +1,48 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import styles from './Scan.module.css';
-import { useAgendas } from '../hooks/useAgendas';
 import { useApp } from '../state/AppContext';
-import { cx } from '../lib/cx';
+import { supabase } from '../lib/supabaseClient';
 
-type ScanState = 'idle' | 'scanning' | 'success' | 'fail';
+type ScanState = 'checking' | 'success' | 'fail' | 'need-login';
 
 export default function Scan() {
   const { id } = useParams<{ id: string }>();
-  const { byId } = useAgendas();
-  const { checkIn } = useApp();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
+  const { session, authLoading } = useApp();
   const navigate = useNavigate();
-  const [scanState, setScanState] = useState<ScanState>('idle');
-  const timeoutRef = useRef<number | undefined>(undefined);
+  const [state, setState] = useState<ScanState>('checking');
+  const [message, setMessage] = useState('');
 
-  const agenda = byId(id);
+  useEffect(() => {
+    if (authLoading) return;
+    if (!session) {
+      setState('need-login');
+      return;
+    }
+    if (!id || !token) {
+      setState('fail');
+      setMessage('Link absensi tidak valid.');
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const { error } = await supabase.rpc('check_in', { p_agenda_id: id, p_token: token });
+      if (cancelled) return;
+      if (error) {
+        setState('fail');
+        setMessage(error.message);
+        return;
+      }
+      setState('success');
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [authLoading, session, id, token]);
 
-  useEffect(() => () => window.clearTimeout(timeoutRef.current), []);
-
-  const doScan = () => {
-    if (scanState === 'scanning') return;
-    setScanState('scanning');
-    timeoutRef.current = window.setTimeout(() => {
-      setScanState(checkIn(id ?? '') ? 'success' : 'fail');
-    }, 1600);
-  };
-
-  const scanning = scanState === 'scanning';
+  const loginRedirect = `/login?redirect=${encodeURIComponent(`/scan/${id ?? ''}?token=${token ?? ''}`)}`;
 
   return (
     <div className={styles.page}>
@@ -35,51 +50,48 @@ export default function Scan() {
 
       <div className={styles.card}>
         <div className={styles.eyebrow}>Absensi QR</div>
-        <div className={styles.title}>{agenda ? agenda.title : 'Pilih agenda dari dashboard'}</div>
-        <div className={styles.meta}>{agenda ? `${agenda.relLabel} · ${agenda.time} · ${agenda.location}` : ''}</div>
 
-        {(scanState === 'idle' || scanning) && (
-          <>
-            <div className={styles.viewfinder}>
-              <div className={cx(styles.bracket, styles.bracketTL)} />
-              <div className={cx(styles.bracket, styles.bracketTR)} />
-              <div className={cx(styles.bracket, styles.bracketBL)} />
-              <div className={cx(styles.bracket, styles.bracketBR)} />
-              <div className={styles.watermark} />
-              {scanning && <div className={styles.scanline} />}
-              <div className={styles.viewfinderHint}>{scanning ? 'Mencari QR…' : 'Arahkan kamera ke QR yang ditampilkan admin'}</div>
-            </div>
-            <button
-              className={styles.scanBtn}
-              style={{ background: scanning ? '#5E6B8F' : '#1F8A63' }}
-              onClick={doScan}
-            >
-              {scanning ? 'Memindai…' : 'Simulasikan Pindai QR'}
-            </button>
-            <div className={styles.disclaimer}>Simulasi pemindaian — di versi penuh, kamera HP memindai QR yang ditampilkan admin di lokasi.</div>
-          </>
+        {state === 'checking' && (
+          <div className={styles.resultBlock}>
+            <div className={styles.resultTitle}>Memproses…</div>
+            <p className={styles.resultText}>Sebentar, lagi dicatat.</p>
+          </div>
         )}
 
-        {scanState === 'success' && (
+        {state === 'need-login' && (
+          <div className={styles.resultBlock}>
+            <div className={styles.resultTitle}>Masuk dulu, yuk</div>
+            <p className={styles.resultText}>Kamu perlu masuk buat mencatat kehadiran lewat QR ini.</p>
+            <Link to={loginRedirect} className={styles.resultCta}>Masuk</Link>
+          </div>
+        )}
+
+        {state === 'success' && (
           <div className={styles.resultBlock}>
             <div className={styles.resultIconOuter} style={{ background: 'rgba(92,203,160,.12)' }}>
-              <div className={styles.resultIconInner} style={{ background: 'linear-gradient(135deg,#5CCBA0,#2E9C77)', color: '#06281C', boxShadow: '0 0 30px rgba(92,203,160,.4)' }}>✓</div>
+              <div
+                className={styles.resultIconInner}
+                style={{ background: 'linear-gradient(135deg,#5CCBA0,#2E9C77)', color: '#06281C', boxShadow: '0 0 30px rgba(92,203,160,.4)' }}
+              >
+                ✓
+              </div>
             </div>
             <div className={styles.resultTitle}>Alhamdulillah, tercatat!</div>
-            <p className={styles.resultText}>Kehadiranmu pada agenda ini sudah masuk ke riwayat. Jazakumullahu khairan sudah hadir.</p>
+            <p className={styles.resultText}>
+              Kehadiranmu pada agenda ini sudah masuk ke riwayat. Jazakumullahu khairan sudah hadir.
+            </p>
             <button className={styles.resultCta} onClick={() => navigate('/dashboard')}>Kembali ke Dashboard</button>
           </div>
         )}
 
-        {scanState === 'fail' && (
+        {state === 'fail' && (
           <div className={styles.resultBlock}>
             <div className={styles.resultIconOuter} style={{ background: 'rgba(229,138,138,.1)' }}>
               <div className={styles.resultIconInner} style={{ background: '#C0524A', color: '#fff' }}>✕</div>
             </div>
-            <div className={styles.resultTitle}>QR belum aktif</div>
-            <p className={styles.resultText}>Admin belum membuka QR absensi untuk agenda ini. Absen hanya bisa dilakukan di lokasi saat QR ditampilkan.</p>
+            <div className={styles.resultTitle}>Absen gagal</div>
+            <p className={styles.resultText}>{message}</p>
             <div className={styles.resultRow}>
-              <button className={styles.retryBtn} onClick={() => setScanState('idle')}>Coba lagi</button>
               <button className={styles.dashboardBtn} onClick={() => navigate('/dashboard')}>Dashboard</button>
             </div>
           </div>

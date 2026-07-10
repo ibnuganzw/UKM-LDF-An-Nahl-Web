@@ -43,11 +43,11 @@
 .inner {
   max-width: 1180px;
   margin: 0 auto;
-  padding: clamp(70px, 10vh, 120px) 20px clamp(120px, 14vh, 170px);
+  padding: clamp(52px, 7vh, 82px) 20px clamp(86px, 10vh, 118px);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 52px;
+  gap: clamp(32px, 4vw, 46px);
   position: relative;
 }
 
@@ -74,12 +74,15 @@
   display: inline-block;
   flex: none;
 }
-.star::before, .star::after {
+
+.star::before,
+.star::after {
   content: '';
   position: absolute;
   inset: 0;
   border: 1px solid var(--gold-dark);
 }
+
 .star::after {
   transform: rotate(45deg);
 }
@@ -95,10 +98,10 @@
 .heading {
   font-family: var(--font-serif);
   font-weight: 600;
-  font-size: clamp(52px, 8vw, 96px);
+  font-size: clamp(48px, 6.5vw, 82px);
   line-height: 1.02;
   color: var(--text-heading);
-  margin: 26px 0 0;
+  margin: 22px 0 0;
   letter-spacing: -0.015em;
 }
 
@@ -108,10 +111,10 @@
 }
 
 .lead {
-  font-size: 16.5px;
-  line-height: 1.85;
+  font-size: 16px;
+  line-height: 1.75;
   color: var(--text-body);
-  margin: 24px 0 0;
+  margin: 20px 0 0;
   max-width: 54ch;
   text-wrap: pretty;
 }
@@ -120,7 +123,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
-  margin-top: 34px;
+  margin-top: 28px;
 }
 
 .visualCol {
@@ -130,27 +133,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 340px;
+  min-height: 304px;
 }
 
 .hexBackdrop {
   position: absolute;
-  width: 150px;
-  height: 170px;
+  width: 138px;
+  height: 156px;
   clip-path: var(--hex-clip);
 }
 
 .logoGlow {
   position: absolute;
-  width: 300px;
-  height: 300px;
+  width: 274px;
+  height: 274px;
   background: radial-gradient(circle, rgba(232, 199, 102, .35), transparent 62%);
   filter: blur(40px);
 }
 
 .logo {
-  width: 224px;
-  height: 224px;
+  width: 206px;
+  height: 206px;
   border-radius: 50%;
   position: relative;
   box-shadow: 0 0 0 1px rgba(232, 199, 102, .5), 0 0 60px rgba(232, 199, 102, .3), 0 30px 70px -20px rgba(0, 0, 0, .7);
@@ -203,7 +206,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 150px;
+  height: 124px;
   background: linear-gradient(180deg, transparent, rgba(120, 70, 150, .12) 45%, rgba(201, 162, 39, .1) 70%, rgba(7, 13, 30, .85));
   pointer-events: none;
 }
@@ -214,7 +217,7 @@
   left: 50%;
   transform: translateX(-50%);
   width: min(680px, 92%);
-  height: 80px;
+  height: 68px;
   opacity: .6;
 }
 
@@ -223,10 +226,10 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 160px;
-  height: 80px;
+  width: 136px;
+  height: 68px;
   background: var(--bg-deeper);
-  border-radius: 80px 80px 0 0;
+  border-radius: 68px 68px 0 0;
 }
 
 .domeBase {
@@ -234,8 +237,8 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 250px;
-  height: 24px;
+  width: 216px;
+  height: 20px;
   background: var(--bg-deeper);
 }
 
@@ -244,34 +247,37 @@
   bottom: 0;
   left: 6%;
   width: 10px;
-  height: 66px;
+  height: 56px;
   background: var(--bg-deeper);
   border-radius: 5px 5px 0 0;
 }
+
 .minaretTallR {
   position: absolute;
   bottom: 0;
   right: 6%;
   width: 10px;
-  height: 66px;
+  height: 56px;
   background: var(--bg-deeper);
   border-radius: 5px 5px 0 0;
 }
+
 .minaretShortL {
   position: absolute;
   bottom: 0;
   left: 22%;
   width: 7px;
-  height: 44px;
+  height: 38px;
   background: var(--bg-deeper);
   border-radius: 4px 4px 0 0;
 }
+
 .minaretShortR {
   position: absolute;
   bottom: 0;
   right: 22%;
   width: 7px;
-  height: 44px;
+  height: 38px;
   background: var(--bg-deeper);
   border-radius: 4px 4px 0 0;
 }
@@ -283,4 +289,94 @@
   right: 0;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(232, 199, 102, .45), transparent);
+}
+
+@media (max-width: 920px) {
+  .inner {
+    padding: 46px 20px 92px;
+    gap: 28px;
+  }
+
+  .heading {
+    font-size: clamp(46px, 10vw, 68px);
+  }
+
+  .visualCol {
+    flex-basis: 100%;
+    min-height: 276px;
+  }
+}
+
+@media (max-width: 640px) {
+  .inner {
+    padding: 34px 18px 44px;
+    gap: 18px;
+  }
+
+  .eyebrow {
+    padding: 7px 14px;
+  }
+
+  .eyebrowLabel {
+    font-size: 9.5px;
+    letter-spacing: .18em;
+  }
+
+  .heading {
+    font-size: clamp(38px, 11.2vw, 48px);
+    line-height: 1;
+    margin-top: 18px;
+  }
+
+  .lead {
+    font-size: 14.5px;
+    line-height: 1.62;
+    margin-top: 16px;
+  }
+
+  .ctaRow {
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .ctaRow a {
+    min-height: 46px;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+
+  .visualCol {
+    min-height: 188px;
+  }
+
+  .logo {
+    width: 136px;
+    height: 136px;
+  }
+
+  .logoGlow {
+    width: 180px;
+    height: 180px;
+  }
+
+  .hexBackdrop {
+    width: 92px;
+    height: 104px;
+  }
+
+  .chip {
+    padding: 8px 12px;
+  }
+
+  .chipLabel {
+    font-size: 8.5px;
+  }
+
+  .chipValue {
+    font-size: 12.5px;
+  }
+
+  .horizonWrap {
+    height: 78px;
+  }
 }

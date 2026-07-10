@@ -1,12 +1,23 @@
 import { Link, useParams } from 'react-router-dom';
 import styles from './Artikel.module.css';
-import { Badge, DashedNote, Hex } from '../components/ui';
-import { ARTICLES } from '../data/articles';
+import { Badge, Hex } from '../components/ui';
+import { useArticles } from '../hooks/useArticles';
 import { CATEGORY_COLORS, soft } from '../lib/colors';
+import { sanitizeArticleHtml } from '../lib/sanitizeHtml';
 
 export default function Artikel() {
-  const { id } = useParams<{ id: string }>();
-  const art = ARTICLES.find((a) => a.id === id) ?? ARTICLES[0];
+  const { slug } = useParams<{ slug: string }>();
+  const { bySlug, loading } = useArticles();
+  const art = bySlug(slug);
+
+  if (loading) {
+    return <div className={styles.page}>Memuat…</div>;
+  }
+
+  if (!art) {
+    return <div className={styles.page}>Tulisan tidak ditemukan.</div>;
+  }
+
   const color = CATEGORY_COLORS[art.cat];
 
   return (
@@ -20,17 +31,14 @@ export default function Artikel() {
         </Badge>
 
         <h1 className={styles.title}>{art.title}</h1>
-        <div className={styles.byline}>Tim Media An-Nahl · {art.mins} menit baca · Konten contoh</div>
+        <div className={styles.byline}>Tim Media An-Nahl · {art.mins} menit baca</div>
 
-        <div className={styles.paragraphs}>
-          {art.body.map((p, i) => (
-            <p key={i} className={styles.paragraph}>{p}</p>
-          ))}
-        </div>
+        {art.coverImageUrl && <img src={art.coverImageUrl} alt="" className={styles.cover} />}
 
-        <DashedNote className={styles.note}>
-          Ini konten contoh untuk prototype — struktur dan tampilannya siap diisi tulisan asli tim redaksi An-Nahl.
-        </DashedNote>
+        <div
+          className={styles.richContent}
+          dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(art.contentHtml) }}
+        />
       </div>
     </div>
   );
