@@ -1,0 +1,12 @@
+# Local tooling / scratch — not part of the web app
+.claude/
+.agents/
+tools/
+
+# Design source assets (kept out of the app repo)
+separated_layers/
+separated_layers_png.zip
+
+# OS cruft
+.DS_Store
+Thumbs.db
