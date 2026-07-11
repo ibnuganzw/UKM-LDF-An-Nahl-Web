@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <div>
-      <Hero nextPrayerName={prayer.name} nextPrayerTime={prayer.time} />
+      <Hero />
 
       {/* QUICK STRIP */}
       <section className={styles.section}>

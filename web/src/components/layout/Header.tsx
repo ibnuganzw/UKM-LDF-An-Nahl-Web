@@ -57,7 +57,13 @@ export function Header() {
               Masuk
             </Link>
           )}
-          <button className={styles.hamburger} aria-label="Menu" onClick={() => setMenuOpen((v) => !v)}>
+          <button
+            className={styles.hamburger}
+            aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-main-menu"
+            onClick={() => setMenuOpen((v) => !v)}
+          >
             <span className={styles.hamburgerBar} />
             <span className={styles.hamburgerBar} />
             <span className={styles.hamburgerBarShort} />
@@ -66,7 +72,7 @@ export function Header() {
       </div>
 
       {menuOpen && (
-        <div className={styles.mobileMenu}>
+        <div id="mobile-main-menu" className={styles.mobileMenu}>
           {menuLinks.map((l) => (
             <Link
               key={l.label}

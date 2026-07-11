@@ -1,0 +1,35 @@
+.routeFallback {
+  min-height: 46vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.routeFallbackLine {
+  position: relative;
+  width: 120px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(232, 199, 102, .12);
+}
+
+.routeFallbackLine::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 42%;
+  border-radius: inherit;
+  background: var(--gold-gradient);
+  animation: routeProgress 1.15s ease-in-out infinite alternate;
+}
+
+@keyframes routeProgress {
+  from { transform: translateX(-15%); }
+  to { transform: translateX(155%); }
+}

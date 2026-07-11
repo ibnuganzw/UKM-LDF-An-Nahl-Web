@@ -36,7 +36,6 @@ export function Footer() {
       <div className={styles.bottomBar}>
         <div className={styles.bottomInner}>
           <span>© 1448 H / 2026 LDF An-Nahl · Fakultas Kedokteran Hewan USK</span>
-          <span>Prototype v2</span>
         </div>
       </div>
 

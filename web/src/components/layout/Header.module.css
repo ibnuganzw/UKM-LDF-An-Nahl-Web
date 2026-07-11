@@ -199,4 +199,9 @@
   .hamburger {
     display: flex;
   }
+
+  .loginBtn,
+  .accountPill {
+    display: none;
+  }
 }

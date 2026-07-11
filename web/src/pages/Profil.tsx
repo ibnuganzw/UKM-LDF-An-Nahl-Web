@@ -1,6 +1,5 @@
 import styles from './Profil.module.css';
 import { GlassCard, Hex } from '../components/ui';
-import { MISI_LIST, SEJARAH_ITEMS, VISI_TEXT } from '../data/org';
 import { soft } from '../lib/colors';
 import { quranText } from '../lib/quranText';
 import { useOrgPositions } from '../hooks/useOrgPositions';
@@ -9,12 +8,18 @@ function initialOf(name: string): string {
   return name.trim().charAt(0).toUpperCase() || '?';
 }
 
+function isPlaceholderName(name: string): boolean {
+  return /^Nama (Dosen|Ketua|Pengurus)/i.test(name.trim());
+}
+
 export default function Profil() {
   const { all } = useOrgPositions();
-  const dosenPembina = all.find((p) => p.tier === 0);
-  const ketuaUmum = all.find((p) => p.tier === 1);
-  const intiDuo = all.filter((p) => p.tier === 2);
+  const published = all.filter((p) => !isPlaceholderName(p.name));
+  const dosenPembina = published.find((p) => p.tier === 0);
+  const ketuaUmum = published.find((p) => p.tier === 1);
+  const intiDuo = published.filter((p) => p.tier === 2);
   const divisi = all.filter((p) => p.tier === 3);
+  const hasPublishedLeadership = Boolean(dosenPembina || ketuaUmum || intiDuo.length);
 
   return (
     <div className={styles.page}>
@@ -27,7 +32,20 @@ export default function Profil() {
         </p>
       </div>
 
-      <div className={styles.grid2}>
+      <figure className={styles.groupPhotoCard}>
+        <img
+          src="/assets/photos/profile-pengurus-2026-v1.jpg"
+          alt="Pengurus LDF An-Nahl FKH USK periode 2026/2027"
+          className={styles.groupPhoto}
+        />
+        <figcaption className={styles.groupPhotoCaption}>
+          <div className={styles.groupPhotoEyebrow}>Kepengurusan 2026/2027</div>
+          <div className={styles.groupPhotoTitle}>Wajah-wajah yang menghidupkan gerak An-Nahl.</div>
+          <p>Musyawarah Pergantian Pengurus LDF An-Nahl FKH USK.</p>
+        </figcaption>
+      </figure>
+
+      <div className={styles.identityGrid}>
         <GlassCard variant="featured" radius={24} padding="30px" borderColor="rgba(232,199,102,.3)" className={styles.maknaCard}>
           <div className={styles.maknaHex} />
           <div className={styles.cardEyebrow}>Makna Nama</div>
@@ -41,48 +59,19 @@ export default function Profil() {
           </p>
         </GlassCard>
 
-        <GlassCard radius={24} padding="30px">
-          <div className={styles.cardEyebrow}>Sejarah Singkat</div>
-          <div className={styles.timeline}>
-            {SEJARAH_ITEMS.map((s, i) => (
-              <div key={i} className={styles.timelineRow}>
-                <div className={styles.timelineRail}>
-                  <span className={styles.timelineDot} />
-                  {i < SEJARAH_ITEMS.length - 1 && <span className={styles.timelineLine} />}
-                </div>
-                <div className={styles.timelineBody}>
-                  <div className={styles.timelineTitle}>{s.title}</div>
-                  <div className={styles.timelineText}>{s.text}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </GlassCard>
-      </div>
-
-      <div className={styles.grid2b}>
-        <GlassCard variant="featured" radius={24} padding="30px" borderColor="rgba(232,199,102,.32)" background="linear-gradient(150deg,rgba(201,162,39,.16),rgba(255,255,255,.03))">
-          <div className={styles.cardEyebrowLight}>Visi</div>
-          <div className={styles.visiQuote}>"{VISI_TEXT}"</div>
-          <div className={styles.visiNote}>Teks contoh — sesuaikan dengan visi resmi organisasi.</div>
-        </GlassCard>
-
-        <GlassCard radius={24} padding="30px">
-          <div className={styles.cardEyebrow}>Misi</div>
-          <div className={styles.misiList}>
-            {MISI_LIST.map((m) => (
-              <div key={m.n} className={styles.misiRow}>
-                <span className={styles.misiNum}>{m.n}</span>
-                <span className={styles.misiText}>{m.text}</span>
-              </div>
-            ))}
-          </div>
+        <GlassCard radius={24} padding="30px" className={styles.spaceCard}>
+          <div className={styles.cardEyebrow}>Ruang Bertumbuh</div>
+          <div className={styles.spaceTitle}>Dakwah yang dekat dengan keseharian mahasiswa.</div>
+          <p className={styles.spaceText}>
+            An-Nahl menjadi ruang untuk belajar, saling menguatkan, mengelola kegiatan, dan merawat kehidupan
+            mushalla di lingkungan FKH USK.
+          </p>
         </GlassCard>
       </div>
 
       <div className={styles.strukturHead}>
         <div className={styles.eyebrow}>Struktur</div>
-        <h2 className={styles.strukturHeading}>Susunan Kepengurusan</h2>
+        <h2 className={styles.strukturHeading}>{hasPublishedLeadership ? 'Susunan Kepengurusan' : 'Bidang Gerak'}</h2>
       </div>
 
       <div className={styles.strukturWrap}>
