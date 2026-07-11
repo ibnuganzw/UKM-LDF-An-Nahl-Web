@@ -69,15 +69,16 @@ export default function Login() {
     <div className={styles.page}>
       <form className={styles.card} onSubmit={submit}>
         <div className={styles.head}>
-          <img src="/assets/logo.png" alt="Logo" className={styles.logo} />
+          <div className={styles.eyebrow}>Akun anggota</div>
           <h1 className={styles.title}>Ahlan wa sahlan</h1>
           <div className={styles.subtitle}>Masuk untuk melihat dashboard & absen kegiatan</div>
         </div>
 
         <div className={styles.form}>
           <div>
-            <div className={styles.fieldLabel}>NIM</div>
+            <label className={styles.fieldLabel} htmlFor="login-nim">NIM</label>
             <input
+              id="login-nim"
               className={styles.input}
               value={nim}
               onChange={(e) => setNim(e.target.value)}
@@ -87,8 +88,9 @@ export default function Login() {
             />
           </div>
           <div>
-            <div className={styles.fieldLabel}>Kata sandi</div>
+            <label className={styles.fieldLabel} htmlFor="login-password">Kata sandi</label>
             <input
+              id="login-password"
               type="password"
               className={styles.input}
               value={pass}
@@ -97,7 +99,7 @@ export default function Login() {
               autoComplete="current-password"
             />
           </div>
-          {error && <div className={styles.errorText}>{error}</div>}
+          {error && <div className={styles.errorText} role="alert">{error}</div>}
           <Button type="submit" variant="primary" fullWidth className={styles.submitBtn} disabled={submitting}>
             {submitting ? 'Memproses…' : 'Masuk'}
           </Button>

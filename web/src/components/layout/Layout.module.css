@@ -1,3 +1,19 @@
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.utilityMain {
+  --font-serif: var(--font-sans);
+  --radius-md: 14px;
+  --radius-lg: 16px;
+  --radius-xl: 18px;
+}
+
+.readerMain {
+  min-width: 0;
+}
+
 .routeFallback {
   min-height: 46vh;
   display: flex;

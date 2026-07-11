@@ -52,12 +52,6 @@ export default function Quran() {
     }
   }, [isSearchOpen]);
 
-  // Warm up the worker (fetch corpus + build index) as soon as the page opens so
-  // the first keystroke feels instant.
-  useEffect(() => {
-    primeQuranSearch();
-  }, []);
-
   useEffect(() => {
     controllerRef.current?.abort();
 
@@ -109,13 +103,19 @@ export default function Quran() {
 
   const highlighter = useMemo(() => createHighlighter(searchResponse?.query ?? ''), [searchResponse?.query]);
 
+  function openSearch() {
+    primeQuranSearch();
+    setIsSearchOpen(true);
+  }
+
   return (
     <main className={styles.page}>
       <section className={styles.intro} aria-labelledby="quran-title">
+        <h1 id="quran-title" className="srOnly">Al-Qur'an</h1>
         <div className={styles.calligraphyHeader} role="img" aria-label="Kaligrafi Al-Qur'anul Karim" />
 
         <div className={styles.introBody}>
-          <button type="button" className={styles.searchTrigger} onClick={() => setIsSearchOpen(true)}>
+          <button type="button" className={styles.searchTrigger} onClick={openSearch}>
             <svg className={styles.searchIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
@@ -182,6 +182,9 @@ export default function Quran() {
                   </label>
                 </div>
               </form>
+              <button type="button" className={styles.modalClose} aria-label="Tutup pencarian ayat" onClick={() => setIsSearchOpen(false)}>
+                <span aria-hidden="true">×</span>
+              </button>
             </div>
 
             {searchStatus !== 'idle' && (

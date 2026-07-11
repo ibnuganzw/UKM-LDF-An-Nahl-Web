@@ -1,12 +1,10 @@
 import DOMPurify from 'dompurify';
-import { useEffect, useMemo, useState, type CSSProperties, type FormEvent, type PointerEvent } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type FormEvent, type PointerEvent } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './QuranReader.module.css';
 import { Button, Hex } from '../components/ui';
 import { SurahHeader } from '../components/SurahHeader';
-import { SurahInfoDialog } from '../components/SurahInfoDialog';
 import { SURAHS } from '../data/surahs';
-import { SURAH_INFO } from '../data/surahInfo';
 import { useQuranAudioPlayer } from '../hooks/useQuranAudioPlayer';
 import { cx } from '../lib/cx';
 import { fetchQuranChapter, fetchQuranSupplements, getFallbackQuranVerses, mergeQuranSupplements } from '../lib/quranClient';
@@ -15,6 +13,10 @@ import { quranText } from '../lib/quranText';
 import { loadJSON, saveJSON } from '../lib/storage';
 import { scanTajweedClasses, TAJWEED_LEGEND, type TajweedLegendItem } from '../lib/tajweedLegend';
 import type { QuranReaderSettings, QuranVerse, Surah } from '../types';
+
+const LazySurahInfoDialog = lazy(() =>
+  import('../components/SurahInfoDialog').then((module) => ({ default: module.SurahInfoDialog })),
+);
 
 const ARABIC_INDIC_DIGITS = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
 const ARABIC_DISPLAY_STRIP_PATTERN = /[\u061c\u200b-\u200f\ufeff]/g;
@@ -425,7 +427,6 @@ export default function QuranReader() {
   );
   const [chapterState, setChapterState] = useState<ChapterState>(() => getInitialChapterState(rd.no));
   const revelationPlace = getRevelationPlace(rd.tempat);
-  const surahInfo = useMemo(() => SURAH_INFO.find((info) => info.no === rd.no), [rd.no]);
   const readerReady = chapterState.verses.length > 0;
   const tajweedClasses = useMemo(() => scanTajweedClasses(chapterState.verses), [chapterState.verses]);
   const quranPageFontCss = '';
@@ -860,7 +861,9 @@ export default function QuranReader() {
       )}
 
       {infoOpen && (
-        <SurahInfoDialog key={rd.no} surah={rd} info={surahInfo} revelationPlace={revelationPlace} onClose={() => setInfoOpen(false)} />
+        <Suspense fallback={<div className={styles.infoLoading} role="status">Menyiapkan informasi surah…</div>}>
+          <LazySurahInfoDialog key={rd.no} surah={rd} revelationPlace={revelationPlace} onClose={() => setInfoOpen(false)} />
+        </Suspense>
       )}
     </main>
   );

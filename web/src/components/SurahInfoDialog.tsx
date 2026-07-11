@@ -3,10 +3,10 @@ import styles from './SurahInfoDialog.module.css';
 import { Badge, Hex } from './ui';
 import { cx } from '../lib/cx';
 import type { Surah, SurahInfo, SurahInfoStruktur } from '../types';
+import { SURAH_INFO } from '../data/surahInfo';
 
 interface SurahInfoDialogProps {
   surah: Surah;
-  info?: SurahInfo;
   revelationPlace: string;
   onClose: () => void;
 }
@@ -39,9 +39,10 @@ function computeSegmentWidths(segments: SurahInfoStruktur[]): number[] {
   return spans.map((span) => (span / total) * 100);
 }
 
-export function SurahInfoDialog({ surah, info, revelationPlace, onClose }: SurahInfoDialogProps) {
+export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDialogProps) {
   const [activeTab, setActiveTab] = useState<TabId>('ringkasan');
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const info = SURAH_INFO.find((item) => item.no === surah.no);
 
   function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {

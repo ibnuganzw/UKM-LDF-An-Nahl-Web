@@ -7,7 +7,16 @@ export function Footer() {
       <div className={styles.inner}>
         <div className={styles.brandCol}>
           <div className={styles.brandRow}>
-            <img src="/assets/logo.png" alt="Logo" className={styles.logo} />
+            <img
+              src="/assets/logo-96.jpg"
+              srcSet="/assets/logo-96.jpg 1x, /assets/logo-192.jpg 2x"
+              width="42"
+              height="42"
+              alt="Logo LDF An-Nahl"
+              className={styles.logo}
+              loading="lazy"
+              decoding="async"
+            />
             <div>
               <div className={styles.brandName}>LDF An-Nahl</div>
               <div className={styles.brandSub}>FKH USK</div>

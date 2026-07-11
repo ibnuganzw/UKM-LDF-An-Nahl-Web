@@ -99,10 +99,10 @@ export default function Register() {
       <div className={styles.page}>
         <div className={styles.card}>
           <div className={styles.head}>
-            <span className={styles.glyph}>ن</span>
+            <div className={styles.eyebrow}>Pendaftaran berhasil</div>
             <h1 className={styles.title}>Cek email kamu</h1>
           </div>
-          <p className={styles.successText}>{checkEmailMessage}</p>
+          <p className={styles.successText} role="status">{checkEmailMessage}</p>
         </div>
       </div>
     );
@@ -112,15 +112,16 @@ export default function Register() {
     <div className={styles.page}>
       <form className={styles.card} onSubmit={submit}>
         <div className={styles.head}>
-          <span className={styles.glyph}>ن</span>
-          <h1 className={styles.title}>Gabung ke koloni</h1>
+          <div className={styles.eyebrow}>Keanggotaan</div>
+          <h1 className={styles.title}>Bergabung dengan An-Nahl</h1>
           <div className={styles.subtitle}>Daftar sebagai anggota LDF An-Nahl</div>
         </div>
 
         <div className={styles.form}>
           <div>
-            <div className={styles.fieldLabel}>Nama lengkap</div>
+            <label className={styles.fieldLabel} htmlFor="register-name">Nama lengkap</label>
             <input
+              id="register-name"
               className={styles.input}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -128,8 +129,9 @@ export default function Register() {
             />
           </div>
           <div>
-            <div className={styles.fieldLabel}>Email</div>
+            <label className={styles.fieldLabel} htmlFor="register-email">Email</label>
             <input
+              id="register-email"
               type="email"
               className={styles.input}
               value={email}
@@ -140,8 +142,9 @@ export default function Register() {
           </div>
           <div className={styles.row2}>
             <div>
-              <div className={styles.fieldLabel}>NIM</div>
+              <label className={styles.fieldLabel} htmlFor="register-nim">NIM</label>
               <input
+                id="register-nim"
                 className={styles.input}
                 value={nim}
                 onChange={(e) => setNim(e.target.value)}
@@ -150,8 +153,9 @@ export default function Register() {
               />
             </div>
             <div>
-              <div className={styles.fieldLabel}>Angkatan</div>
+              <label className={styles.fieldLabel} htmlFor="register-year">Angkatan</label>
               <input
+                id="register-year"
                 className={styles.input}
                 value={angkatan}
                 onChange={(e) => setAngkatan(e.target.value)}
@@ -161,8 +165,9 @@ export default function Register() {
             </div>
           </div>
           <div>
-            <div className={styles.fieldLabel}>Kata sandi</div>
+            <label className={styles.fieldLabel} htmlFor="register-password">Kata sandi</label>
             <input
+              id="register-password"
               type="password"
               className={styles.input}
               value={pass}
@@ -171,7 +176,7 @@ export default function Register() {
               autoComplete="new-password"
             />
           </div>
-          {error && <div className={styles.errorText}>{error}</div>}
+          {error && <div className={styles.errorText} role="alert">{error}</div>}
           <Button type="submit" variant="primary" fullWidth className={styles.submitBtn} disabled={submitting}>
             {submitting ? 'Memproses…' : 'Daftar'}
           </Button>

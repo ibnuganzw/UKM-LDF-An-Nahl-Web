@@ -13,6 +13,7 @@ export function Hero() {
           src="/assets/photos/hero-mushalla-desktop-v1.jpg"
           alt="Mushalla Fakultas Kedokteran Hewan Universitas Syiah Kuala"
           fetchPriority="high"
+          decoding="async"
         />
       </picture>
 
