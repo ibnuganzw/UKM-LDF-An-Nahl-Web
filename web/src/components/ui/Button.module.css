@@ -1,4 +1,6 @@
 .btn {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -9,7 +11,23 @@
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
-  transition: box-shadow .25s ease, transform .25s ease, background .25s ease, border-color .25s ease, color .25s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
+  transition: box-shadow .24s var(--ease-premium), transform .18s var(--ease-premium), background .24s ease, border-color .24s ease, color .24s ease;
+}
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, rgba(255, 255, 255, .16), transparent 34%);
+  opacity: .55;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px) scale(.985) !important;
+  transition-duration: 70ms;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, .2);
 }
 
 .btn:disabled {
@@ -31,7 +49,8 @@
 .primary {
   background: var(--gold-gradient);
   color: var(--text-on-gold);
-  box-shadow: 0 16px 40px -12px rgba(201, 162, 39, .6);
+  border: 1px solid rgba(244, 219, 138, .52);
+  box-shadow: 0 16px 40px -14px rgba(201, 162, 39, .72), inset 0 1px 0 rgba(255, 255, 255, .38);
 }
 .primary:hover:not(:disabled) {
   box-shadow: 0 22px 50px -12px rgba(232, 199, 102, .85);
@@ -40,7 +59,7 @@
 
 .secondary {
   border: 1px solid rgba(245, 239, 220, .3);
-  background: rgba(255, 255, 255, .04);
+  background: linear-gradient(145deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .025));
   color: var(--text-heading);
 }
 .secondary:hover:not(:disabled) {

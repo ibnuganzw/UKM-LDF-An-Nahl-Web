@@ -32,6 +32,7 @@
   --surface-1: #101936;
   --surface-2: #141F40;
   --surface-featured: #182342;
+  --surface-luxe: linear-gradient(145deg, rgba(27, 40, 78, .96), rgba(12, 21, 48, .98));
   --surface-border: rgba(169, 179, 209, .14);
   --surface-border-strong: rgba(232, 199, 102, .25);
   --glass-fill: rgba(255, 255, 255, .045);
@@ -51,6 +52,9 @@
   --gold-light: #E8C766;
   --gold-dark: #C9A227;
   --gold-gradient: linear-gradient(135deg, #E8C766, #C9A227);
+  --gold-highlight: #F4DB8A;
+  --shadow-luxe: 0 26px 64px -42px rgba(0, 0, 0, .95), 0 18px 48px -38px rgba(201, 162, 39, .58);
+  --ease-premium: cubic-bezier(.2, .8, .2, 1);
 
   /* Status / semantic */
   --success-light: #5CCBA0;

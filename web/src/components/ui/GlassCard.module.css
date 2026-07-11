@@ -1,22 +1,40 @@
 .card {
-  background: var(--card-bg, var(--surface-1));
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--card-bg, var(--surface-luxe));
   border: 1px solid var(--card-border, var(--surface-border));
   border-radius: var(--card-radius, var(--radius-lg));
   padding: var(--card-padding, 24px);
-  box-shadow: var(--card-shadow, 0 16px 40px -36px rgba(0, 0, 0, .9));
+  box-shadow: var(--card-shadow, var(--shadow-luxe)), inset 0 1px 0 rgba(255, 255, 255, .065);
   position: relative;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(232, 199, 102, .105), transparent 34%),
+    linear-gradient(110deg, rgba(255, 255, 255, .045), transparent 38%);
 }
 
 .hover {
   cursor: pointer;
-  transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
+  transition: transform .28s var(--ease-premium), border-color .28s ease, background .28s ease, box-shadow .28s ease;
 }
 
 .hover:hover {
-  transform: translateY(-2px);
-  border-color: rgba(232, 199, 102, .34);
-  background: var(--card-bg, var(--surface-2));
-  box-shadow: 0 20px 42px -34px rgba(0, 0, 0, .9);
+  transform: translateY(-4px);
+  border-color: rgba(232, 199, 102, .42);
+  background: var(--card-bg, linear-gradient(145deg, #1A2850, #101A39));
+  box-shadow: 0 30px 70px -42px rgba(0, 0, 0, .96), 0 22px 52px -38px rgba(232, 199, 102, .72), inset 0 1px 0 rgba(255, 255, 255, .09);
+}
+
+.hover:active {
+  transform: translateY(-1px) scale(.992);
+  transition-duration: 80ms;
 }
 
 .asLink {

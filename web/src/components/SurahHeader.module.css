@@ -18,6 +18,7 @@
   line-height: 1;
   text-decoration: none;
   transform: translateX(4.25%);
+  filter: drop-shadow(0 18px 32px rgba(0, 0, 0, .28)) drop-shadow(0 0 22px rgba(232, 199, 102, .1));
 }
 
 .frameGlyph {
@@ -156,7 +157,7 @@
   font-size: clamp(40px, 8vw, 80px);
   font-feature-settings: "liga" 1, "calt" 1;
   line-height: 1;
-  text-shadow: none;
+  text-shadow: 0 14px 32px rgba(0, 0, 0, .3), 0 0 22px rgba(232, 199, 102, .11);
 }
 
 @media (max-width: 760px) {

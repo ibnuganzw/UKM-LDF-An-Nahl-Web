@@ -8,8 +8,14 @@
   min-height: 44px;
   letter-spacing: .02em;
   transition: transform .18s ease, border-color .18s ease, background .18s ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07);
 }
 
 .chip:hover {
   transform: translateY(-1px);
+}
+
+.chip:active {
+  transform: translateY(1px) scale(.975);
+  transition-duration: 70ms;
 }
