@@ -16,6 +16,11 @@ const ALLOWED_ORIGINS = new Set(
 );
 
 const GENERIC_ERROR = 'NIM atau kata sandi salah';
+// Only ever surfaced AFTER a correct NIM+password pair — an unconfirmed-email
+// error can't be triggered without already knowing the credentials, so it isn't
+// a NIM/password oracle the way the generic message guards against.
+const EMAIL_NOT_CONFIRMED_ERROR =
+  'Email kamu belum dikonfirmasi. Cek kotak masuk email untuk link konfirmasi, lalu coba masuk lagi.';
 const NIM_PATTERN = /^[0-9]{1,20}$/;
 
 function corsHeaders(origin: string | null): Record<string, string> {
@@ -94,6 +99,12 @@ Deno.serve(async (req) => {
   });
 
   if (signInError || !signInData.session) {
+    // "email_not_confirmed" is the one non-generic case worth distinguishing:
+    // the credentials were right, the account just isn't confirmed yet, so a
+    // "wrong NIM/password" message would send the user chasing the wrong fix.
+    if (signInError?.code === 'email_not_confirmed') {
+      return jsonResponse({ ok: false, error: EMAIL_NOT_CONFIRMED_ERROR }, 200, headers);
+    }
     return jsonResponse({ ok: false, error: GENERIC_ERROR }, 200, headers);
   }
 

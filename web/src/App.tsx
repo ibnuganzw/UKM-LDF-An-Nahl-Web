@@ -1,3 +1,4 @@
+import { lazy } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { RequireAdmin, RequireAuth } from './components/RouteGuards';
@@ -6,9 +7,6 @@ import Agenda from './pages/Agenda';
 import AgendaDetail from './pages/AgendaDetail';
 import Profil from './pages/Profil';
 import Shalat from './pages/Shalat';
-import Quran from './pages/Quran';
-import QuranReader from './pages/QuranReader';
-import JuzReader from './pages/JuzReader';
 import Konten from './pages/Konten';
 import Artikel from './pages/Artikel';
 import Login from './pages/Login';
@@ -16,16 +14,24 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import PendingApproval from './pages/PendingApproval';
-import Dashboard from './pages/Dashboard';
-import Scan from './pages/Scan';
-import Admin from './pages/Admin';
-import AdminQR from './pages/AdminQR';
-import AdminAnggota from './pages/AdminAnggota';
-import AdminAgendaForm from './pages/AdminAgendaForm';
-import AdminAgendaRoster from './pages/AdminAgendaRoster';
-import AdminArtikel from './pages/AdminArtikel';
-import AdminArtikelEditor from './pages/AdminArtikelEditor';
-import AdminStruktur from './pages/AdminStruktur';
+
+// Code-split the heavy, rarely-first-loaded routes out of the initial bundle:
+// the Qur'an reader cluster (large verse renderers + tajweed sanitizer) and the
+// whole admin panel (tiptap, mammoth, qrcode). Layout wraps <Outlet/> in a
+// Suspense boundary so these load on demand. Public landing pages stay eager.
+const Quran = lazy(() => import('./pages/Quran'));
+const QuranReader = lazy(() => import('./pages/QuranReader'));
+const JuzReader = lazy(() => import('./pages/JuzReader'));
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Scan = lazy(() => import('./pages/Scan'));
+const Admin = lazy(() => import('./pages/Admin'));
+const AdminQR = lazy(() => import('./pages/AdminQR'));
+const AdminAnggota = lazy(() => import('./pages/AdminAnggota'));
+const AdminAgendaForm = lazy(() => import('./pages/AdminAgendaForm'));
+const AdminAgendaRoster = lazy(() => import('./pages/AdminAgendaRoster'));
+const AdminArtikel = lazy(() => import('./pages/AdminArtikel'));
+const AdminArtikelEditor = lazy(() => import('./pages/AdminArtikelEditor'));
+const AdminStruktur = lazy(() => import('./pages/AdminStruktur'));
 
 export default function App() {
   return (

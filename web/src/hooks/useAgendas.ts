@@ -42,7 +42,22 @@ function toAgenda(row: AgendaRow): Agenda {
   };
 }
 
-function enrich(agenda: Agenda, attendedIds: Set<string>, registeredIds: Set<string>): EnrichedAgenda {
+// Mirrors the server-side check_in() window: a QR session only counts as live
+// while now (Asia/Jakarta wall clock) is at or before event end + 2h grace.
+// Indonesia has no DST, so pinning the event end to +07:00 is exact and stays
+// correct regardless of the viewer's own device timezone. Without this, a badge
+// derived from qr_opened_at alone stays lit forever once an admin forgets to
+// close the session — even though the DB would already reject any check-in.
+const QR_GRACE_MS = 2 * 60 * 60 * 1000;
+
+function isQrWindowOpen(agenda: Agenda, nowMs: number): boolean {
+  if (!agenda.qrOpenedAt) return false;
+  const end = new Date(`${agenda.eventDate}T${agenda.endTime}:00+07:00`).getTime();
+  if (Number.isNaN(end)) return true; // unparseable time — fall back to "open" rather than hide a live QR
+  return nowMs <= end + QR_GRACE_MS;
+}
+
+function enrich(agenda: Agenda, attendedIds: Set<string>, registeredIds: Set<string>, nowMs: number): EnrichedAgenda {
   const date = new Date(`${agenda.eventDate}T00:00:00`);
   const today = startOfToday().getTime();
   const t = date.getTime();
@@ -51,7 +66,7 @@ function enrich(agenda: Agenda, attendedIds: Set<string>, registeredIds: Set<str
   return {
     ...agenda,
     date,
-    typeColor: TYPE_COLORS[agenda.type],
+    typeColor: TYPE_COLORS[agenda.type] ?? '#9AA8C9',
     dateLabel: formatAgendaDate(date),
     dayNum: date.getDate(),
     monShort: MON3[date.getMonth()],
@@ -61,7 +76,7 @@ function enrich(agenda: Agenda, attendedIds: Set<string>, registeredIds: Set<str
     timeLabel: `${agenda.startTime}–${agenda.endTime} WIB`,
     hasPemateri: !!agenda.pemateri,
     footerLabel: agenda.pemateri ? `Pemateri: ${agenda.pemateri}` : `PJ: ${agenda.pj}`,
-    qrActive: !!agenda.qrOpenedAt,
+    qrActive: isQrWindowOpen(agenda, nowMs),
     attended: attendedIds.has(agenda.id),
     registered: registeredIds.has(agenda.id),
   };
@@ -119,16 +134,19 @@ export function useAgendas(): AgendaCollections {
 
   // A page can stay mounted across midnight with no data change at all —
   // ticking once a minute (not every second, day labels don't need that)
-  // makes the memo below re-check the actual calendar day.
+  // makes the memo below re-check the actual calendar day and expire the QR
+  // window (isQrWindowOpen) without a manual refresh.
   const now = useNow(60_000);
-  const dayKey = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+  const minuteKey = Math.floor(now.getTime() / 60_000);
 
   return useMemo(() => {
+    const nowMs = now.getTime();
     const today = startOfToday().getTime();
-    const all = agendas.map((a) => enrich(a, attendedIds, registeredIds));
+    const all = agendas.map((a) => enrich(a, attendedIds, registeredIds, nowMs));
     const upcoming = all.filter((a) => a.date.getTime() >= today).sort((x, y) => x.date.getTime() - y.date.getTime());
     const past = all.filter((a) => a.date.getTime() < today).sort((x, y) => y.date.getTime() - x.date.getTime());
     const byId = (id: string | null | undefined) => all.find((a) => a.id === id);
     return { all, upcoming, past, soon: upcoming.slice(0, 3), byId, loading, refresh };
-  }, [agendas, attendedIds, registeredIds, dayKey, loading, refresh]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [agendas, attendedIds, registeredIds, minuteKey, loading, refresh]);
 }

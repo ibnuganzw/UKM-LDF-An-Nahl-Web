@@ -48,7 +48,11 @@ export default function AdminAnggota() {
   const adminRows = members.filter((m) => m.role === 'admin' || m.role === 'super_admin');
   const promotableRows = members.filter((m) => m.role === 'member' && m.status === 'active');
   const adminSeatsUsed = adminRows.filter((m) => m.role === 'admin').length;
-  const rosterRows = members.filter((m) => m.role === 'member' && m.status === 'active');
+  // "Semua Anggota" means everyone active, admins included — not just plain
+  // members. The academic override (Aktif/Alumni) applies to member & admin
+  // rows alike server-side; super_admin is exempt from the formula, so it shows
+  // as permanently active with no toggle.
+  const rosterRows = members.filter((m) => m.status === 'active');
 
   const runAction = async (id: string, action: () => PromiseLike<{ error: { message: string } | null }>) => {
     setActionError(null);
@@ -209,22 +213,30 @@ export default function AdminAnggota() {
                   <div className={styles.rowMeta}>NIM {m.nim} · Angkatan {m.angkatan_year}</div>
                 </div>
                 <div className={styles.rowActions}>
+                  {m.role === 'super_admin' && (
+                    <Badge color="#E8C766" uppercase={false}>Pemilik</Badge>
+                  )}
+                  {m.role === 'admin' && (
+                    <Badge color="#8FAAF5" uppercase={false}>Admin</Badge>
+                  )}
                   <Badge color={active ? '#5CCBA0' : '#8E99BB'} uppercase={false}>
                     {active ? 'Aktif' : 'Alumni'}
                   </Badge>
-                  {m.academic_override && (
+                  {m.academic_override && m.role !== 'super_admin' && (
                     <Badge color="#E8C766" uppercase={false}>Override manual</Badge>
                   )}
-                  {active ? (
-                    <button className={styles.rejectBtn} disabled={busyId === m.id} onClick={() => setOverride(m.id, 'inactive')}>
-                      Set Alumni
-                    </button>
-                  ) : (
-                    <button className={styles.approveBtn} disabled={busyId === m.id} onClick={() => setOverride(m.id, 'active')}>
-                      Set Aktif
-                    </button>
-                  )}
-                  {m.academic_override && (
+                  {/* super_admin is always active by the formula — an override is a no-op, so no toggle. */}
+                  {m.role !== 'super_admin' &&
+                    (active ? (
+                      <button className={styles.rejectBtn} disabled={busyId === m.id} onClick={() => setOverride(m.id, 'inactive')}>
+                        Set Alumni
+                      </button>
+                    ) : (
+                      <button className={styles.approveBtn} disabled={busyId === m.id} onClick={() => setOverride(m.id, 'active')}>
+                        Set Aktif
+                      </button>
+                    ))}
+                  {m.academic_override && m.role !== 'super_admin' && (
                     <button className={styles.rejectBtn} disabled={busyId === m.id} onClick={() => setOverride(m.id, null)}>
                       Reset Otomatis
                     </button>
