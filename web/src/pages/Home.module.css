@@ -13,7 +13,27 @@
 .quickCard {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 15px;
+}
+
+.quickIcon {
+  width: 46px;
+  height: 46px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(232, 199, 102, .22);
+  border-radius: 14px;
+  background: rgba(232, 199, 102, .08);
+  color: var(--gold-light);
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.quickIconArabic {
+  font-family: var(--font-arabic-ui);
+  font-size: 21px;
 }
 
 .quickLabel {
@@ -77,6 +97,55 @@
   gap: 18px;
 }
 
+.homeEmpty {
+  grid-column: 1 / -1;
+  min-height: 118px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 26px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+
+.homeLoading {
+  grid-column: 1 / -1;
+  min-height: 118px;
+  display: flex;
+  align-items: center;
+  padding: 24px 26px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(100deg, transparent 28%, rgba(255, 255, 255, .035) 42%, transparent 56%),
+    var(--surface-1);
+  background-size: 240% 100%;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 700;
+  animation: homeLoadingSweep 1.5s ease-in-out infinite;
+}
+
+@keyframes homeLoadingSweep {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+.homeEmptyTitle {
+  color: var(--text-heading);
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.homeEmpty p {
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
 .agendaCard {
   display: flex;
   flex-direction: column;
@@ -135,28 +204,6 @@
   padding: clamp(44px, 7vw, 80px) clamp(24px, 6vw, 80px);
 }
 
-.quranBandTexture {
-  position: absolute;
-  inset: 0;
-  opacity: .045;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66L28 100' fill='none' stroke='%23E8C766' stroke-width='1'/%3E%3Cpath d='M28 0L28 34L0 50L0 84L28 100L56 84L56 50L28 34' fill='none' stroke='%23E8C766' stroke-width='1'/%3E%3C/svg%3E");
-  background-size: 42px 75px;
-  border-radius: inherit;
-}
-
-.quranBandGlow {
-  position: absolute;
-  top: -70px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 420px;
-  max-width: calc(100vw - 48px);
-  height: 280px;
-  background: radial-gradient(ellipse, rgba(232, 199, 102, .22), transparent 65%);
-  filter: blur(50px);
-  pointer-events: none;
-}
-
 .quranBandInner {
   position: relative;
 }
@@ -209,6 +256,14 @@
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.accentDot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--gold-light);
 }
 
 .kontenName {
@@ -324,19 +379,6 @@
   padding: clamp(30px, 4.5vw, 46px);
 }
 
-.joinHexes {
-  position: absolute;
-  top: -26px;
-  right: -14px;
-  display: flex;
-  gap: 2px;
-  opacity: .5;
-}
-
-.joinHex2 {
-  margin-top: 32px;
-}
-
 .joinHeading {
   font-family: var(--font-serif);
   font-weight: 600;
@@ -359,5 +401,31 @@
 
   .dividerSection {
     padding: 32px 18px 0;
+  }
+
+  .quickGrid {
+    gap: 12px;
+  }
+
+  .quickCard {
+    padding: 18px 20px !important;
+  }
+
+  .quickLabel {
+    font-size: 10.5px;
+    letter-spacing: .14em;
+  }
+
+  .homeEmpty {
+    min-height: 0;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+  }
+
+  .kontenBlurb,
+  .joinBody {
+    font-size: 14.5px;
   }
 }

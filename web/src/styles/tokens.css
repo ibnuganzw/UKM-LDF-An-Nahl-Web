@@ -29,6 +29,11 @@
   --bg-deep: #070E22;
   --bg-deeper: #060D20;
   --bg-menu-panel: #0B1430;
+  --surface-1: #101936;
+  --surface-2: #141F40;
+  --surface-featured: #182342;
+  --surface-border: rgba(169, 179, 209, .14);
+  --surface-border-strong: rgba(232, 199, 102, .25);
   --glass-fill: rgba(255, 255, 255, .045);
   --glass-fill-soft: rgba(255, 255, 255, .04);
   --glass-fill-faint: rgba(255, 255, 255, .03);
@@ -78,10 +83,10 @@
   --font-surah-name: 'SurahNameV4', var(--font-arabic-ui);
 
   /* Radii */
-  --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 24px;
-  --radius-xl: 28px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
   --radius-pill: 999px;
 
   /* Shape */

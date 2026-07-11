@@ -1,13 +1,13 @@
 .chip {
   border: 1px solid;
   font-weight: 800;
-  font-size: 13px;
-  padding: 9px 16px;
+  font-size: 13.5px;
+  padding: 10px 17px;
   border-radius: var(--radius-pill);
   cursor: pointer;
-  min-height: 40px;
+  min-height: 44px;
   letter-spacing: .02em;
-  transition: transform .2s ease;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
 }
 
 .chip:hover {

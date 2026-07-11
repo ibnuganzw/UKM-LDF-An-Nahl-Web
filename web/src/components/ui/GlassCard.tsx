@@ -20,9 +20,9 @@ export interface GlassCardProps {
   children?: ReactNode;
 }
 
-const FEATURED_BG = 'linear-gradient(150deg, rgba(201,162,39,.14), rgba(255,255,255,.03))';
-const FEATURED_BORDER = 'rgba(232,199,102,.3)';
-const FEATURED_SHADOW = 'inset 0 1px 0 rgba(255,255,255,.07)';
+const FEATURED_BG = 'linear-gradient(145deg, rgba(232,199,102,.11), rgba(20,31,64,.98) 58%)';
+const FEATURED_BORDER = 'rgba(232,199,102,.26)';
+const FEATURED_SHADOW = '0 20px 48px -38px rgba(0,0,0,.9)';
 
 export function GlassCard({
   variant = 'default',

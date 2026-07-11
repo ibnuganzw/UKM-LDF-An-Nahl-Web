@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import styles from './Home.module.css';
 import { Hero } from '../components/home/Hero';
-import { Badge, Button, Divider, GlassCard, Hex, SectionHeader } from '../components/ui';
+import { Badge, Button, Divider, GlassCard, SectionHeader } from '../components/ui';
 import { useAgendas } from '../hooks/useAgendas';
 import { useArticles } from '../hooks/useArticles';
 import { useNow } from '../hooks/useNow';
@@ -34,7 +34,7 @@ function getReminder(now: Date) {
 }
 
 export default function Home() {
-  const { soon, upcoming } = useAgendas();
+  const { soon, upcoming, loading: agendasLoading } = useAgendas();
   const { all: articles } = useArticles();
   const now = useNow();
   const schedule = usePrayerSchedule(now);
@@ -56,7 +56,7 @@ export default function Home() {
       <section className={styles.section}>
         <div className={`rv ${styles.quickGrid}`}>
           <GlassCard to="/shalat" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
-            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={20} fontFamily="var(--font-arabic-ui)">☾</Hex>
+            <div className={styles.quickIcon} aria-hidden="true">☾</div>
             <div style={{ minWidth: 0 }}>
               <div className={styles.quickLabel}>Menuju {prayer.name}</div>
               <div className={`cdGlow ${styles.quickValue}`}>{prayer.countdown}</div>
@@ -64,9 +64,9 @@ export default function Home() {
           </GlassCard>
 
           <GlassCard to="/agenda" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
-            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={reminder ? 22 : 16}>
+            <div className={styles.quickIcon} aria-hidden="true">
               {reminder ? reminder.icon : (nextAgenda ? nextAgenda.dayNum : '–')}
-            </Hex>
+            </div>
             <div style={{ minWidth: 0 }}>
               <div className={styles.quickLabel}>{reminder ? reminder.label : `Agenda terdekat · ${nextAgenda ? nextAgenda.relLabel : ''}`}</div>
               <div className={styles.quickValueTitle}>{reminder ? reminder.title : (nextAgenda ? nextAgenda.title : 'Belum ada agenda')}</div>
@@ -74,7 +74,7 @@ export default function Home() {
           </GlassCard>
 
           <GlassCard to="/quran" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
-            <Hex width={46} height={51} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={21} fontFamily="var(--font-arabic-ui)">ق</Hex>
+            <div className={`${styles.quickIcon} ${styles.quickIconArabic}`} aria-hidden="true">ق</div>
             <div style={{ minWidth: 0 }}>
               <div className={styles.quickLabel}>Al-Qur'an</div>
               <div className={styles.quickValueTitle}>Mulai dari Al-Fatihah</div>
@@ -115,6 +115,16 @@ export default function Home() {
               <div className={styles.agendaFooter}>{a.footerLabel}</div>
             </GlassCard>
           ))}
+          {agendasLoading && <div className={styles.homeLoading} role="status">Memuat agenda…</div>}
+          {!agendasLoading && soon.length === 0 && (
+            <div className={styles.homeEmpty}>
+              <div>
+                <div className={styles.homeEmptyTitle}>Agenda baru sedang disiapkan.</div>
+                <p>Pantau jadwal kajian, mentoring, dan kegiatan An-Nahl dari halaman Agenda.</p>
+              </div>
+              <Link to="/agenda" className={styles.linkMore}>Buka Agenda →</Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -122,8 +132,6 @@ export default function Home() {
       <section className={styles.quranBandSection}>
         <div className="rv">
           <GlassCard radius={30} borderColor="rgba(232,199,102,.22)" className={styles.quranBand}>
-            <div className={styles.quranBandTexture} />
-            <div className={`breathB ${styles.quranBandGlow}`} />
             <div className={styles.quranBandInner}>
               <div className={styles.bismillah} dir="rtl" lang="ar">
                 {quranText('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ')}
@@ -148,7 +156,7 @@ export default function Home() {
           {catCards.map((c) => (
             <GlassCard key={c.name} radius={22} padding="28px" className={styles.kontenCard}>
               <div className={styles.kontenNameRow}>
-                <Hex width={12} height={13} bg="#E8C766" glow />
+                <span className={styles.accentDot} aria-hidden="true" />
                 <span className={styles.kontenName}>{c.name}</span>
               </div>
               <p className={styles.kontenBlurb}>{c.blurb}</p>
@@ -182,10 +190,6 @@ export default function Home() {
         </div>
         <div className="rv">
           <GlassCard variant="featured" radius={26} className={styles.joinCard} style={{ height: '100%' }}>
-            <div className={styles.joinHexes}>
-              <Hex width={56} height={62} bg="rgba(232,199,102,.25)" />
-              <Hex width={56} height={62} bg="rgba(232,199,102,.12)" className={styles.joinHex2} />
-            </div>
             <div className={styles.quickLabel} style={{ color: '#E8C766', letterSpacing: '.26em' }}>Bergabung</div>
             <div className={styles.joinHeading}>Satu sarang, satu tujuan. Jadilah bagian dari koloni dakwah FKH.</div>
             <p className={styles.joinBody}>Open Recruitment anggota baru dibuka setiap awal kepengurusan. Daftarkan dirimu dan tumbuh bersama.</p>
