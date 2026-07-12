@@ -54,7 +54,7 @@ export default function Dashboard() {
       </div>
 
       <div className={styles.statGrid}>
-        <GlassCard variant="featured" radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.32)" background="linear-gradient(150deg,rgba(201,162,39,.18),rgba(255,255,255,.03))">
+        <GlassCard variant="featured" radius={20} padding="22px 24px">
           <div className={styles.statLabel} style={{ color: '#C9A227' }}>Total kehadiran</div>
           <div className={styles.statValue}>{histRows.length}</div>
           <div className={styles.statSub} style={{ color: '#A9B3D1' }}>kegiatan tercatat</div>
@@ -123,8 +123,6 @@ export default function Dashboard() {
             variant="featured"
             radius={28}
             padding="22px 24px"
-            borderColor="rgba(232,199,102,.32)"
-            background="linear-gradient(150deg,rgba(201,162,39,.18),rgba(255,255,255,.03))"
             to="/quran"
             className={styles.quranBanner}
           >

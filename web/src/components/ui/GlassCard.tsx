@@ -45,7 +45,10 @@ export function GlassCard({
     '--card-bg': background ?? (featured ? FEATURED_BG : undefined),
     '--card-border': borderColor ?? (featured ? FEATURED_BORDER : undefined),
     '--card-shadow': shadow ?? (featured ? FEATURED_SHADOW : undefined),
-    '--card-wash': featured ? FEATURED_WASH : undefined,
+    // A caller supplying its own `background` is opting out of the featured
+    // look wholesale — forcing the wash on top regardless used to layer it
+    // over gradients it was never designed against (see Dashboard/Shalat).
+    '--card-wash': !background && featured ? FEATURED_WASH : undefined,
     '--card-radius': radius !== undefined ? `${radius}px` : undefined,
     '--card-padding': padding,
     '--card-blur': blur !== undefined ? `${blur}px` : undefined,

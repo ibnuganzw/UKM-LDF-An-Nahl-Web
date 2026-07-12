@@ -221,14 +221,22 @@ html.rvReady .rvStagger.rvIn > *:nth-child(n+4) {
   animation-delay: 330ms;
 }
 
-/* Reduced motion only disables smooth-scroll and the JS-gated scroll
+/* Reduced motion only disables smooth-scroll here and the JS-gated scroll
    reveal (reveal.ts checks the same media query before adding `rvReady`,
    so .rv never even starts animating). Ordinary hover/press feedback
    (buttons, cards, nav) and small ambient drift (hero bees/chip/glow)
    are intentionally left alone: those are the small, user-triggered,
    non-looping-at-scale interactions this preference isn't meant to
    strip — killing them site-wide (the previous blanket `* { duration:
-   .01ms }` rule) made every hover/press read as a flat, motionless snap. */
+   .01ms }` rule) made every hover/press read as a flat, motionless snap.
+   Continuous *positional* sweeps with no user trigger — loading
+   skeletons, the route-change progress bar — are the other side of that
+   line and are NOT exempted; each is frozen locally via its own
+   `@media (prefers-reduced-motion: reduce) { animation: none }` next to
+   its keyframes (.homeLoading, .loadingRow, .loadingCard,
+   .routeFallbackLine::after) rather than here, since CSS modules
+   localize animation-name references and can't share a rule from this
+   plain global stylesheet. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto !important;

@@ -63,6 +63,15 @@
   to { background-position: -100% 0; }
 }
 
+/* Unlike the small ambient drift globals.css exempts from reduced-motion
+   (hero bees/glow), this is continuous positional sweeping — freeze it in
+   place instead; the skeleton shape alone still reads as "loading". */
+@media (prefers-reduced-motion: reduce) {
+  .loadingRow {
+    animation: none;
+  }
+}
+
 .row {
   display: flex;
   align-items: center;

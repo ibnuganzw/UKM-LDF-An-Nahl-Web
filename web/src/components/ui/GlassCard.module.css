@@ -1,7 +1,9 @@
 .card {
   isolation: isolate;
   overflow: hidden;
-  background: var(--card-bg, var(--surface-1));
+  background: var(--card-bg, rgba(16, 25, 54, .82));
+  backdrop-filter: blur(var(--card-blur, 18px));
+  -webkit-backdrop-filter: blur(var(--card-blur, 18px));
   border: 1px solid var(--card-border, var(--surface-border));
   border-radius: var(--card-radius, var(--radius-lg));
   padding: var(--card-padding, 24px);
@@ -12,11 +14,17 @@
 /* Gold wash is opt-in (set by GlassCard's `featured` variant via
    --card-wash) rather than automatic — a plain card doesn't need a tint
    to look intentional, and a wash on every card left nothing to look
-   "featured" when one actually needed to stand out. */
+   "featured" when one actually needed to stand out.
+   z-index: -1 (not 0) is load-bearing: `.card` establishes a stacking
+   context via `isolation: isolate`, and within it a z-index:0 positioned
+   element paints ABOVE plain static children, not behind them — at 0
+   this wash rendered on top of the card's own text. -1 puts it in the
+   "negative descendants" paint step, which is the one step that runs
+   before ordinary in-flow content. */
 .card::before {
   content: '';
   position: absolute;
-  z-index: 0;
+  z-index: -1;
   inset: 0;
   pointer-events: none;
   background: var(--card-wash, none);
@@ -28,11 +36,13 @@
 }
 
 /* Hover "lift" is a translucent wash faded in via opacity — background-image
-   itself can't transition, which used to make the card color snap. */
+   itself can't transition, which used to make the card color snap.
+   z-index: -1 for the same reason as .card::before above: keep the wash
+   behind the card's own (static-positioned) text instead of over it. */
 .hover::after {
   content: '';
   position: absolute;
-  z-index: 0;
+  z-index: -1;
   inset: 0;
   pointer-events: none;
   background: linear-gradient(145deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));

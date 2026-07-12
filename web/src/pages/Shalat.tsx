@@ -128,8 +128,6 @@ export default function Shalat() {
       <GlassCard
         variant="featured"
         radius={28}
-        borderColor="rgba(232,199,102,.32)"
-        background="linear-gradient(150deg,rgba(201,162,39,.16),rgba(255,255,255,.04))"
         padding="38px 28px"
         className={styles.panel}
       >

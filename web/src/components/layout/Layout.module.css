@@ -49,3 +49,12 @@
   from { transform: translateX(-15%); }
   to { transform: translateX(155%); }
 }
+
+/* Unlike the small ambient drift globals.css exempts from reduced-motion
+   (hero bees/glow), this is continuous positional sweeping — freeze it in
+   place instead; the gold bar alone still reads as "loading". */
+@media (prefers-reduced-motion: reduce) {
+  .routeFallbackLine::after {
+    animation: none;
+  }
+}

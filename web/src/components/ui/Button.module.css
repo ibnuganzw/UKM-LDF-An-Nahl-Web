@@ -1,5 +1,6 @@
 .btn {
   position: relative;
+  isolation: isolate;
   overflow: hidden;
   display: inline-flex;
   align-items: center;
@@ -15,9 +16,13 @@
   transition: transform 200ms var(--ease), border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
 
+/* Same stacking fix as GlassCard's washes: z-index:-1 (not the implicit
+   auto, which paints level with 0) keeps the sheen behind the label text
+   instead of over it. */
 .btn::after {
   content: '';
   position: absolute;
+  z-index: -1;
   inset: 0;
   pointer-events: none;
   background: linear-gradient(110deg, rgba(244, 219, 138, .22), transparent 34%);

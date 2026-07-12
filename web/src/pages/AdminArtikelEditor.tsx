@@ -12,6 +12,7 @@ import { loadJSON, saveJSON, removeKey } from '../lib/storage';
 import type { ArticleCategory, ArticleStatus } from '../types';
 
 const CATEGORIES: ArticleCategory[] = ['Islam Veteriner', 'Kisah', 'Renungan'];
+const STATUSES: ArticleStatus[] = ['draft', 'published'];
 const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 interface ArticleDraft {
@@ -26,8 +27,43 @@ interface ArticleDraft {
   savedAt: number;
 }
 
+// `loadJSON` only guards JSON.parse/localStorage failures, not shape — a
+// draft written by an older/newer ArticleDraft version (a field renamed
+// after this ships) or something else on the origin writing to a colliding
+// key would otherwise reach `.trim()` calls on the wrong type and throw
+// inside a useEffect with nothing around it to catch it.
+function isValidDraftShape(d: unknown): d is ArticleDraft {
+  if (!d || typeof d !== 'object') return false;
+  const r = d as Record<string, unknown>;
+  return (
+    typeof r.title === 'string' &&
+    typeof r.slug === 'string' &&
+    typeof r.slugTouched === 'boolean' &&
+    typeof r.category === 'string' && CATEGORIES.includes(r.category as ArticleCategory) &&
+    typeof r.status === 'string' && STATUSES.includes(r.status as ArticleStatus) &&
+    typeof r.excerpt === 'string' &&
+    typeof r.contentHtml === 'string' &&
+    (r.coverImageUrl === null || typeof r.coverImageUrl === 'string') &&
+    typeof r.savedAt === 'number'
+  );
+}
+
 function isMeaningfulDraft(d: ArticleDraft): boolean {
   return !!(d.title.trim() || d.excerpt.trim() || d.contentHtml.trim());
+}
+
+// A stable id for "Tulis Artikel Baru" (no article id exists yet to key the
+// draft by). sessionStorage — not localStorage — so it survives a refresh of
+// this tab but two tabs/compose sessions never share one, and thus never
+// silently overwrite each other's autosaved draft.
+function newArticleSessionId(): string {
+  const KEY = 'annahl_article_new_session_id';
+  let sid = sessionStorage.getItem(KEY);
+  if (!sid) {
+    sid = crypto.randomUUID();
+    sessionStorage.setItem(KEY, sid);
+  }
+  return sid;
 }
 
 export default function AdminArtikelEditor() {
@@ -50,15 +86,16 @@ export default function AdminArtikelEditor() {
   const [importError, setImportError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [recoveredDraft, setRecoveredDraft] = useState<ArticleDraft | null>(null);
+  const [serverUpdatedAt, setServerUpdatedAt] = useState<number | null>(null);
 
-  const draftKey = `annahl_article_draft_${id ?? 'new'}`;
+  const draftKey = id ? `annahl_article_draft_${id}` : `annahl_article_draft_new_${newArticleSessionId()}`;
 
   useEffect(() => {
     if (!id) return;
     (async () => {
       const { data } = await supabase
         .from('articles')
-        .select('title, slug, category, status, excerpt, content_html, cover_image_url')
+        .select('title, slug, category, status, excerpt, content_html, cover_image_url, updated_at')
         .eq('id', id)
         .single();
       if (data) {
@@ -70,6 +107,7 @@ export default function AdminArtikelEditor() {
         setExcerpt(data.excerpt);
         setContentHtml(data.content_html);
         setCoverImageUrl(data.cover_image_url);
+        setServerUpdatedAt(new Date(data.updated_at).getTime());
       }
       setLoading(false);
     })();
@@ -78,8 +116,15 @@ export default function AdminArtikelEditor() {
   // Offer to recover an autosaved draft (see the autosave effect below) left
   // behind by a refresh/crash/closed tab before the form was submitted.
   useEffect(() => {
-    const draft = loadJSON<ArticleDraft | null>(draftKey, null);
-    setRecoveredDraft(draft && isMeaningfulDraft(draft) ? draft : null);
+    const raw = loadJSON<unknown>(draftKey, null);
+    if (isValidDraftShape(raw) && isMeaningfulDraft(raw)) {
+      setRecoveredDraft(raw);
+      return;
+    }
+    // Not a usable draft — most likely a leftover from an older/incompatible
+    // version of this shape. Nothing to offer, and nothing worth keeping.
+    if (raw !== null) removeKey(draftKey);
+    setRecoveredDraft(null);
   }, [draftKey]);
 
   const restoreDraft = () => {
@@ -199,7 +244,17 @@ export default function AdminArtikelEditor() {
     }
   };
 
+  const cancel = () => {
+    removeKey(draftKey);
+    navigate('/admin/artikel');
+  };
+
   if (loading) return null;
+
+  // Only meaningful once the server row has actually loaded (isEdit implies
+  // `loading` was true until it did) — otherwise this briefly reads `false`
+  // for every draft, stale or not, before serverUpdatedAt is populated.
+  const draftIsStale = isEdit && serverUpdatedAt !== null && !!recoveredDraft && recoveredDraft.savedAt < serverUpdatedAt;
 
   return (
     <div className={styles.page}>
@@ -208,11 +263,15 @@ export default function AdminArtikelEditor() {
       <h1 className={styles.h1}>{isEdit ? 'Edit Artikel' : 'Tulis Artikel Baru'}</h1>
 
       {recoveredDraft && (
-        <div className={styles.draftBanner}>
+        <div className={draftIsStale ? styles.draftBannerWarn : styles.draftBanner}>
           <div>
-            <div className={styles.draftBannerTitle}>Draf tersimpan otomatis ditemukan</div>
+            <div className={styles.draftBannerTitle}>
+              {draftIsStale ? 'Draf tersimpan otomatis ini lebih lama dari versi di server' : 'Draf tersimpan otomatis ditemukan'}
+            </div>
             <div className={styles.draftBannerHint}>
-              Tersimpan {new Date(recoveredDraft.savedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} — sepertinya halaman sempat ke-refresh sebelum kamu simpan.
+              {draftIsStale
+                ? `Draf ini dari ${new Date(recoveredDraft.savedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}, tapi artikel ini sudah disimpan ulang setelah itu (mungkin dari perangkat/tab lain). Memulihkan draf akan menimpa perubahan yang lebih baru itu.`
+                : `Tersimpan ${new Date(recoveredDraft.savedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} — sepertinya halaman sempat ke-refresh sebelum kamu simpan.`}
             </div>
           </div>
           <div className={styles.draftBannerActions}>
@@ -302,7 +361,7 @@ export default function AdminArtikelEditor() {
             <Button type="submit" variant="primary" disabled={submitting}>
               {submitting ? 'Menyimpan…' : isEdit ? 'Simpan Perubahan' : 'Simpan Artikel'}
             </Button>
-            <Button type="button" variant="secondary" onClick={() => navigate('/admin/artikel')}>
+            <Button type="button" variant="secondary" onClick={cancel}>
               Batal
             </Button>
           </div>

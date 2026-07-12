@@ -32,7 +32,8 @@
   line-height: 1.1;
 }
 
-.draftBanner {
+.draftBanner,
+.draftBannerWarn {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,9 +41,24 @@
   flex-wrap: wrap;
   margin-bottom: 18px;
   padding: 14px 18px;
-  border: 1px solid rgba(232, 199, 102, .32);
   border-radius: 14px;
+}
+
+.draftBanner {
+  border: 1px solid rgba(232, 199, 102, .32);
   background: rgba(232, 199, 102, .08);
+}
+
+/* The draft predates the article's current server state — same layout as
+   .draftBanner, but in the danger palette so "restoring overwrites newer
+   work" reads as a warning, not routine housekeeping. */
+.draftBannerWarn {
+  border: 1px solid rgba(229, 138, 138, .38);
+  background: rgba(192, 82, 74, .1);
+}
+
+.draftBannerWarn .draftBannerTitle {
+  color: var(--danger-text);
 }
 
 .draftBannerTitle {
