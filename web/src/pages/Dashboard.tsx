@@ -7,7 +7,6 @@ import { useNow } from '../hooks/useNow';
 import { usePrayerSchedule } from '../hooks/usePrayerSchedule';
 import { getNextPrayer } from '../lib/prayer';
 import { getGreeting } from '../lib/greeting';
-import { cx } from '../lib/cx';
 import { quranText } from '../lib/quranText';
 import { isAdminRole } from '../lib/roles';
 
@@ -55,25 +54,25 @@ export default function Dashboard() {
       </div>
 
       <div className={styles.statGrid}>
-        <GlassCard variant="featured" radius={22} padding="22px 24px" borderColor="rgba(232,199,102,.32)" background="linear-gradient(150deg,rgba(201,162,39,.18),rgba(255,255,255,.03))">
+        <GlassCard variant="featured" radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.32)" background="linear-gradient(150deg,rgba(201,162,39,.18),rgba(255,255,255,.03))">
           <div className={styles.statLabel} style={{ color: '#C9A227' }}>Total kehadiran</div>
           <div className={styles.statValue}>{histRows.length}</div>
           <div className={styles.statSub} style={{ color: '#A9B3D1' }}>kegiatan tercatat</div>
         </GlassCard>
-        <GlassCard radius={22} padding="22px 24px">
+        <GlassCard radius={20} padding="22px 24px">
           <div className={styles.statLabel} style={{ color: '#8E99BB' }}>Agenda mendatang</div>
           <div className={styles.statValue}>{upcoming.length}</div>
           <div className={styles.statSub} style={{ color: '#8E99BB' }}>dalam waktu dekat</div>
         </GlassCard>
-        <GlassCard radius={22} padding="22px 24px" borderColor="rgba(232,199,102,.26)">
+        <GlassCard radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.26)">
           <div className={styles.statLabel} style={{ color: '#C9A227' }}>Menuju {prayer.name}</div>
-          <div className={cx('cdGlow', styles.statCountdown)}>{prayer.countdown}</div>
+          <div className={styles.statCountdown}>{prayer.countdown}</div>
           <div className={styles.statLink} onClick={() => navigate('/shalat')}>Jadwal shalat →</div>
         </GlassCard>
       </div>
 
       <div className={styles.bodyGrid}>
-        <GlassCard radius={24} padding="24px">
+        <GlassCard radius={20} padding="24px">
           <div className={styles.panelHead}>
             <div className={styles.panelTitle}>Absensi kegiatan</div>
             <span className={styles.panelHint}>Pindai QR di lokasi</span>
@@ -103,7 +102,7 @@ export default function Dashboard() {
         </GlassCard>
 
         <div className={styles.rightCol}>
-          <GlassCard radius={24} padding="24px">
+          <GlassCard radius={20} padding="24px">
             <div className={styles.panelTitle} style={{ marginBottom: 14 }}>Riwayat kehadiran</div>
             <div className={styles.histList}>
               {histRows.map((a) => (
@@ -122,7 +121,7 @@ export default function Dashboard() {
 
           <GlassCard
             variant="featured"
-            radius={24}
+            radius={28}
             padding="22px 24px"
             borderColor="rgba(232,199,102,.32)"
             background="linear-gradient(150deg,rgba(201,162,39,.18),rgba(255,255,255,.03))"

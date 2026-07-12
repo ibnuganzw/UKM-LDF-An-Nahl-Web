@@ -48,7 +48,7 @@ export default function Konten() {
         {!loading && rows.map((t) => {
           const color = CATEGORY_COLORS[t.cat];
           return (
-            <GlassCard key={t.id} to={`/konten/${t.slug}`} hover radius={18} padding="24px" className={styles.card}>
+            <GlassCard key={t.id} to={`/konten/${t.slug}`} hover radius={20} padding="24px" className={styles.card}>
               {t.coverImageUrl && <img src={t.coverImageUrl} alt="" className={styles.cover} />}
               <div className={styles.cardTop}>
                 <Badge color={color} background={soft(color, '12')} style={{ padding: '5px 12px', gap: 7 }}>

@@ -32,7 +32,6 @@
   --surface-1: #101936;
   --surface-2: #141F40;
   --surface-featured: #182342;
-  --surface-luxe: linear-gradient(145deg, rgba(27, 40, 78, .96), rgba(12, 21, 48, .98));
   --surface-border: rgba(169, 179, 209, .14);
   --surface-border-strong: rgba(232, 199, 102, .25);
   --glass-fill: rgba(255, 255, 255, .045);
@@ -53,8 +52,15 @@
   --gold-dark: #C9A227;
   --gold-gradient: linear-gradient(135deg, #E8C766, #C9A227);
   --gold-highlight: #F4DB8A;
-  --shadow-luxe: 0 26px 64px -42px rgba(0, 0, 0, .95), 0 18px 48px -38px rgba(201, 162, 39, .58);
-  --ease-premium: cubic-bezier(.2, .8, .2, 1);
+  --shadow-luxe: 0 26px 60px -38px rgba(0, 0, 0, .9);
+  --shadow-gold: 0 20px 48px -30px rgba(201, 162, 39, .48);
+
+  /* Motion — micro-interactions vs floating reveals */
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --ease-float: cubic-bezier(.25, .46, .45, .94);
+  --t-fast: 150ms;
+  --t-slow: 900ms;
+  --ease-premium: var(--ease);
 
   /* Status / semantic */
   --success-light: #5CCBA0;
@@ -80,6 +86,18 @@
   /* Typography */
   --font-serif: 'Cormorant Garamond', serif;
   --font-sans: Manrope, system-ui, sans-serif;
+
+  /* Type scale — fixed steps for new/touched UI (not retrofitted onto
+     every existing px value). Cormorant only holds its character at
+     --text-2xl and up; below that, card/list titles use sans at 700. */
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-md: 16px;
+  --text-lg: 19px;
+  --text-xl: 24px;
+  --text-2xl: clamp(28px, 4vw, 40px);
   --font-arabic-uthmani: 'AnnahlQuranUthmani', serif;
   --font-arabic-indopak: 'AnnahlQuranIndoPak', serif;
   --font-arabic: var(--font-arabic-indopak);
@@ -95,6 +113,10 @@
 
   /* Shape */
   --hex-clip: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+
+  /* Rhythm — vertical gap between page sections */
+  --space-tight: 56px;
+  --space-section: 80px;
 
   /* Layout */
   --header-h: 66px;

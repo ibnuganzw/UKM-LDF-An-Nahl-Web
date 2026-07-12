@@ -11,6 +11,29 @@ import { CATEGORIES } from '../data/articles';
 import { CATEGORY_COLORS } from '../lib/colors';
 import { quranText } from '../lib/quranText';
 
+const ICON_PROPS = {
+  viewBox: '0 0 24 24',
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.8,
+  strokeLinecap: 'round' as const,
+  strokeLinejoin: 'round' as const,
+  'aria-hidden': true,
+};
+
+function MoonIcon() {
+  return <svg {...ICON_PROPS}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" /></svg>;
+}
+
+function BookIcon() {
+  return (
+    <svg {...ICON_PROPS}>
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2Z" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7Z" />
+    </svg>
+  );
+}
+
 function getReminder(now: Date) {
   const day = now.getDay();
   const hours = now.getHours();
@@ -20,14 +43,14 @@ function getReminder(now: Date) {
     return {
       label: 'Pengingat Sunnah',
       title: 'Besok Puasa Senin-Kamis',
-      icon: '🌙',
+      icon: <MoonIcon />,
     };
   }
   if (isEvening && day === 4) {
     return {
       label: 'Malam Jumat',
       title: 'Waktunya Baca Al-Kahfi',
-      icon: '📖',
+      icon: <BookIcon />,
     };
   }
   return null;
@@ -50,20 +73,20 @@ export default function Home() {
 
   return (
     <div>
-      <Hero />
+      <Hero nextPrayerName={prayer.name} nextPrayerTime={prayer.time} />
 
       {/* QUICK STRIP */}
       <section className={styles.section}>
-        <div className={`rv ${styles.quickGrid}`}>
-          <GlassCard to="/shalat" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
-            <div className={styles.quickIcon} aria-hidden="true">☾</div>
+        <div className={`rv rvStagger ${styles.quickGrid}`}>
+          <GlassCard to="/shalat" hover radius={20} padding="22px 24px" className={styles.quickCard}>
+            <div className={styles.quickIcon} aria-hidden="true"><MoonIcon /></div>
             <div style={{ minWidth: 0 }}>
               <div className={styles.quickLabel}>Menuju {prayer.name}</div>
-              <div className={`cdGlow ${styles.quickValue}`}>{prayer.countdown}</div>
+              <div className={styles.quickValue}>{prayer.countdown}</div>
             </div>
           </GlassCard>
 
-          <GlassCard to="/agenda" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
+          <GlassCard to="/agenda" hover radius={20} padding="22px 24px" className={styles.quickCard}>
             <div className={styles.quickIcon} aria-hidden="true">
               {reminder ? reminder.icon : (nextAgenda ? nextAgenda.dayNum : '–')}
             </div>
@@ -73,7 +96,7 @@ export default function Home() {
             </div>
           </GlassCard>
 
-          <GlassCard to="/quran" hover radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.18)" className={styles.quickCard}>
+          <GlassCard to="/quran" hover radius={20} padding="22px 24px" className={styles.quickCard}>
             <div className={`${styles.quickIcon} ${styles.quickIconArabic}`} aria-hidden="true">ق</div>
             <div style={{ minWidth: 0 }}>
               <div className={styles.quickLabel}>Al-Qur'an</div>
@@ -93,9 +116,9 @@ export default function Home() {
           <SectionHeader eyebrow="Agenda" title="Agenda terdekat" titleStyle={{ fontSize: 'clamp(32px,4.6vw,52px)' }} />
           <Link to="/agenda" className={styles.linkMore}>Semua agenda →</Link>
         </div>
-        <div className={`rv ${styles.agendaGrid}`}>
+        <div className={`rv rvStagger ${styles.agendaGrid}`}>
           {soon.map((a) => (
-            <GlassCard key={a.id} to={`/agenda/${a.id}`} hover radius={22} padding="26px" className={styles.agendaCard}>
+            <GlassCard key={a.id} to={`/agenda/${a.id}`} hover radius={20} padding="26px" className={styles.agendaCard}>
               <div className={styles.agendaBadgeRow}>
                 <Badge
                   color="#E8C766"
@@ -131,7 +154,7 @@ export default function Home() {
       {/* QURAN BAND */}
       <section className={styles.quranBandSection}>
         <div className="rv">
-          <GlassCard radius={30} borderColor="rgba(232,199,102,.22)" className={styles.quranBand}>
+          <GlassCard variant="featured" radius={28} className={styles.quranBand}>
             <div className={styles.quranBandInner}>
               <div className={styles.bismillah} dir="rtl" lang="ar">
                 {quranText('بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ')}
@@ -152,9 +175,9 @@ export default function Home() {
           <SectionHeader eyebrow="Bacaan" title="Islam Veteriner · Kisah · Renungan" titleStyle={{ fontSize: 'clamp(30px,4.2vw,48px)', lineHeight: 1.1 }} />
           <Link to="/konten" className={styles.linkMore}>Semua tulisan →</Link>
         </div>
-        <div className={`rv ${styles.kontenGrid}`}>
+        <div className={`rv rvStagger ${styles.kontenGrid}`}>
           {catCards.map((c) => (
-            <GlassCard key={c.name} radius={22} padding="28px" className={styles.kontenCard}>
+            <GlassCard key={c.name} radius={20} padding="28px" className={styles.kontenCard}>
               <div className={styles.kontenNameRow}>
                 <span className={styles.accentDot} aria-hidden="true" />
                 <span className={styles.kontenName}>{c.name}</span>
@@ -179,7 +202,7 @@ export default function Home() {
       {/* TENTANG + JOIN */}
       <section className={styles.aboutJoinSection}>
         <div className="rv">
-          <GlassCard radius={26} className={styles.aboutCard} style={{ height: '100%' }}>
+          <GlassCard radius={28} className={styles.aboutCard} style={{ height: '100%' }}>
             <div className={styles.quickLabel} style={{ letterSpacing: '.26em' }}>Mengapa An-Nahl</div>
             <div className={styles.quote}>
               "Dan Tuhanmu mewahyukan kepada lebah: buatlah sarang di gunung-gunung, di pohon-pohon kayu, dan di tempat-tempat yang dibuat manusia."
@@ -189,7 +212,7 @@ export default function Home() {
           </GlassCard>
         </div>
         <div className="rv">
-          <GlassCard variant="featured" radius={26} className={styles.joinCard} style={{ height: '100%' }}>
+          <GlassCard variant="featured" radius={28} className={styles.joinCard} style={{ height: '100%' }}>
             <div className={styles.quickLabel} style={{ color: '#E8C766', letterSpacing: '.26em' }}>Bergabung</div>
             <div className={styles.joinHeading}>Satu sarang, satu tujuan. Jadilah bagian dari koloni dakwah FKH.</div>
             <p className={styles.joinBody}>Open Recruitment anggota baru dibuka setiap awal kepengurusan. Daftarkan dirimu dan tumbuh bersama.</p>

@@ -6,6 +6,7 @@ import { BottomNav } from './BottomNav';
 import { FocusedHeader } from './FocusedHeader';
 import styles from './Layout.module.css';
 import { cx } from '../../lib/cx';
+import { initReveal } from '../../lib/reveal';
 
 const AUTH_PATHS = ['/login', '/register', '/lupa-password', '/reset-password', '/menunggu-persetujuan'];
 
@@ -28,6 +29,10 @@ export function Layout() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  useEffect(() => {
+    initReveal();
+  }, []);
 
   const outlet = (
     <main className={cx(styles.main, isUtilityRoute && styles.utilityMain, isReaderRoute && styles.readerMain)}>

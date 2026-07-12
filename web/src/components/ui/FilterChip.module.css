@@ -7,15 +7,16 @@
   cursor: pointer;
   min-height: 44px;
   letter-spacing: .02em;
-  transition: transform .18s ease, border-color .18s ease, background .18s ease;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07);
+  transition: transform var(--t-fast) var(--ease), filter var(--t-fast) var(--ease);
+  box-shadow: inset 0 1px 0 rgba(232, 199, 102, .16);
 }
 
+/* Colors arrive via inline style, so hover feedback lives on filter. */
 .chip:hover {
-  transform: translateY(-1px);
+  filter: brightness(1.12);
 }
 
 .chip:active {
-  transform: translateY(1px) scale(.975);
-  transition-duration: 70ms;
+  transform: scale(.98);
+  transition-duration: 80ms;
 }

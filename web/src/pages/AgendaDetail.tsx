@@ -63,7 +63,7 @@ export default function AgendaDetail() {
     <div className={styles.page}>
       <Link to="/agenda" className={styles.back}>← Semua agenda</Link>
 
-      <GlassCard radius={26} borderColor="rgba(232,199,102,.2)" padding="clamp(24px,4vw,38px)" className={styles.panel}>
+      <GlassCard radius={28} borderColor="rgba(232,199,102,.2)" padding="clamp(24px,4vw,38px)" className={styles.panel}>
         <div className={styles.badgeRow}>
           <Badge color={det.typeColor} style={{ fontSize: 11, padding: '5px 13px' }}>{det.type}</Badge>
           <Badge color={det.statusColor} uppercase={false} style={{ fontSize: 12, padding: '5px 13px' }}>{det.statusLabel}</Badge>

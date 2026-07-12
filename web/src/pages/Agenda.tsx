@@ -43,7 +43,7 @@ export default function Agenda() {
           </div>
         )}
         {!loading && rows.map((a) => (
-          <GlassCard key={a.id} to={`/agenda/${a.id}`} hover radius={18} padding="16px 18px" className={styles.row}>
+          <GlassCard key={a.id} to={`/agenda/${a.id}`} hover radius={20} padding="16px 18px" className={styles.row}>
             <div className={styles.dateBadge} style={{ background: soft(a.typeColor), borderColor: soft(a.typeColor, '36') }}>
               <span className={styles.dateNum} style={{ color: a.typeColor }}>{a.dayNum}</span>
               <span className={styles.dateMon} style={{ color: a.typeColor }}>{a.monShort}</span>

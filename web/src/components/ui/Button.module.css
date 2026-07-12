@@ -11,8 +11,8 @@
   cursor: pointer;
   text-align: center;
   white-space: nowrap;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .12);
-  transition: box-shadow .24s var(--ease-premium), transform .18s var(--ease-premium), background .24s ease, border-color .24s ease, color .24s ease;
+  box-shadow: inset 0 1px 0 rgba(232, 199, 102, .22);
+  transition: transform 200ms var(--ease), border-color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
 
 .btn::after {
@@ -20,14 +20,14 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(110deg, rgba(255, 255, 255, .16), transparent 34%);
+  background: linear-gradient(110deg, rgba(244, 219, 138, .22), transparent 34%);
   opacity: .55;
+  transition: opacity var(--t-fast) var(--ease);
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(1px) scale(.985) !important;
-  transition-duration: 70ms;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, .2);
+  transform: scale(.98);
+  transition-duration: 80ms;
 }
 
 .btn:disabled {
@@ -50,21 +50,23 @@
   background: var(--gold-gradient);
   color: var(--text-on-gold);
   border: 1px solid rgba(244, 219, 138, .52);
-  box-shadow: 0 16px 40px -14px rgba(201, 162, 39, .72), inset 0 1px 0 rgba(255, 255, 255, .38);
+  box-shadow: 0 16px 40px -14px rgba(201, 162, 39, .72), inset 0 1px 0 rgba(244, 219, 138, .55);
 }
 .primary:hover:not(:disabled) {
-  box-shadow: 0 22px 50px -12px rgba(232, 199, 102, .85);
   transform: translateY(-2px);
+}
+.primary:hover:not(:disabled)::after {
+  opacity: .9;
 }
 
 .secondary {
   border: 1px solid rgba(245, 239, 220, .3);
-  background: linear-gradient(145deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .025));
+  background-color: rgba(255, 255, 255, .04);
   color: var(--text-heading);
 }
 .secondary:hover:not(:disabled) {
-  border-color: rgba(232, 199, 102, .6);
-  background: rgba(232, 199, 102, .08);
+  border-color: rgba(245, 239, 220, .55);
+  background-color: rgba(255, 255, 255, .07);
   transform: translateY(-2px);
 }
 
@@ -83,8 +85,10 @@
   box-shadow: 0 14px 32px -12px rgba(46, 156, 119, .55);
 }
 .success:hover:not(:disabled) {
-  box-shadow: 0 18px 40px -12px rgba(92, 203, 160, .75);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+}
+.success:hover:not(:disabled)::after {
+  opacity: .9;
 }
 
 .scanning {

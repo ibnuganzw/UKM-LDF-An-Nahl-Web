@@ -140,11 +140,11 @@ export default function Shalat() {
           <div className={styles.panelLabel}>Shalat berikutnya</div>
           <div className={styles.prayerName}>{prayer.name}</div>
           <div className={styles.prayerTime}>{prayer.time} {schedule.zoneLabel}</div>
-          <div className={cx('cdGlow', styles.countdownPill)}>− {prayer.countdown}</div>
+          <div className={styles.countdownPill}>− {prayer.countdown}</div>
         </div>
       </GlassCard>
 
-      <GlassCard radius={24} padding="0" className={styles.listPanel}>
+      <GlassCard radius={20} padding="0" className={styles.listPanel}>
         {schedule.prayerTimes.map((p, i) => {
           const active = i === prayer.index;
           return (

@@ -3,6 +3,9 @@ import { GlassCard, Hex } from '../components/ui';
 import { soft } from '../lib/colors';
 import { quranText } from '../lib/quranText';
 import { useOrgPositions } from '../hooks/useOrgPositions';
+import { DIVISION_ROLE_LABELS, OFFICER_ROLES } from '../lib/divisionRoles';
+import type { CSSVarStyle } from '../lib/cssVars';
+import type { DivisionMember, OrgPosition } from '../types';
 
 function initialOf(name: string): string {
   return name.trim().charAt(0).toUpperCase() || '?';
@@ -13,7 +16,7 @@ function isPlaceholderName(name: string): boolean {
 }
 
 export default function Profil() {
-  const { all } = useOrgPositions();
+  const { all, members } = useOrgPositions();
   const published = all.filter((p) => !isPlaceholderName(p.name));
   const dosenPembina = published.find((p) => p.tier === 0);
   const ketuaUmum = published.find((p) => p.tier === 1);
@@ -37,6 +40,8 @@ export default function Profil() {
           src="/assets/photos/profile-pengurus-2026-v1.jpg"
           alt="Pengurus LDF An-Nahl FKH USK periode 2026/2027"
           className={styles.groupPhoto}
+          loading="lazy"
+          decoding="async"
         />
         <figcaption className={styles.groupPhotoCaption}>
           <div className={styles.groupPhotoEyebrow}>Kepengurusan 2026/2027</div>
@@ -46,7 +51,7 @@ export default function Profil() {
       </figure>
 
       <div className={styles.identityGrid}>
-        <GlassCard variant="featured" radius={24} padding="30px" borderColor="rgba(232,199,102,.3)" className={styles.maknaCard}>
+        <GlassCard variant="featured" radius={28} padding="30px" borderColor="rgba(232,199,102,.3)" className={styles.maknaCard}>
           <div className={styles.maknaHex} />
           <div className={styles.cardEyebrow}>Makna Nama</div>
           <div className={styles.maknaArabic} dir="rtl" lang="ar">
@@ -59,7 +64,7 @@ export default function Profil() {
           </p>
         </GlassCard>
 
-        <GlassCard radius={24} padding="30px" className={styles.spaceCard}>
+        <GlassCard radius={28} padding="30px" className={styles.spaceCard}>
           <div className={styles.cardEyebrow}>Ruang Bertumbuh</div>
           <div className={styles.spaceTitle}>Dakwah yang dekat dengan keseharian mahasiswa.</div>
           <p className={styles.spaceText}>
@@ -92,7 +97,7 @@ export default function Profil() {
 
         {ketuaUmum && (
           <>
-            <GlassCard radius={22} padding="22px 36px" borderColor="rgba(232,199,102,.35)" className={styles.ketuaCard}>
+            <GlassCard radius={28} padding="22px 36px" borderColor="rgba(232,199,102,.35)" className={styles.ketuaCard}>
               {ketuaUmum.photoUrl ? (
                 <img src={ketuaUmum.photoUrl} alt="" className={styles.ketuaAvatarPhoto} />
               ) : (
@@ -124,23 +129,91 @@ export default function Profil() {
           </>
         )}
 
-        <div className={styles.deptGrid}>
-          {divisi.map((d) => (
-            <GlassCard key={d.id} radius={20} padding="20px" borderColor="rgba(232,199,102,.14)" className={styles.deptCard}>
-              {d.photoUrl ? (
-                <img src={d.photoUrl} alt="" className={styles.deptPhoto} />
-              ) : (
-                <Hex width={40} height={44} bg={soft(d.divisionColor ?? '#8FAAF5')} color={d.divisionColor ?? '#8FAAF5'} fontSize={15}>
-                  {initialOf(d.name)}
-                </Hex>
-              )}
-              <div>
-                <div className={styles.deptName}>{d.name}</div>
-                <div className={styles.deptDesc}>{d.divisionDesc}</div>
-              </div>
-            </GlassCard>
-          ))}
+        {divisi.length > 0 && (
+          <div className={styles.branch} style={{ '--cols': divisi.length } as CSSVarStyle} />
+        )}
+
+        <div className={styles.treeScroll}>
+          <div className={styles.divisionTree} style={{ '--cols': divisi.length } as CSSVarStyle}>
+            {divisi.map((d) => (
+              <DivisionColumn key={d.id} division={d} members={members.filter((m) => m.divisionId === d.id)} />
+            ))}
+          </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+interface DivisionColumnProps {
+  division: OrgPosition;
+  members: DivisionMember[];
+}
+
+/** One division rendered as a vertical subtree: the ketua divisi at the head,
+ *  the officer band (wakil/sekretaris/bendahara in canonical order) below it,
+ *  then the anggota at the bottom. Subgrid on the parent keeps each band level
+ *  across every division column. */
+function DivisionColumn({ division, members }: DivisionColumnProps) {
+  const color = division.divisionColor ?? '#8FAAF5';
+  const ketua = members.find((m) => m.role === 'ketua');
+  const officers = OFFICER_ROLES.flatMap((r) => members.filter((m) => m.role === r));
+  const anggota = members.filter((m) => m.role === 'anggota').sort((a, b) => a.sortOrder - b.sortOrder);
+
+  return (
+    <div className={styles.divisionCol}>
+      <GlassCard
+        radius={20}
+        padding="18px 16px"
+        borderColor={soft(color)}
+        className={styles.divisionHead}
+        style={{ '--div-color': color } as CSSVarStyle}
+      >
+        {ketua?.photoUrl ? (
+          <img src={ketua.photoUrl} alt="" className={styles.headPhoto} style={{ borderColor: color }} />
+        ) : (
+          <Hex width={44} height={48} bg={soft(color)} color={color} fontSize={16}>
+            {initialOf(ketua?.name ?? division.name)}
+          </Hex>
+        )}
+        <div className={styles.headName} style={ketua ? undefined : { opacity: 0.5, fontWeight: 700 }}>
+          {ketua ? ketua.name : 'Belum ada ketua'}
+        </div>
+        <div className={styles.headRole} style={{ color }}>
+          Ketua · {division.name}
+        </div>
+        {division.divisionDesc && <div className={styles.headDesc}>{division.divisionDesc}</div>}
+      </GlassCard>
+
+      <div className={styles.officerBand}>
+        {officers.map((o) => (
+          <div key={o.id} className={styles.officerCard}>
+            {o.photoUrl ? (
+              <img src={o.photoUrl} alt="" className={styles.officerPhoto} />
+            ) : (
+              <div className={styles.officerInitial} style={{ background: soft(color), color }}>
+                {initialOf(o.name)}
+              </div>
+            )}
+            <div className={styles.officerText}>
+              <div className={styles.officerName}>{o.name}</div>
+              <div className={styles.officerRole}>{DIVISION_ROLE_LABELS[o.role]}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className={styles.memberBand}>
+        {anggota.map((a) => (
+          <div key={a.id} className={styles.memberChip}>
+            {a.photoUrl ? (
+              <img src={a.photoUrl} alt="" className={styles.memberChipPhoto} />
+            ) : (
+              <span className={styles.memberChipInitial}>{initialOf(a.name)}</span>
+            )}
+            <span className={styles.memberChipName}>{a.name}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

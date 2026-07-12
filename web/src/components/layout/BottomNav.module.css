@@ -32,7 +32,7 @@
   min-height: 50px;
   color: var(--text-muted);
   border-radius: 14px;
-  transition: color .2s ease, background .2s ease;
+  transition: color var(--t-fast) var(--ease), background-color var(--t-fast) var(--ease);
 }
 
 .itemActive {

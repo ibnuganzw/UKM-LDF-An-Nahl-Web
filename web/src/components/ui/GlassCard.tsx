@@ -22,7 +22,8 @@ export interface GlassCardProps {
 
 const FEATURED_BG = 'linear-gradient(145deg, rgba(232,199,102,.11), rgba(20,31,64,.98) 58%)';
 const FEATURED_BORDER = 'rgba(232,199,102,.26)';
-const FEATURED_SHADOW = '0 20px 48px -38px rgba(0,0,0,.9)';
+const FEATURED_SHADOW = 'var(--shadow-luxe), var(--shadow-gold)';
+const FEATURED_WASH = 'radial-gradient(circle at 12% 0%, rgba(232,199,102,.14), transparent 34%), linear-gradient(110deg, rgba(232,199,102,.07), transparent 38%)';
 
 export function GlassCard({
   variant = 'default',
@@ -44,6 +45,7 @@ export function GlassCard({
     '--card-bg': background ?? (featured ? FEATURED_BG : undefined),
     '--card-border': borderColor ?? (featured ? FEATURED_BORDER : undefined),
     '--card-shadow': shadow ?? (featured ? FEATURED_SHADOW : undefined),
+    '--card-wash': featured ? FEATURED_WASH : undefined,
     '--card-radius': radius !== undefined ? `${radius}px` : undefined,
     '--card-padding': padding,
     '--card-blur': blur !== undefined ? `${blur}px` : undefined,

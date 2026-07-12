@@ -40,6 +40,7 @@
 }
 
 .inner {
+  position: relative;
   width: min(1180px, 100%);
   min-height: min(720px, calc(100svh - var(--header-h)));
   margin: 0 auto;
@@ -50,6 +51,39 @@
 
 .textCol {
   max-width: 720px;
+}
+
+/* Load-in: the text column floats up in sequence. (CSS modules localizes
+   animation names, so the keyframes live here rather than in globals.) */
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.kicker,
+.heading,
+.lead,
+.ctaRow {
+  animation: heroRise .9s var(--ease-float) backwards;
+}
+
+.heading {
+  animation-delay: .12s;
+}
+
+.lead {
+  animation-delay: .24s;
+}
+
+.ctaRow {
+  animation-delay: .36s;
 }
 
 .kicker {
@@ -104,6 +138,91 @@
   margin-top: 30px;
 }
 
+/* ---------- Floating layer: emblem, bees, info chips ----------
+   Lives inside .inner (not .hero) so top/right percentages resolve against
+   the same 1180px content column as the text — not the full-bleed photo,
+   which on wide viewports made the cluster land in unpredictable spots. */
+.floaters {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.glowTop {
+  position: absolute;
+  top: -60px;
+  right: 2%;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(232, 199, 102, .2), transparent 65%);
+  filter: blur(64px);
+}
+
+.bee {
+  position: absolute;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .5));
+}
+
+.beeBody {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #E8C766 0 32%, #3a2f10 32% 46%, #E8C766 46% 68%, #3a2f10 68% 80%, #E8C766 80%);
+  border-radius: 50% / 60%;
+}
+
+.beeWing {
+  position: absolute;
+  background: rgba(245, 239, 220, .4);
+  border-radius: 50%;
+}
+
+@keyframes floaterIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.floater {
+  position: absolute;
+  animation: floaterIn 1s var(--ease-float) .55s backwards;
+}
+
+.floaterLate {
+  animation-delay: .75s;
+}
+
+.chip {
+  background: rgba(10, 17, 40, .55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(232, 199, 102, .3);
+  border-radius: 14px;
+  padding: 10px 15px;
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .6);
+}
+
+.chipLabel {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+}
+
+.chipValue {
+  font-weight: 800;
+  color: var(--text-heading);
+  font-size: 14px;
+  margin-top: 3px;
+}
+
 .photoCaption {
   position: absolute;
   right: max(20px, calc((100vw - 1180px) / 2 + 20px));
@@ -121,6 +240,12 @@
     min-height: 650px;
   }
 
+  /* On tablets the text column takes most of the width — keep the bees, park the rest. */
+  .floater,
+  .glowTop {
+    display: none;
+  }
+
   .photoWash {
     background:
       linear-gradient(90deg, rgba(6, 13, 32, .96) 0%, rgba(7, 14, 34, .86) 48%, rgba(8, 16, 37, .38) 100%),
@@ -132,6 +257,10 @@
   .hero {
     min-height: calc(100svh - var(--header-h) - var(--bottom-nav-h));
     max-height: 760px;
+  }
+
+  .floaters {
+    display: none;
   }
 
   .photo img {
