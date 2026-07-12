@@ -644,6 +644,18 @@ export default function QuranReader() {
         >
           <button
             type="button"
+            className={styles.readerSearchSettings}
+            aria-label="Buka pengaturan bacaan"
+            aria-expanded={settingsOpen}
+            onClick={() => {
+              setSettingsOpen(true);
+              setDockOpen(false);
+            }}
+          >
+            <span aria-hidden="true">⚙</span>
+          </button>
+          <button
+            type="button"
             className={styles.readerSearchClose}
             aria-label="Tutup pencarian"
             onClick={() => setDockOpen(false)}
