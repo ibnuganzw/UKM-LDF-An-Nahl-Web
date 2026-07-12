@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './AdminArtikelEditor.module.css';
 import { Button } from '../components/ui';
@@ -8,10 +8,27 @@ import { uploadArticleImage } from '../lib/articleImages';
 import { parseDocxArticle } from '../lib/docxImport';
 import { sanitizeArticleHtml } from '../lib/sanitizeHtml';
 import { slugify } from '../lib/slugify';
+import { loadJSON, saveJSON, removeKey } from '../lib/storage';
 import type { ArticleCategory, ArticleStatus } from '../types';
 
 const CATEGORIES: ArticleCategory[] = ['Islam Veteriner', 'Kisah', 'Renungan'];
 const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+
+interface ArticleDraft {
+  title: string;
+  slug: string;
+  slugTouched: boolean;
+  category: ArticleCategory;
+  status: ArticleStatus;
+  excerpt: string;
+  contentHtml: string;
+  coverImageUrl: string | null;
+  savedAt: number;
+}
+
+function isMeaningfulDraft(d: ArticleDraft): boolean {
+  return !!(d.title.trim() || d.excerpt.trim() || d.contentHtml.trim());
+}
 
 export default function AdminArtikelEditor() {
   const { id } = useParams<{ id: string }>();
@@ -32,6 +49,9 @@ export default function AdminArtikelEditor() {
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [recoveredDraft, setRecoveredDraft] = useState<ArticleDraft | null>(null);
+
+  const draftKey = `annahl_article_draft_${id ?? 'new'}`;
 
   useEffect(() => {
     if (!id) return;
@@ -54,6 +74,48 @@ export default function AdminArtikelEditor() {
       setLoading(false);
     })();
   }, [id]);
+
+  // Offer to recover an autosaved draft (see the autosave effect below) left
+  // behind by a refresh/crash/closed tab before the form was submitted.
+  useEffect(() => {
+    const draft = loadJSON<ArticleDraft | null>(draftKey, null);
+    setRecoveredDraft(draft && isMeaningfulDraft(draft) ? draft : null);
+  }, [draftKey]);
+
+  const restoreDraft = () => {
+    if (!recoveredDraft) return;
+    setTitle(recoveredDraft.title);
+    setSlug(recoveredDraft.slug);
+    setSlugTouched(recoveredDraft.slugTouched);
+    setCategory(recoveredDraft.category);
+    setStatus(recoveredDraft.status);
+    setExcerpt(recoveredDraft.excerpt);
+    setContentHtml(recoveredDraft.contentHtml);
+    setCoverImageUrl(recoveredDraft.coverImageUrl);
+    setRecoveredDraft(null);
+  };
+
+  const discardDraft = () => {
+    removeKey(draftKey);
+    setRecoveredDraft(null);
+  };
+
+  // Autosave to localStorage as-you-type, debounced, so a refresh/closed tab
+  // never loses more than a few hundred ms of work. Paused while server data
+  // is still loading or while an unresolved draft banner is showing — either
+  // would otherwise overwrite the very data it's trying to protect.
+  const autosaveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => {
+    if (loading || recoveredDraft) return;
+    clearTimeout(autosaveTimer.current);
+    autosaveTimer.current = setTimeout(() => {
+      const draft: ArticleDraft = { title, slug, slugTouched, category, status, excerpt, contentHtml, coverImageUrl, savedAt: Date.now() };
+      if (isMeaningfulDraft(draft)) {
+        saveJSON(draftKey, draft);
+      }
+    }, 600);
+    return () => clearTimeout(autosaveTimer.current);
+  }, [draftKey, loading, recoveredDraft, title, slug, slugTouched, category, status, excerpt, contentHtml, coverImageUrl]);
 
   const onTitleChange = (value: string) => {
     setTitle(value);
@@ -130,6 +192,7 @@ export default function AdminArtikelEditor() {
         setError(dbError.message);
         return;
       }
+      removeKey(draftKey);
       navigate('/admin/artikel');
     } finally {
       setSubmitting(false);
@@ -143,6 +206,21 @@ export default function AdminArtikelEditor() {
       <Link to="/admin/artikel" className={styles.back}>← Kelola Artikel</Link>
       <div className={styles.eyebrow}>Panel Admin</div>
       <h1 className={styles.h1}>{isEdit ? 'Edit Artikel' : 'Tulis Artikel Baru'}</h1>
+
+      {recoveredDraft && (
+        <div className={styles.draftBanner}>
+          <div>
+            <div className={styles.draftBannerTitle}>Draf tersimpan otomatis ditemukan</div>
+            <div className={styles.draftBannerHint}>
+              Tersimpan {new Date(recoveredDraft.savedAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} — sepertinya halaman sempat ke-refresh sebelum kamu simpan.
+            </div>
+          </div>
+          <div className={styles.draftBannerActions}>
+            <Button type="button" variant="primary" size="sm" onClick={restoreDraft}>Pulihkan</Button>
+            <Button type="button" variant="secondary" size="sm" onClick={discardDraft}>Buang</Button>
+          </div>
+        </div>
+      )}
 
       <div className={styles.card}>
         <form className={styles.form} onSubmit={submit}>

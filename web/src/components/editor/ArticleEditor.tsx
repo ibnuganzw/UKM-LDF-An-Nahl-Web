@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import { Table } from '@tiptap/extension-table';
@@ -113,6 +114,14 @@ export default function ArticleEditor({ contentHtml, onChange }: ArticleEditorPr
         <button type="button" className={styles.btn} onClick={() => editor.chain().focus().undo().run()}>↺</button>
         <button type="button" className={styles.btn} onClick={() => editor.chain().focus().redo().run()}>↻</button>
       </div>
+
+      <BubbleMenu editor={editor} className={styles.bubbleMenu}>
+        <button type="button" className={editor.isActive('bold') ? styles.bubbleBtnActive : styles.bubbleBtn} onClick={() => editor.chain().focus().toggleBold().run()}>B</button>
+        <button type="button" className={editor.isActive('italic') ? styles.bubbleBtnActive : styles.bubbleBtn} onClick={() => editor.chain().focus().toggleItalic().run()}><em>I</em></button>
+        <button type="button" className={editor.isActive('strike') ? styles.bubbleBtnActive : styles.bubbleBtn} onClick={() => editor.chain().focus().toggleStrike().run()}>S</button>
+        <span className={styles.bubbleSep} />
+        <button type="button" className={editor.isActive('link') ? styles.bubbleBtnActive : styles.bubbleBtn} onClick={setLink}>Tautan</button>
+      </BubbleMenu>
 
       {imagePanelOpen && (
         <div className={styles.imagePanel}>
