@@ -265,3 +265,19 @@ export interface OrgPosition {
   sortOrder: number;
   createdAt: string;
 }
+
+/** A person inside a division. 'ketua' heads it (at most one); 'wakil'/
+ *  'sekretaris'/'bendahara' are optional single officers; 'anggota' are the
+ *  members (unlimited). Enforced by a partial unique index at the DB level. */
+export type DivisionRole = 'ketua' | 'wakil' | 'sekretaris' | 'bendahara' | 'anggota';
+
+export interface DivisionMember {
+  id: string;
+  /** References the divisi row's OrgPosition.id (tier 3, positionKey null). */
+  divisionId: string;
+  name: string;
+  role: DivisionRole;
+  photoUrl: string | null;
+  sortOrder: number;
+  createdAt: string;
+}
