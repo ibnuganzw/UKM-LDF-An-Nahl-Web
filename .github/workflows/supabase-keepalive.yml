@@ -1,0 +1,63 @@
+name: Keep Supabase Active
+
+on:
+  schedule:
+    # Four small database reads per day. Times are UTC:
+    # 07:17, 13:17, 19:17, and 01:17 WIB.
+    - cron: "17 0,6,12,18 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: false
+
+jobs:
+  keepalive:
+    name: Query public database
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    steps:
+      - name: Keep project active
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${SUPABASE_URL:-}" || -z "${SUPABASE_ANON_KEY:-}" ]]; then
+            echo "::error::SUPABASE_URL and SUPABASE_ANON_KEY repository secrets are required."
+            exit 1
+          fi
+
+          base_url="${SUPABASE_URL%/}"
+          response_file="$(mktemp)"
+          trap 'rm -f "$response_file"' EXIT
+
+          http_code="$(
+            curl \
+              --silent \
+              --show-error \
+              --location \
+              --output "$response_file" \
+              --write-out "%{http_code}" \
+              --retry 3 \
+              --retry-all-errors \
+              --connect-timeout 10 \
+              --max-time 30 \
+              --header "apikey: ${SUPABASE_ANON_KEY}" \
+              --header "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
+              --header "Accept: application/json" \
+              "${base_url}/rest/v1/articles?select=id&limit=1"
+          )"
+
+          if [[ "$http_code" != "200" ]]; then
+            echo "::error::Supabase keep-alive failed with HTTP ${http_code}."
+            exit 1
+          fi
+
+          echo "Supabase keep-alive succeeded (HTTP ${http_code})."
