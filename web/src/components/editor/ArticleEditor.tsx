@@ -8,6 +8,9 @@ import TableRow from '@tiptap/extension-table-row';
 import TableHeader from '@tiptap/extension-table-header';
 import TableCell from '@tiptap/extension-table-cell';
 import styles from './ArticleEditor.module.css';
+import { EDITORIAL_BLOCKS } from '../../lib/articleEditorial';
+import type { EditorialBlockKind } from '../../types';
+import { EditorialBlock } from './EditorialBlock';
 import { FigureImage } from './FigureImage';
 import { uploadArticleImage } from '../../lib/articleImages';
 
@@ -21,11 +24,13 @@ export default function ArticleEditor({ contentHtml, onChange }: ArticleEditorPr
   const [imageCaption, setImageCaption] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [blockKind, setBlockKind] = useState<EditorialBlockKind>('dalil');
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       Link.configure({ openOnClick: false, autolink: true }),
+      EditorialBlock,
       FigureImage,
       Table.configure({ resizable: false }),
       TableRow,
@@ -110,6 +115,24 @@ export default function ArticleEditor({ contentHtml, onChange }: ArticleEditorPr
             <button type="button" className={styles.btn} onClick={() => editor.chain().focus().deleteTable().run()}>Hapus Tabel</button>
           </>
         )}
+        <span className={styles.sep} />
+        <select
+          className={styles.blockSelect}
+          aria-label="Jenis blok editorial"
+          value={blockKind}
+          onChange={(event) => setBlockKind(event.target.value as EditorialBlockKind)}
+        >
+          {EDITORIAL_BLOCKS.map((block) => (
+            <option key={block.kind} value={block.kind}>{block.label}</option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className={styles.blockBtn}
+          onClick={() => editor.chain().focus().insertEditorialBlock(blockKind).run()}
+        >
+          + Blok editorial
+        </button>
         <span className={styles.sep} />
         <button type="button" className={styles.btn} onClick={() => editor.chain().focus().undo().run()}>↺</button>
         <button type="button" className={styles.btn} onClick={() => editor.chain().focus().redo().run()}>↻</button>

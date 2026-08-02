@@ -172,13 +172,13 @@
   font-size: 14px;
   color: var(--text-heading);
   outline: none;
-  background: rgba(255, 255, 255, .05);
+  background: var(--control-fill);
   font-family: inherit;
 }
 .input:focus,
 .textarea:focus {
   border-color: rgba(232, 199, 102, .6);
-  background: rgba(255, 255, 255, .08);
+  background: var(--control-fill-hover);
 }
 .textarea {
   resize: vertical;
@@ -191,7 +191,7 @@
   padding: 2px;
   border: 1.5px solid rgba(232, 199, 102, .2);
   border-radius: 10px;
-  background: rgba(255, 255, 255, .05);
+  background: var(--control-fill);
   cursor: pointer;
 }
 
@@ -258,7 +258,7 @@
   font-weight: 700;
   color: var(--text-heading);
   outline: none;
-  background: rgba(255, 255, 255, .05);
+  background: var(--control-fill);
   font-family: inherit;
   cursor: pointer;
 }
@@ -329,7 +329,7 @@
   padding: 10px;
   border: 1px solid rgba(232, 199, 102, .12);
   border-radius: 14px;
-  background: rgba(255, 255, 255, .02);
+  background: var(--glass-fill-faint);
 }
 
 .memberPhotoCol {

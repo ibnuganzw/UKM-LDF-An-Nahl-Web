@@ -7,6 +7,10 @@ import { FocusedHeader } from './FocusedHeader';
 import styles from './Layout.module.css';
 import { cx } from '../../lib/cx';
 import { initReveal } from '../../lib/reveal';
+import { setRouteSeo } from '../../lib/pageTitle';
+import { QuranAudioDock } from '../quran/QuranAudioDock';
+import { useQuranAudio } from '../../state/QuranAudioContext';
+import { useQuranLibrary } from '../../state/QuranLibraryContext';
 
 const AUTH_PATHS = ['/login', '/register', '/lupa-password', '/reset-password', '/menunggu-persetujuan'];
 
@@ -21,6 +25,8 @@ function RouteFallback() {
 
 export function Layout() {
   const location = useLocation();
+  const { currentVerse } = useQuranAudio();
+  const { focusMode } = useQuranLibrary();
   const isAuthRoute = AUTH_PATHS.includes(location.pathname);
   const isReaderRoute = /^\/quran\/(?:juz\/)?\d+\/?$/.test(location.pathname);
   const isUtilityRoute = /^(?:\/admin(?:\/|$)|\/dashboard\/?$|\/scan\/)/.test(location.pathname);
@@ -28,6 +34,7 @@ export function Layout() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    setRouteSeo(location.pathname);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -35,7 +42,7 @@ export function Layout() {
   }, []);
 
   const outlet = (
-    <main className={cx(styles.main, isUtilityRoute && styles.utilityMain, isReaderRoute && styles.readerMain)}>
+    <main className={cx(styles.main, isUtilityRoute && styles.utilityMain, isReaderRoute && styles.readerMain, currentVerse && styles.audioActive)}>
       <Suspense fallback={<RouteFallback />}>
         <Outlet />
       </Suspense>
@@ -46,17 +53,34 @@ export function Layout() {
     return (
       <>
         <FocusedHeader />
-        {outlet}
+        <div className={styles.authShell}>
+          <aside className={styles.authAside} aria-hidden="true">
+            <blockquote className={styles.authQuote}>
+              <p>
+                "Dan Tuhanmu mewahyukan kepada lebah: buatlah sarang di gunung-gunung, di
+                pohon-pohon kayu, dan di tempat-tempat yang dibuat manusia."
+              </p>
+              <cite>QS. An-Nahl : 68</cite>
+            </blockquote>
+          </aside>
+          <main className={styles.authMain}>
+            <Suspense fallback={<RouteFallback />}>
+              <Outlet />
+            </Suspense>
+          </main>
+        </div>
+        <QuranAudioDock />
       </>
     );
   }
 
   return (
     <>
-      <Header />
+      {!focusMode && <Header />}
       {outlet}
-      {!isReaderRoute && !isUtilityRoute && <Footer />}
-      {!isScanRoute && <BottomNav />}
+      {!focusMode && !isReaderRoute && !isUtilityRoute && <Footer />}
+      {!focusMode && !isScanRoute && <BottomNav />}
+      <QuranAudioDock />
     </>
   );
 }

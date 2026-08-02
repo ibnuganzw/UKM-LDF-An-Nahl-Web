@@ -48,6 +48,12 @@
   letter-spacing: .18em;
 }
 
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .backLink {
   min-height: 44px;
   display: inline-flex;
@@ -71,5 +77,13 @@
 
   .backLink {
     padding-inline: 9px;
+  }
+}
+
+@media (max-width: 390px) {
+  .backLink {
+    width: 44px;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }

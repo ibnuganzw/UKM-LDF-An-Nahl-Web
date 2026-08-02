@@ -7,6 +7,9 @@ import { cx } from '../lib/cx';
 import { fetchQuranSearch, primeQuranSearch } from '../lib/quranSearch';
 import { createHighlighter, type HighlightSegment } from '../lib/quran/highlight';
 import type { QuranSearchResponse } from '../types';
+import { QuranLibraryPanel } from '../components/quran/QuranLibraryPanel';
+import { QuranOfflineCard } from '../components/quran/QuranOfflineCard';
+import { useQuranLibrary } from '../state/QuranLibraryContext';
 
 type SearchStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -37,6 +40,8 @@ export default function Quran() {
   const [searchStatus, setSearchStatus] = useState<SearchStatus>('idle');
   const [searchResponse, setSearchResponse] = useState<QuranSearchResponse | null>(null);
   const [searchError, setSearchError] = useState('');
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const { bookmarks, collections, progress } = useQuranLibrary();
   const trimmedSearchQuery = searchQuery.trim();
   const controllerRef = useRef<AbortController | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -148,8 +153,30 @@ export default function Quran() {
             </div>
           </div>
 
-          <div className={styles.bookmarkPlaceholder}></div>
+          <div className={styles.libraryTools}>
+            <button type="button" onClick={() => setLibraryOpen(true)}>
+              <span aria-hidden="true">♡</span>
+              {bookmarks.length} ayat · {collections.length} koleksi
+            </button>
+          </div>
         </div>
+      </section>
+
+      <section className={styles.readerUtilities} aria-label="Perangkat bacaan pribadi">
+        {progress ? (
+          <Link className={styles.continueCard} to={progress.path}>
+            <span className={styles.utilityEyebrow}>Lanjutkan bacaan</span>
+            <strong>{progress.label}</strong>
+            <span>Buka ayat terakhir yang terbaca <b aria-hidden="true">→</b></span>
+          </Link>
+        ) : (
+          <Link className={styles.continueCard} to="/quran/1">
+            <span className={styles.utilityEyebrow}>Jejak bacaan otomatis</span>
+            <strong>Mulai dari Al-Fatihah</strong>
+            <span>Ayat terakhir akan tersimpan di perangkat ini <b aria-hidden="true">→</b></span>
+          </Link>
+        )}
+        <QuranOfflineCard />
       </section>
 
       {isSearchOpen && (
@@ -314,6 +341,7 @@ export default function Quran() {
           })}
         </section>
       )}
+      <QuranLibraryPanel open={libraryOpen} onClose={() => setLibraryOpen(false)} />
     </main>
   );
 }

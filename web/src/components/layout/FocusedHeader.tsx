@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import styles from './FocusedHeader.module.css';
+import { ThemeToggle } from '../ui';
 
 export function FocusedHeader() {
   return (
@@ -20,7 +21,10 @@ export function FocusedHeader() {
             <small>FKH USK</small>
           </span>
         </Link>
-        <Link to="/" className={styles.backLink}>← Beranda</Link>
+        <div className={styles.actions}>
+          <ThemeToggle compact />
+          <Link to="/" className={styles.backLink}>← Beranda</Link>
+        </div>
       </div>
     </header>
   );

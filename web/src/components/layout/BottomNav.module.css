@@ -5,10 +5,10 @@
   left: 0;
   right: 0;
   z-index: 70;
-  background: rgba(8, 14, 34, .92);
+  background: var(--bg-header);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  border-top: 1px solid rgba(232, 199, 102, .16);
+  border-top: 1px solid var(--surface-border-strong);
   justify-content: space-around;
   padding: 7px 6px calc(7px + env(safe-area-inset-bottom));
 }

@@ -1,0 +1,15 @@
+{
+  "name": "LDF An-Nahl FKH USK",
+  "short_name": "An-Nahl",
+  "description": "Rumah digital dakwah, agenda, dan bacaan Al-Qur'an LDF An-Nahl FKH USK.",
+  "lang": "id-ID",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0A1128",
+  "theme_color": "#0A1128",
+  "icons": [
+    { "src": "/assets/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/assets/logo-192.jpg", "sizes": "192x192", "type": "image/jpeg", "purpose": "any" }
+  ]
+}

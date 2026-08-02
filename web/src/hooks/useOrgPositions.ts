@@ -56,6 +56,7 @@ export interface OrgPositionCollections {
   all: OrgPosition[];
   members: DivisionMember[];
   loading: boolean;
+  error: string | null;
   refresh: () => void;
 }
 
@@ -63,25 +64,33 @@ export function useOrgPositions(): OrgPositionCollections {
   const [positions, setPositions] = useState<OrgPosition[]>([]);
   const [members, setMembers] = useState<DivisionMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [{ data: posData }, { data: memberData }] = await Promise.all([
-      supabase
-        .from('org_positions')
-        .select('id, position_key, tier, name, role_title, division_desc, division_color, photo_url, sort_order, created_at')
-        .order('tier', { ascending: true })
-        .order('sort_order', { ascending: true }),
-      supabase
-        .from('division_members')
-        .select('id, division_id, name, role, photo_url, sort_order, created_at')
-        .order('sort_order', { ascending: true })
-        .order('created_at', { ascending: true }),
-    ]);
-    setPositions(((posData as OrgPositionRow[] | null) ?? []).map(toOrgPosition));
-    setMembers(((memberData as DivisionMemberRow[] | null) ?? []).map(toDivisionMember));
-    setLoading(false);
+    try {
+      const [positionResult, memberResult] = await Promise.all([
+        supabase
+          .from('org_positions')
+          .select('id, position_key, tier, name, role_title, division_desc, division_color, photo_url, sort_order, created_at')
+          .order('tier', { ascending: true })
+          .order('sort_order', { ascending: true }),
+        supabase
+          .from('division_members')
+          .select('id, division_id, name, role, photo_url, sort_order, created_at')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: true }),
+      ]);
+      if (positionResult.error || memberResult.error) throw positionResult.error ?? memberResult.error;
+      setPositions(((positionResult.data as OrgPositionRow[] | null) ?? []).map(toOrgPosition));
+      setMembers(((memberResult.data as DivisionMemberRow[] | null) ?? []).map(toDivisionMember));
+      setError(null);
+    } catch {
+      setError('Struktur organisasi belum dapat dimuat. Periksa koneksi lalu coba lagi.');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -90,5 +99,5 @@ export function useOrgPositions(): OrgPositionCollections {
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
-  return { all: positions, members, loading, refresh };
+  return { all: positions, members, loading, error, refresh };
 }

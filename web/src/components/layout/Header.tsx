@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
-import { Hex } from '../ui';
+import { Hex, ThemeToggle } from '../ui';
 import { useApp } from '../../state/AppContext';
 import { NAV_LINKS, getNavGroup } from '../../lib/nav';
 import { cx } from '../../lib/cx';
@@ -62,6 +62,7 @@ export function Header() {
         </nav>
 
         <div className={styles.right}>
+          <ThemeToggle />
           {profile ? (
             <Link to={accountRoute} className={styles.accountPill}>
               <Hex width={34} height={34} bg="linear-gradient(135deg,#E8C766,#C9A227)" color="#241B04" fontSize={14}>
@@ -96,7 +97,7 @@ export function Header() {
               to={l.to}
               className={cx(styles.mobileMenuLink, group === l.group && styles.mobileMenuLinkActive)}
             >
-              <Hex width={7} height={8} bg={group === l.group ? '#E8C766' : 'rgba(255,255,255,.25)'} />
+              <Hex width={7} height={8} bg={group === l.group ? 'var(--gold-light)' : 'var(--text-faint)'} />
               {l.label}
             </Link>
           ))}

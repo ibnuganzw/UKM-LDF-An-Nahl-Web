@@ -295,12 +295,12 @@
 .kontenArticleList {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid rgba(255, 255, 255, .08);
+  border-top: 1px solid var(--surface-divider);
 }
 
 .kontenArticleRow {
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  border-bottom: 1px solid var(--surface-divider);
   background: transparent;
   text-align: left;
   cursor: pointer;
@@ -319,7 +319,7 @@
 .kontenArticleTitle {
   font-weight: 700;
   font-size: 14px;
-  color: #DCD5C0;
+  color: var(--text-heading);
   line-height: 1.45;
 }
 

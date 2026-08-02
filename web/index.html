@@ -2,13 +2,97 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/jpeg" href="/assets/logo-64.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+    <link rel="alternate icon" type="image/jpeg" sizes="64x64" href="/assets/logo-64.jpg" />
+    <link rel="apple-touch-icon" href="/assets/logo-192.jpg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0A1128" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="description" content="LDF An-Nahl — Lembaga Dakwah Fakultas, Fakultas Kedokteran Hewan Universitas Syiah Kuala. Serdadu Lebah, Bersenjata Dakwah." />
+
+    <!-- Runtime SEO upgrades these paths to absolute production URLs. The
+         prerender step does the same at build time when VITE_SITE_URL or
+         Cloudflare's CF_PAGES_URL is available. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LDF An-Nahl" />
+    <meta property="og:title" content="LDF An-Nahl — FKH USK" />
+    <meta property="og:description" content="Serdadu Lebah, Bersenjata Dakwah. Kajian, agenda, waktu shalat, Al-Qur'an, dan tulisan — dari mushalla FKH Universitas Syiah Kuala." />
+    <meta property="og:url" content="/" />
+    <meta property="og:image" content="/assets/og-card.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="id_ID" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="LDF An-Nahl — FKH USK" />
+    <meta name="twitter:description" content="Serdadu Lebah, Bersenjata Dakwah. Kajian, agenda, waktu shalat, Al-Qur'an, dan tulisan — dari mushalla FKH Universitas Syiah Kuala." />
+    <meta name="twitter:image" content="/assets/og-card.jpg" />
+
+    <script type="application/ld+json" data-seo-json-ld>
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "/#organization",
+            "name": "LDF An-Nahl FKH USK",
+            "alternateName": "Lembaga Dakwah Fakultas An-Nahl",
+            "url": "/",
+            "logo": "/assets/logo-192.jpg",
+            "parentOrganization": {
+              "@type": "CollegeOrUniversity",
+              "name": "Universitas Syiah Kuala"
+            }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "/#website",
+            "url": "/",
+            "name": "LDF An-Nahl — FKH USK",
+            "inLanguage": "id-ID",
+            "publisher": { "@id": "/#organization" }
+          }
+        ]
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Amiri:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
     <title>LDF An-Nahl — FKH USK</title>
+    <script>
+      // Apply the saved palette before CSS paints so a returning light-theme
+      // reader never sees a dark flash while React starts.
+      (function () {
+        var theme = 'dark';
+        try {
+          theme = localStorage.getItem('annahl_theme') === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          // Storage can be unavailable in private browsing; dark is the safe default.
+        }
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+        var themeMeta = document.querySelector('meta[name="theme-color"]');
+        if (themeMeta && theme === 'light') themeMeta.setAttribute('content', '#F5F7FB');
+      })();
+    </script>
+    <script>
+      // The hero photo is the LCP on the landing page; kick off its fetch
+      // before the JS bundle is even parsed. Other routes never pay for it.
+      if (location.pathname === '/') {
+        var heroPreload = document.createElement('link');
+        heroPreload.rel = 'preload';
+        heroPreload.as = 'image';
+        heroPreload.fetchPriority = 'high';
+        heroPreload.href = matchMedia('(max-width: 640px)').matches
+          ? '/assets/photos/hero-mushalla-mobile-v1.jpg'
+          : '/assets/photos/hero-mushalla-desktop-v1.jpg';
+        document.head.appendChild(heroPreload);
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

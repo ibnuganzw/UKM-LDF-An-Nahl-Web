@@ -101,15 +101,15 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: rgba(255, 255, 255, .08);
+  background: var(--control-fill-hover);
 }
 
 .locationSearchInput {
   width: 100%;
   padding: 10px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, .12);
-  background: rgba(255, 255, 255, .04);
+  border: 1px solid var(--control-border);
+  background: var(--input-fill);
   color: var(--text-heading);
   font-size: 14px;
 }
@@ -240,12 +240,20 @@
   overflow: hidden;
 }
 
+.scheduleUnavailable {
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
 .row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  border-bottom: 1px solid var(--surface-divider);
 }
 
 .rowLeft {
@@ -278,6 +286,22 @@
   color: var(--text-faint);
   margin-top: 14px;
   line-height: 1.6;
+}
+
+.retryButton {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--gold-light);
+  cursor: pointer;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.retryButton:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
 }
 
 .quoteCard {

@@ -2,7 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   margin: 3rem 0;
+  overflow: hidden;
 }
 
 .frame {
@@ -13,7 +15,7 @@
   display: inline-flex;
   max-width: calc(100vw - 28px);
   color: var(--text-heading);
-  font-size: clamp(58px, 12vw, 120px);
+  font-size: clamp(58px, 8.5vw, 120px);
   line-height: 1;
   text-decoration: none;
   transform: translateX(4.25%);
@@ -57,9 +59,18 @@
 .titleName { flex: 0 1 auto; min-width: 0; font-family: var(--font-surah-name); font-size: .62em; font-feature-settings: "liga" 1, "calt" 1; font-weight: 400; line-height: .92; white-space: nowrap; direction: ltr; }
 .bismillah { margin-top: 1.5rem; color: var(--text-heading); font-family: 'quran-common'; font-size: clamp(40px, 8vw, 80px); font-feature-settings: "liga" 1, "calt" 1; line-height: 1; text-shadow: none; }
 
-@media (max-width: 760px) {
-  .wrapper { margin: 2.3rem 0; }
-  .frame { --place-x: 17.7%; --title-x: 45.2%; --verse-x: 72.8%; font-size: clamp(43px, 12.8vw, 62px); }
+@media (max-width: 919px) {
+  .wrapper {
+    margin: 2.3rem 0;
+  }
+
+  .frame {
+    --place-x: 17.7%;
+    --title-x: 45.2%;
+    --verse-x: 72.8%;
+    max-width: none;
+    font-size: clamp(46px, 11.75vw, 92px);
+  }
   .placeSlot, .verseSlot { width: .74em; height: .74em; }
   .placeIcon { font-size: .175em; }
   .verseNumber { font-size: .175em; }
@@ -68,4 +79,10 @@
   .titleLabel { font-size: .48em; }
   .titleName { font-size: .57em; }
   .bismillah { margin-top: 1.1rem; font-size: clamp(38px, 12vw, 58px); }
+}
+
+@media (max-width: 480px) {
+  .frame {
+    font-size: clamp(39px, 10.5vw, 45px);
+  }
 }

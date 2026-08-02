@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import styles from './Footer.module.css';
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
@@ -44,7 +45,7 @@ export function Footer() {
 
       <div className={styles.bottomBar}>
         <div className={styles.bottomInner}>
-          <span>© 1448 H / 2026 LDF An-Nahl · Fakultas Kedokteran Hewan USK</span>
+          <span>© {currentYear} LDF An-Nahl · Fakultas Kedokteran Hewan USK</span>
         </div>
       </div>
 

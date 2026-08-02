@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /scan
+Disallow: /login
+Disallow: /register
+Disallow: /lupa-password
+Disallow: /reset-password
+Disallow: /menunggu-persetujuan
+
+# The production build replaces this relative development hint with the
+# absolute VITE_SITE_URL or CF_PAGES_URL value.
+Sitemap: /sitemap.xml

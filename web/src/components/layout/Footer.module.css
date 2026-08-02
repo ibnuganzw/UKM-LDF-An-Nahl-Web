@@ -1,4 +1,11 @@
 .footer {
+  --bg-deep: #070E22;
+  --text-heading: #F5EFDC;
+  --text-body: #A9B3D1;
+  --text-faint: #5E6B8F;
+  --gold-light: #E8C766;
+  --gold-dark: #C9A227;
+
   border-top: 1px solid rgba(232, 199, 102, .16);
   background: var(--bg-deep);
 }

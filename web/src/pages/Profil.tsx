@@ -1,5 +1,5 @@
 import styles from './Profil.module.css';
-import { GlassCard, Hex } from '../components/ui';
+import { EmptyState, GlassCard, Hex } from '../components/ui';
 import { soft } from '../lib/colors';
 import { quranText } from '../lib/quranText';
 import { useOrgPositions } from '../hooks/useOrgPositions';
@@ -16,7 +16,7 @@ function isPlaceholderName(name: string): boolean {
 }
 
 export default function Profil() {
-  const { all, members } = useOrgPositions();
+  const { all, members, loading, error, refresh } = useOrgPositions();
   const published = all.filter((p) => !isPlaceholderName(p.name));
   const dosenPembina = published.find((p) => p.tier === 0);
   const ketuaUmum = published.find((p) => p.tier === 1);
@@ -79,7 +79,16 @@ export default function Profil() {
         <h2 className={styles.strukturHeading}>{hasPublishedLeadership ? 'Susunan Kepengurusan' : 'Bidang Gerak'}</h2>
       </div>
 
-      <div className={styles.strukturWrap}>
+      {loading && <div role="status">Memuat struktur organisasi…</div>}
+      {!loading && error && (
+        <EmptyState
+          title="Struktur organisasi belum dapat dimuat."
+          body={error}
+          action={{ label: 'Coba lagi', onClick: refresh }}
+        />
+      )}
+
+      {!error && <div className={styles.strukturWrap}>
         {dosenPembina && (
           <>
             <GlassCard radius={20} padding="16px 26px" className={styles.intiCard}>
@@ -140,7 +149,7 @@ export default function Profil() {
             ))}
           </div>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

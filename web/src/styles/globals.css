@@ -62,6 +62,27 @@ p {
   background: var(--bg-page);
 }
 
+/* ---------- Film grain ----------
+   One static, near-invisible noise layer over the whole viewport gives every
+   surface a shared material grain — flat digital fills read as printed ink
+   instead. Static by design (never animates, reduced-motion-neutral) and
+   deliberately above ALL z-indexes: a uniform texture over dialogs and menus
+   too is what makes the page feel like one physical medium.
+   pointer-events: none keeps it out of hit-testing. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: none;
+  opacity: .03;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+html[data-theme='light'] body::after {
+  opacity: .018;
+}
+
 .srOnly {
   position: absolute !important;
   width: 1px !important;

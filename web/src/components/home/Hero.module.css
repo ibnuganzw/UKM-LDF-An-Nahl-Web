@@ -1,4 +1,11 @@
 .hero {
+  --bg-deep: #070E22;
+  --text-heading: #F5EFDC;
+  --text-body: #A9B3D1;
+  --text-muted: #8E99BB;
+  --gold-light: #E8C766;
+  --gold-dark: #C9A227;
+
   position: relative;
   min-height: min(720px, calc(100svh - var(--header-h)));
   overflow: hidden;
@@ -198,6 +205,16 @@
   animation-delay: .75s;
 }
 
+.prayerFloater {
+  top: 38%;
+  right: 3%;
+}
+
+.holidayFloater {
+  top: 60%;
+  right: 17%;
+}
+
 .chip {
   background: rgba(10, 17, 40, .55);
   backdrop-filter: blur(14px);
@@ -232,6 +249,91 @@
   font-weight: 700;
   letter-spacing: .08em;
   text-shadow: 0 2px 12px rgba(0, 0, 0, .65);
+}
+
+/* Aceh Dawn keeps the same photography and editorial geometry as the night
+   hero, but lets the bright header flow into a calm morning reading surface. */
+:global(html[data-theme='light']) .hero {
+  --bg-deep: #F5F7FB;
+  --text-heading: #0A1128;
+  --text-body: #344462;
+  --text-muted: #5D6D87;
+  --gold-light: #8A650C;
+  --gold-dark: #76570A;
+
+  background: linear-gradient(180deg, #F5F7FB 0%, #F0F3F8 100%);
+}
+
+:global(html[data-theme='light']) .photo img {
+  filter: saturate(.9) contrast(1) brightness(1.02);
+}
+
+:global(html[data-theme='light']) .photoWash {
+  background:
+    linear-gradient(90deg, rgba(245, 247, 251, .995) 0%, rgba(245, 247, 251, .97) 29%, rgba(245, 247, 251, .8) 47%, rgba(245, 247, 251, .16) 72%, rgba(245, 247, 251, .02) 100%),
+    linear-gradient(180deg, rgba(245, 247, 251, .12) 0%, rgba(245, 247, 251, .02) 52%, rgba(240, 243, 248, .6) 100%);
+}
+
+:global(html[data-theme='light']) .hero::after {
+  background: linear-gradient(90deg, transparent, rgba(138, 101, 12, .28), transparent);
+}
+
+:global(html[data-theme='light']) .heading {
+  text-shadow: 0 3px 28px rgba(255, 255, 255, .7);
+}
+
+:global(html[data-theme='light']) .lead {
+  color: var(--text-body);
+  text-shadow: 0 2px 18px rgba(255, 255, 255, .82);
+}
+
+:global(html[data-theme='light']) .kickerLine {
+  box-shadow: none;
+}
+
+:global(html[data-theme='light']) .ctaRow a:last-child {
+  border-color: rgba(10, 17, 40, .2);
+  background: rgba(255, 255, 255, .7);
+  color: var(--text-heading);
+  box-shadow: 0 12px 28px -20px rgba(10, 17, 40, .4), inset 0 1px 0 rgba(255, 255, 255, .9);
+}
+
+:global(html[data-theme='light']) .glowTop {
+  background: radial-gradient(circle, rgba(201, 162, 39, .14), transparent 66%);
+}
+
+:global(html[data-theme='light']) .hero :global(.beeB),
+:global(html[data-theme='light']) .hero :global(.beeC) {
+  display: none;
+}
+
+:global(html[data-theme='light']) .prayerFloater,
+:global(html[data-theme='light']) .holidayFloater {
+  right: 1%;
+}
+
+:global(html[data-theme='light']) .prayerFloater {
+  top: 36%;
+}
+
+:global(html[data-theme='light']) .holidayFloater {
+  top: 52%;
+}
+
+:global(html[data-theme='light']) .chip {
+  min-width: 224px;
+  border-color: rgba(138, 101, 12, .26);
+  background: rgba(255, 255, 255, .82);
+  box-shadow: 0 22px 48px -26px rgba(10, 17, 40, .42), inset 0 1px 0 rgba(255, 255, 255, .94);
+}
+
+:global(html[data-theme='light']) .chipLabel {
+  color: var(--gold-dark);
+}
+
+:global(html[data-theme='light']) .photoCaption {
+  color: rgba(10, 17, 40, .68);
+  text-shadow: 0 1px 10px rgba(255, 255, 255, .9);
 }
 
 @media (max-width: 919px) {
@@ -318,5 +420,20 @@
 
   .photoCaption {
     display: none;
+  }
+
+  :global(html[data-theme='light']) .photo img {
+    filter: saturate(.88) contrast(1) brightness(1.02);
+  }
+
+  :global(html[data-theme='light']) .photoWash {
+    background:
+      linear-gradient(180deg, rgba(245, 247, 251, .03) 0%, rgba(245, 247, 251, .12) 31%, rgba(245, 247, 251, .65) 57%, rgba(245, 247, 251, .97) 78%, #F5F7FB 100%),
+      linear-gradient(90deg, rgba(245, 247, 251, .4), rgba(245, 247, 251, .04));
+  }
+
+  :global(html[data-theme='light']) .heading,
+  :global(html[data-theme='light']) .lead {
+    text-shadow: 0 2px 18px rgba(255, 255, 255, .92);
   }
 }

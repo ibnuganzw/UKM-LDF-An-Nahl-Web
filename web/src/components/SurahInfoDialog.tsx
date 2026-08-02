@@ -1,4 +1,4 @@
-import { useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import styles from './SurahInfoDialog.module.css';
 import { Badge, Hex } from './ui';
 import { cx } from '../lib/cx';
@@ -42,7 +42,51 @@ function computeSegmentWidths(segments: SurahInfoStruktur[]): number[] {
 export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDialogProps) {
   const [activeTab, setActiveTab] = useState<TabId>('ringkasan');
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const dialogRef = useRef<HTMLElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   const info = SURAH_INFO.find((item) => item.no === surah.no);
+  const editoriallyReviewed = info?.reviewStatus === 'reviewed';
+
+  useEffect(() => {
+    const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+
+    const handleDialogKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+      if (event.key !== 'Tab' || !dialogRef.current) return;
+
+      const focusable = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      );
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleDialogKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleDialogKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus();
+    };
+  }, []);
 
   function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') {
@@ -59,16 +103,18 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
   return (
     <div className={styles.overlay} role="presentation" onMouseDown={onClose}>
       <section
+        ref={dialogRef}
         className={styles.dialog}
         role="dialog"
         aria-modal="true"
         aria-labelledby="surah-info-title"
+        aria-describedby={info ? 'surah-info-editorial-status' : undefined}
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className={styles.header}>
           <h2 id="surah-info-title">Tentang Surah ini</h2>
-          <button type="button" className={styles.close} aria-label="Tutup informasi surat" onClick={onClose}>
-            x
+          <button ref={closeButtonRef} type="button" className={styles.close} aria-label="Tutup informasi surat" onClick={onClose}>
+            ×
           </button>
         </div>
 
@@ -90,7 +136,7 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
             {info && info.namaLain.length > 0 && (
               <div className={styles.heroAliases}>
                 {info.namaLain.map((name) => (
-                  <Badge key={name} color="#E8C766" uppercase={false}>
+                  <Badge key={name} color="var(--gold-light)" uppercase={false}>
                     {name}
                   </Badge>
                 ))}
@@ -103,6 +149,14 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
           <p className={styles.emptyState}>Informasi mendalam untuk surah ini belum tersedia.</p>
         ) : (
           <>
+            <div id="surah-info-editorial-status" className={styles.editorialNote} role="note">
+              <strong>{editoriallyReviewed ? 'Sudah ditelaah' : 'Dalam penelaahan editorial'}</strong>
+              <span>
+                {editoriallyReviewed
+                  ? 'Ringkasan ini telah melalui pemeriksaan editorial internal; rujukan tetap tercantum di bawah.'
+                  : 'Gunakan sebagai pengantar, bukan pengganti mushaf dan tafsir primer. Rujukan tercantum di bawah.'}
+              </span>
+            </div>
             <div role="tablist" aria-label="Bagian informasi surah" className={styles.tabList}>
               {TABS.map((tab, index) => (
                 <button
@@ -172,7 +226,7 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
                       <div className={styles.kandunganGrid}>
                         {info.pokokKandungan.map((item) => (
                           <div key={item.kategori} className={styles.kandunganCard}>
-                            <Badge color="#5CCBA0">{item.kategori}</Badge>
+                            <Badge color="var(--success-light)">{item.kategori}</Badge>
                             <p>{item.isi}</p>
                           </div>
                         ))}
@@ -190,7 +244,7 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
                               width={44}
                               height={50}
                               bg="rgba(232, 199, 102, .14)"
-                              color="#E8C766"
+                              color="var(--gold-light)"
                               fontSize={12}
                               fontFamily="var(--font-sans)"
                               className={styles.verseCardHex}

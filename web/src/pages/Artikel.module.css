@@ -4,6 +4,21 @@
   padding: 40px 20px 90px;
 }
 
+/* Reading progress — 2px gold hairline pinned above the sticky header
+   (header is z-60). scaleX is driven from JS as the reader scrolls. */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 70;
+  background: var(--gold-gradient);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
 .back {
   border: none;
   background: transparent;
@@ -20,8 +35,53 @@
   color: var(--gold-light);
 }
 
-.body {
+.hero {
   margin-top: 10px;
+}
+
+.heroMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.reviewBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 5px 11px;
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: var(--glass-fill-faint);
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+.reviewBadge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.reviewed {
+  border-color: color-mix(in srgb, var(--success-light) 40%, transparent);
+  color: var(--success-light);
+  background: color-mix(in srgb, var(--success-light) 8%, transparent);
+}
+
+.in_review {
+  color: var(--gold-light);
+  border-color: rgba(232, 199, 102, .28);
+}
+
+.unreviewed {
+  color: var(--text-muted);
 }
 
 .title {
@@ -34,21 +94,92 @@
   text-wrap: pretty;
 }
 
+.dek {
+  max-width: 62ch;
+  margin: -2px 0 20px;
+  color: var(--text-reading);
+  font-family: var(--font-serif);
+  font-size: clamp(19px, 3vw, 23px);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
 .byline {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
   font-size: 13px;
-  font-weight: 700;
   color: var(--text-muted);
   padding-bottom: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, .1);
+  border-bottom: 1px solid var(--surface-divider);
+}
+
+.byline > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.byline strong {
+  color: var(--text-heading);
+  font-size: 13.5px;
+}
+
+.readingMeta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.readingMeta span + span::before {
+  content: '·';
+  margin-right: 8px;
+}
+
+.topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 16px;
+}
+
+.topics span {
+  padding: 5px 9px;
+  border: 1px solid var(--surface-border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  background: var(--glass-fill-faint);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.body {
+  margin-top: 24px;
+}
+
+.coverFigure {
+  margin: 0 0 26px;
 }
 
 .cover {
   width: 100%;
   max-height: 420px;
   object-fit: cover;
+  border: 1px solid var(--surface-border);
   border-radius: 18px;
   display: block;
-  margin-top: 22px;
+  margin: 0;
+}
+
+.coverFigure figcaption {
+  margin-top: 9px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.55;
+  text-align: center;
 }
 
 .richContent {
@@ -57,6 +188,29 @@
   line-height: 1.95;
   color: var(--text-reading);
 }
+
+/* Editorial drop cap on the opening paragraph — Cormorant only holds its
+   character large, which is exactly what a drop cap is. */
+.richContent > p:first-of-type::first-letter {
+  float: left;
+  padding: 7px 10px 0 0;
+  color: var(--gold-light);
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 58px;
+  line-height: .8;
+}
+
+/* End mark: a single filled hexagon closes the article, the same mark the
+   brand uses everywhere else. */
+.richContent::after {
+  content: '';
+  display: block;
+  height: 12px;
+  margin: 40px auto 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='12'%3E%3Cpath d='M2.2 6l2.9-5h5.8l2.9 5-2.9 5H5.1z' fill='rgba(232,199,102,.55)'/%3E%3C/svg%3E") center / auto 12px no-repeat;
+}
+
 .richContent p {
   margin: 0 0 18px;
   text-wrap: pretty;
@@ -82,11 +236,22 @@
   margin-bottom: 8px;
 }
 .richContent blockquote {
-  border-left: 3px solid rgba(232, 199, 102, .4);
-  padding-left: 18px;
-  margin: 0 0 18px;
-  color: var(--text-muted);
+  border-left: 2px solid rgba(232, 199, 102, .45);
+  padding: 2px 0 2px 22px;
+  margin: 26px 0;
+  color: var(--text-reading);
+  font-family: var(--font-serif);
   font-style: italic;
+  font-size: 20px;
+  line-height: 1.7;
+}
+
+/* Horizontal rules become a fleuron: three quiet hexagons. */
+.richContent hr {
+  border: 0;
+  height: 12px;
+  margin: 38px auto;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='12'%3E%3Cg fill='none' stroke='rgba(232,199,102,.4)'%3E%3Cpath d='M2.2 6l2.9-5h5.8l2.9 5-2.9 5H5.1z'/%3E%3Cpath d='M2.2 6l2.9-5h5.8l2.9 5-2.9 5H5.1z' transform='translate(24)'/%3E%3Cpath d='M2.2 6l2.9-5h5.8l2.9 5-2.9 5H5.1z' transform='translate(48)'/%3E%3C/g%3E%3C/svg%3E") center / auto 12px no-repeat;
 }
 .richContent a {
   color: var(--gold-light);
@@ -102,7 +267,7 @@
 }
 .richContent td,
 .richContent th {
-  border: 1px solid rgba(245, 239, 220, .18);
+  border: 1px solid var(--surface-divider);
   padding: 10px 12px;
   text-align: left;
   vertical-align: top;
@@ -125,4 +290,149 @@
   color: var(--text-muted);
   text-align: center;
   margin-top: 8px;
+}
+
+.richContent section[data-editorial-block] {
+  position: relative;
+  margin: 34px -18px;
+  padding: 34px 22px 7px;
+  border: 1px solid rgba(232, 199, 102, .22);
+  border-left: 4px solid var(--gold-dark);
+  border-radius: 15px;
+  background: rgba(232, 199, 102, .045);
+}
+
+.richContent section[data-editorial-block]::before {
+  position: absolute;
+  top: 11px;
+  left: 22px;
+  color: var(--gold-dark);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.richContent section[data-editorial-block="dalil"]::before { content: 'Dalil Al-Qur\2019 an'; }
+.richContent section[data-editorial-block="hadis"]::before { content: 'Hadis'; }
+.richContent section[data-editorial-block="khilaf"]::before { content: 'Khilaf & Fikih'; }
+.richContent section[data-editorial-block="bukti-ilmiah"]::before { content: 'Bukti Ilmiah'; }
+.richContent section[data-editorial-block="keselamatan"]::before { content: 'Catatan Keselamatan'; }
+.richContent section[data-editorial-block="kesimpulan"]::before { content: 'Kesimpulan'; }
+.richContent section[data-editorial-block="referensi"]::before { content: 'Referensi'; }
+
+.richContent section[data-editorial-block] > h2:first-child,
+.richContent section[data-editorial-block] > h3:first-child {
+  margin-top: 0;
+}
+
+.richContent section[data-editorial-block="bukti-ilmiah"] {
+  border-color: rgba(111, 173, 163, .3);
+  border-left-color: #6fada3;
+  background: rgba(111, 173, 163, .055);
+}
+
+.richContent section[data-editorial-block="keselamatan"] {
+  border-color: rgba(219, 155, 98, .32);
+  border-left-color: #d9965d;
+  background: rgba(217, 150, 93, .06);
+}
+
+.trustPanel {
+  margin-top: 50px;
+  padding: 24px;
+  border: 1px solid rgba(232, 199, 102, .2);
+  border-radius: 18px;
+  background: var(--card-featured-bg);
+  box-shadow: var(--shadow-luxe);
+}
+
+.trustEyebrow {
+  color: var(--gold-dark);
+  font-size: 10.5px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.trustPanel h2 {
+  margin: 7px 0 8px;
+  color: var(--text-heading);
+  font-family: var(--font-serif);
+  font-size: 25px;
+}
+
+.trustPanel > p {
+  color: var(--text-body);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.reviewers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 18px 0 0;
+}
+
+.reviewers > div {
+  padding-top: 12px;
+  border-top: 1px solid var(--surface-divider);
+}
+
+.reviewers dt {
+  margin-bottom: 5px;
+  color: var(--text-muted);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.reviewers dd {
+  margin: 0;
+  color: var(--text-heading);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.reviewers .reviewerRole {
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.reviewFoot {
+  margin-top: 16px;
+  color: var(--success-light);
+  font-size: 11.5px;
+  font-weight: 800;
+}
+
+@media (max-width: 560px) {
+  .page {
+    padding: 30px 18px 84px;
+  }
+
+  .byline {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .readingMeta {
+    justify-content: flex-start;
+  }
+
+  .richContent section[data-editorial-block] {
+    margin-right: 0;
+    margin-left: 0;
+    padding-right: 17px;
+    padding-left: 17px;
+  }
+
+  .reviewers {
+    grid-template-columns: 1fr;
+  }
 }

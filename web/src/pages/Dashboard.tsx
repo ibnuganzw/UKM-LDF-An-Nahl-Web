@@ -18,6 +18,7 @@ export default function Dashboard() {
 
   const schedule = usePrayerSchedule(now);
   const prayer = getNextPrayer(now, schedule.prayerTimes, schedule.utcOffsetHours);
+  const prayerAvailable = schedule.source !== 'unavailable';
   const greeting = getGreeting(now);
   const absenRows = upcoming.slice(0, 4);
   const histRows = all
@@ -55,18 +56,22 @@ export default function Dashboard() {
 
       <div className={styles.statGrid}>
         <GlassCard variant="featured" radius={20} padding="22px 24px">
-          <div className={styles.statLabel} style={{ color: '#C9A227' }}>Total kehadiran</div>
+          <div className={styles.statLabel} style={{ color: 'var(--gold-dark)' }}>Total kehadiran</div>
           <div className={styles.statValue}>{histRows.length}</div>
-          <div className={styles.statSub} style={{ color: '#A9B3D1' }}>kegiatan tercatat</div>
+          <div className={styles.statSub} style={{ color: 'var(--text-body)' }}>kegiatan tercatat</div>
         </GlassCard>
         <GlassCard radius={20} padding="22px 24px">
-          <div className={styles.statLabel} style={{ color: '#8E99BB' }}>Agenda mendatang</div>
+          <div className={styles.statLabel} style={{ color: 'var(--text-muted)' }}>Agenda mendatang</div>
           <div className={styles.statValue}>{upcoming.length}</div>
-          <div className={styles.statSub} style={{ color: '#8E99BB' }}>dalam waktu dekat</div>
+          <div className={styles.statSub} style={{ color: 'var(--text-muted)' }}>dalam waktu dekat</div>
         </GlassCard>
         <GlassCard radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.26)">
-          <div className={styles.statLabel} style={{ color: '#C9A227' }}>Menuju {prayer.name}</div>
-          <div className={styles.statCountdown}>{prayer.countdown}</div>
+          <div className={styles.statLabel} style={{ color: 'var(--gold-dark)' }}>
+            {prayerAvailable ? `Menuju ${prayer.name}` : 'Jadwal shalat'}
+          </div>
+          <div className={styles.statCountdown}>
+            {prayerAvailable ? prayer.countdown : schedule.status === 'loading' ? 'Memuat…' : 'Belum tersedia'}
+          </div>
           <div className={styles.statLink} onClick={() => navigate('/shalat')}>Jadwal shalat →</div>
         </GlassCard>
       </div>
@@ -87,9 +92,9 @@ export default function Dashboard() {
                   </div>
                 </div>
                 {a.attended ? (
-                  <Badge color="#5CCBA0" uppercase={false} style={{ fontSize: 12, padding: '8px 14px' }}>Hadir ✓</Badge>
+                  <Badge color="var(--success-light)" uppercase={false} style={{ fontSize: 12, padding: '8px 14px' }}>Hadir ✓</Badge>
                 ) : (
-                  <button className={styles.absenBtn} style={{ background: 'transparent', color: '#8E99BB' }} onClick={() => navigate(`/agenda/${a.id}`)}>
+                  <button className={styles.absenBtn} style={{ background: 'transparent', color: 'var(--text-muted)' }} onClick={() => navigate(`/agenda/${a.id}`)}>
                     Detail
                   </button>
                 )}

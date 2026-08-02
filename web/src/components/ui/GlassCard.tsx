@@ -20,10 +20,18 @@ export interface GlassCardProps {
   children?: ReactNode;
 }
 
-const FEATURED_BG = 'linear-gradient(145deg, rgba(232,199,102,.11), rgba(20,31,64,.98) 58%)';
+const FEATURED_BG = 'var(--card-featured-bg)';
 const FEATURED_BORDER = 'rgba(232,199,102,.26)';
 const FEATURED_SHADOW = 'var(--shadow-luxe), var(--shadow-gold)';
-const FEATURED_WASH = 'radial-gradient(circle at 12% 0%, rgba(232,199,102,.14), transparent 34%), linear-gradient(110deg, rgba(232,199,102,.07), transparent 38%)';
+// Honeycomb engraving — An-Nahl's own material. A seamless hex-grid tile
+// (flat-top hexes ~35px wide, hairline gold at 7% alpha) drawn UNDER the
+// gold washes, so featured surfaces read as etched metal rather than a
+// flat tint. Both vertical hex edges are drawn at the tile seams so the
+// half-strokes from adjacent tiles combine into one full 1px line.
+const FEATURED_HEX_GRID =
+  'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'34.64\' height=\'60\'%3E%3Cpath d=\'M0 10 17.32 0 34.64 10v20L17.32 40 0 30V10m17.32 30v20\' fill=\'none\' stroke=\'rgba(232,199,102,0.07)\'/%3E%3C/svg%3E")';
+const FEATURED_WASH = `var(--card-featured-wash), ${FEATURED_HEX_GRID}`;
+const FEATURED_HAIRLINE = 'rgba(232,199,102,.16)';
 
 export function GlassCard({
   variant = 'default',
@@ -49,6 +57,8 @@ export function GlassCard({
     // look wholesale — forcing the wash on top regardless used to layer it
     // over gradients it was never designed against (see Dashboard/Shalat).
     '--card-wash': !background && featured ? FEATURED_WASH : undefined,
+    '--card-wash-inset': !background && featured ? '6px' : undefined,
+    '--card-hairline': !background && featured ? FEATURED_HAIRLINE : undefined,
     '--card-radius': radius !== undefined ? `${radius}px` : undefined,
     '--card-padding': padding,
     '--card-blur': blur !== undefined ? `${blur}px` : undefined,

@@ -7,7 +7,7 @@ import { supabase } from '../lib/supabaseClient';
 
 export default function AdminQR() {
   const { id } = useParams<{ id: string }>();
-  const { byId, refresh } = useAgendas();
+  const { byId, refresh } = useAgendas({ includeInternalTestData: true });
   const navigate = useNavigate();
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [token, setToken] = useState<string | null>(null);

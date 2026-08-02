@@ -57,11 +57,14 @@ function getReminder(now: Date) {
 }
 
 export default function Home() {
-  const { soon, upcoming, loading: agendasLoading } = useAgendas();
-  const { all: articles } = useArticles();
+  const { soon, upcoming, loading: agendasLoading, error: agendasError, refresh: refreshAgendas } = useAgendas();
+  const { all: articles, error: articlesError, refresh: refreshArticles } = useArticles();
   const now = useNow();
   const schedule = usePrayerSchedule(now);
   const prayer = getNextPrayer(now, schedule.prayerTimes, schedule.utcOffsetHours);
+  const prayerAvailable = schedule.source !== 'unavailable';
+  const heroPrayerName = prayerAvailable ? prayer.name : schedule.status === 'loading' ? 'Memuat jadwal' : 'Jadwal shalat';
+  const heroPrayerTime = prayerAvailable ? prayer.time : schedule.status === 'loading' ? '…' : 'Belum tersedia';
   const nextAgenda = upcoming[0];
   const reminder = getReminder(now);
 
@@ -73,7 +76,7 @@ export default function Home() {
 
   return (
     <div>
-      <Hero nextPrayerName={prayer.name} nextPrayerTime={prayer.time} />
+      <Hero nextPrayerName={heroPrayerName} nextPrayerTime={heroPrayerTime} />
 
       {/* QUICK STRIP */}
       <section className={styles.section}>
@@ -81,8 +84,8 @@ export default function Home() {
           <GlassCard to="/shalat" hover radius={20} padding="22px 24px" className={styles.quickCard}>
             <div className={styles.quickIcon} aria-hidden="true"><MoonIcon /></div>
             <div style={{ minWidth: 0 }}>
-              <div className={styles.quickLabel}>Menuju {prayer.name}</div>
-              <div className={styles.quickValue}>{prayer.countdown}</div>
+              <div className={styles.quickLabel}>{prayerAvailable ? `Menuju ${prayer.name}` : 'Jadwal shalat'}</div>
+              <div className={styles.quickValue}>{prayerAvailable ? prayer.countdown : heroPrayerTime}</div>
             </div>
           </GlassCard>
 
@@ -117,11 +120,11 @@ export default function Home() {
           <Link to="/agenda" className={styles.linkMore}>Semua agenda →</Link>
         </div>
         <div className={`rv rvStagger ${styles.agendaGrid}`}>
-          {soon.map((a) => (
+          {!agendasError && soon.map((a) => (
             <GlassCard key={a.id} to={`/agenda/${a.id}`} hover radius={20} padding="26px" className={styles.agendaCard}>
               <div className={styles.agendaBadgeRow}>
                 <Badge
-                  color="#E8C766"
+                  color="var(--gold-light)"
                   background="rgba(232,199,102,.1)"
                   border="rgba(232,199,102,.22)"
                   style={{ fontSize: 10, letterSpacing: '.16em', padding: '5px 12px' }}
@@ -139,7 +142,16 @@ export default function Home() {
             </GlassCard>
           ))}
           {agendasLoading && <div className={styles.homeLoading} role="status">Memuat agenda…</div>}
-          {!agendasLoading && soon.length === 0 && (
+          {!agendasLoading && agendasError && (
+            <div className={styles.homeEmpty} role="alert">
+              <div>
+                <div className={styles.homeEmptyTitle}>Agenda belum dapat dimuat.</div>
+                <p>{agendasError}</p>
+              </div>
+              <button type="button" className={styles.linkMore} onClick={refreshAgendas}>Coba lagi →</button>
+            </div>
+          )}
+          {!agendasLoading && !agendasError && soon.length === 0 && (
             <div className={styles.homeEmpty}>
               <div>
                 <div className={styles.homeEmptyTitle}>Agenda baru sedang disiapkan.</div>
@@ -176,7 +188,15 @@ export default function Home() {
           <Link to="/konten" className={styles.linkMore}>Semua tulisan →</Link>
         </div>
         <div className={`rv rvStagger ${styles.kontenGrid}`}>
-          {catCards.map((c) => (
+          {articlesError && articles.length === 0 ? (
+            <div className={styles.homeEmpty} role="alert">
+              <div>
+                <div className={styles.homeEmptyTitle}>Tulisan belum dapat dimuat.</div>
+                <p>{articlesError}</p>
+              </div>
+              <button type="button" className={styles.linkMore} onClick={refreshArticles}>Coba lagi →</button>
+            </div>
+          ) : catCards.map((c) => (
             <GlassCard key={c.name} radius={20} padding="28px" className={styles.kontenCard}>
               <div className={styles.kontenNameRow}>
                 <span className={styles.accentDot} aria-hidden="true" />
@@ -213,7 +233,7 @@ export default function Home() {
         </div>
         <div className="rv">
           <GlassCard variant="featured" radius={28} className={styles.joinCard} style={{ height: '100%' }}>
-            <div className={styles.quickLabel} style={{ color: '#E8C766', letterSpacing: '.26em' }}>Bergabung</div>
+            <div className={styles.quickLabel} style={{ color: 'var(--gold-light)', letterSpacing: '.26em' }}>Bergabung</div>
             <div className={styles.joinHeading}>Satu sarang, satu tujuan. Jadilah bagian dari koloni dakwah FKH.</div>
             <p className={styles.joinBody}>Open Recruitment anggota baru dibuka setiap awal kepengurusan. Daftarkan dirimu dan tumbuh bersama.</p>
             <div>

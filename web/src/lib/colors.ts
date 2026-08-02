@@ -1,28 +1,29 @@
 import type { AgendaStatus, AgendaType, ArticleCategory } from '../types';
 
 export const TYPE_COLORS: Record<AgendaType, string> = {
-  Kajian: '#8FAAF5',
-  Rapat: '#9AA8C9',
-  Mentoring: '#5CCBA0',
-  Sosial: '#E8C766',
-  Olahraga: '#5FC6DE',
-  Rihlah: '#C39BE8',
-  'Open Recruitment': '#EE9AC0',
+  Kajian: 'var(--type-kajian)',
+  Rapat: 'var(--type-rapat)',
+  Mentoring: 'var(--type-mentoring)',
+  Sosial: 'var(--type-sosial)',
+  Olahraga: 'var(--type-olahraga)',
+  Rihlah: 'var(--type-rihlah)',
+  'Open Recruitment': 'var(--type-oprec)',
 };
 
 export const CATEGORY_COLORS: Record<ArticleCategory, string> = {
-  'Islam Veteriner': '#8FAAF5',
-  Kisah: '#E8C766',
-  Renungan: '#5FC6DE',
+  'Islam Veteriner': 'var(--cat-vet)',
+  Kisah: 'var(--cat-kisah)',
+  Renungan: 'var(--cat-renungan)',
 };
 
 export const STATUS_COLORS: Record<AgendaStatus, string> = {
-  Selesai: '#8E99BB',
-  'Hari ini': '#5CCBA0',
-  'Akan datang': '#8FAAF5',
+  Selesai: 'var(--status-done)',
+  'Hari ini': 'var(--status-today)',
+  'Akan datang': 'var(--status-upcoming)',
 };
 
-/** Appends a 2-digit hex alpha suffix, matching the prototype's `color + '1F'` badge-background pattern. */
-export function soft(hex: string, alpha = '1F'): string {
-  return hex + alpha;
+/** Builds a translucent wash for either a literal color or a themed CSS color token. */
+export function soft(color: string, alpha = '1F'): string {
+  const opacity = Math.round((Number.parseInt(alpha, 16) / 255) * 1000) / 10;
+  return `color-mix(in srgb, ${color} ${opacity}%, transparent)`;
 }

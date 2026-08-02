@@ -6,7 +6,7 @@ import { usePrayerSchedule } from '../hooks/usePrayerSchedule';
 import { getNextPrayer } from '../lib/prayer';
 import { searchPrayerCities, type PrayerCity } from '../lib/prayerLocation';
 import { formatFullDate } from '../lib/dates';
-import { HIJRI_STR } from '../config';
+import { formatHijriDate } from '../config';
 import { cx } from '../lib/cx';
 
 function LocationPicker({
@@ -91,6 +91,7 @@ export default function Shalat() {
   const now = useNow();
   const schedule = usePrayerSchedule(now);
   const prayer = getNextPrayer(now, schedule.prayerTimes, schedule.utcOffsetHours);
+  const prayerAvailable = schedule.source !== 'unavailable';
   const [pickerOpen, setPickerOpen] = useState(false);
 
   function handleSelectCity(city: PrayerCity) {
@@ -108,7 +109,7 @@ export default function Shalat() {
       <div className={styles.header}>
         <div className={styles.eyebrow}>Waktu Shalat</div>
         <h1 className={styles.dateHeading}>{formatFullDate(now)}</h1>
-        <div className={styles.subLine}>{HIJRI_STR}</div>
+        <div className={styles.subLine}>{formatHijriDate(now)}</div>
         <div className={styles.locationRow}>
           <span>{schedule.lokasi}</span>
           <button type="button" className={styles.locationChangeBtn} onClick={() => setPickerOpen((open) => !open)}>
@@ -135,31 +136,41 @@ export default function Shalat() {
         <div className={styles.panelHex2} />
         <div className={cx('breath', styles.panelGlow)} />
         <div className={styles.panelContent}>
-          <div className={styles.panelLabel}>Shalat berikutnya</div>
-          <div className={styles.prayerName}>{prayer.name}</div>
-          <div className={styles.prayerTime}>{prayer.time} {schedule.zoneLabel}</div>
-          <div className={styles.countdownPill}>− {prayer.countdown}</div>
+          <div className={styles.panelLabel}>{prayerAvailable ? 'Shalat berikutnya' : 'Jadwal shalat'}</div>
+          <div className={styles.prayerName}>
+            {prayerAvailable ? prayer.name : schedule.status === 'loading' ? 'Memuat…' : 'Belum tersedia'}
+          </div>
+          <div className={styles.prayerTime}>{prayerAvailable ? `${prayer.time} ${schedule.zoneLabel}` : schedule.lokasi}</div>
+          <div className={styles.countdownPill}>{prayerAvailable ? `− ${prayer.countdown}` : 'Tidak memakai jadwal perkiraan'}</div>
         </div>
       </GlassCard>
 
       <GlassCard radius={20} padding="0" className={styles.listPanel}>
+        {schedule.prayerTimes.length === 0 && (
+          <div className={styles.scheduleUnavailable} role="status">
+            {schedule.status === 'loading' ? 'Mengambil jadwal resmi untuk kota pilihanmu…' : 'Jadwal belum tersedia.'}
+          </div>
+        )}
         {schedule.prayerTimes.map((p, i) => {
           const active = i === prayer.index;
           return (
             <div key={p.name} className={styles.row} style={{ background: active ? 'rgba(232,199,102,.1)' : 'transparent' }}>
               <div className={styles.rowLeft}>
-                <Hex width={9} height={10} bg={active ? '#E8C766' : 'rgba(255,255,255,.2)'} />
-                <span className={styles.rowName} style={{ color: active ? '#F5EFDC' : '#A9B3D1' }}>{p.name}</span>
+                <Hex width={9} height={10} bg={active ? 'var(--gold-light)' : 'var(--text-faint)'} />
+                <span className={styles.rowName} style={{ color: active ? 'var(--text-heading)' : 'var(--text-body)' }}>{p.name}</span>
                 {i === 1 && <span className={styles.rowNote}>terbit</span>}
               </div>
-              <span className={styles.rowTime} style={{ color: active ? '#F5EFDC' : '#A9B3D1' }}>{p.time}</span>
+              <span className={styles.rowTime} style={{ color: active ? 'var(--text-heading)' : 'var(--text-body)' }}>{p.time}</span>
             </div>
           );
         })}
       </GlassCard>
 
       {schedule.status === 'error' && (
-        <p className={styles.disclaimer}>{schedule.message ?? 'Gagal memuat jadwal shalat.'} Menampilkan jadwal terakhir yang tersedia.</p>
+        <p className={styles.disclaimer} role="alert">
+          {schedule.message ?? 'Gagal memuat jadwal shalat.'}{' '}
+          <button type="button" className={styles.retryButton} onClick={schedule.retry}>Coba lagi</button>
+        </p>
       )}
 
       <div className={styles.quoteCard}>
