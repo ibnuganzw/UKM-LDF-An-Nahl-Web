@@ -29,7 +29,12 @@ export default function Login() {
         body: { nim: nim.trim(), password: pass },
       });
 
-      if (fnError || !data?.ok || !data.session) {
+      if (fnError) {
+        setError('Layanan login sedang tidak dapat dihubungi. Muat ulang halaman lalu coba lagi.');
+        return;
+      }
+
+      if (!data?.ok || !data.session) {
         setError(data?.error ?? 'NIM atau kata sandi salah');
         return;
       }
