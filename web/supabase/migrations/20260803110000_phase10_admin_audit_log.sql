@@ -21,7 +21,12 @@ create policy "admin_audit_logs_select_admin"
   on public.admin_audit_logs for select to authenticated
   using (private.is_active_admin());
 
-revoke insert, update, delete on public.admin_audit_logs from anon, authenticated;
+-- Supabase's legacy default grants can include SELECT, TRUNCATE, REFERENCES,
+-- TRIGGER, and sequence privileges for API roles. The audit trail is written
+-- only by the SECURITY DEFINER trigger function, so remove every direct write
+-- path before granting the one capability the admin UI needs.
+revoke all on public.admin_audit_logs from anon, authenticated;
+revoke all on sequence public.admin_audit_logs_id_seq from anon, authenticated;
 grant select on public.admin_audit_logs to authenticated;
 
 create or replace function private.capture_admin_audit()

@@ -112,6 +112,8 @@ describe('Phase 3 offline, calendar, and operations', () => {
       expect(migration).toContain(`on public.${table}`);
     }
     expect(migration).toContain("- 'qr_token' - 'content_html'");
-    expect(migration).toContain('revoke insert, update, delete');
+    expect(migration).toContain('revoke all on public.admin_audit_logs from anon, authenticated');
+    expect(migration).toContain('revoke all on sequence public.admin_audit_logs_id_seq from anon, authenticated');
+    expect(migration).toContain('grant select on public.admin_audit_logs to authenticated');
   });
 });
