@@ -22,6 +22,11 @@
   padding: 36px 0 96px;
 }
 
+.pageFocused {
+  width: min(860px, calc(100vw - 40px));
+  padding-top: 24px;
+}
+
 .readerDock {
   position: fixed;
   top: calc(var(--header-h) + 2px);
@@ -61,7 +66,7 @@
   position: relative;
   width: min(720px, calc(100vw - 36px));
   margin: 0 auto;
-  padding: 12px 44px 12px 12px;
+  padding: 12px 80px 12px 12px;
   border: 1px solid rgba(232, 199, 102, .2);
   border-radius: 10px;
   background:
@@ -90,10 +95,13 @@
   transform: translate(-50%, -22px);
 }
 
-.readerSearchClose {
+.readerSearchClose,
+.readerSearchSettings {
   position: absolute;
   top: 12px;
-  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 26px;
   min-height: 26px;
   border: 1px solid rgba(255, 255, 255, .08);
@@ -107,7 +115,17 @@
   line-height: 1;
 }
 
-.readerSearchClose:hover {
+.readerSearchClose {
+  right: 12px;
+}
+
+.readerSearchSettings {
+  right: 46px;
+  font-size: 14px;
+}
+
+.readerSearchClose:hover,
+.readerSearchSettings:hover {
   color: var(--text-heading);
   border-color: rgba(232, 199, 102, .3);
 }
@@ -204,8 +222,8 @@
   overflow: hidden;
   border: 1px solid rgba(232, 199, 102, .15);
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, .035);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+  background: linear-gradient(145deg, rgba(24, 35, 70, .92), rgba(12, 21, 48, .96));
+  box-shadow: var(--shadow-luxe), inset 0 1px 0 rgba(232, 199, 102, .18);
 }
 
 .navLink,
@@ -226,6 +244,11 @@
 .navLink:hover {
   color: var(--gold-light);
   background: rgba(232, 199, 102, .07);
+}
+.navLink:active {
+  background: rgba(232, 199, 102, .13);
+  transform: scale(.98);
+  transition-duration: 70ms;
 }
 .navDisabled {
   color: var(--text-faint);
@@ -287,6 +310,7 @@
   justify-self: end;
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
 }
 
 .settingsTrigger {
@@ -297,16 +321,21 @@
   min-height: 42px;
   border: 1px solid rgba(232, 199, 102, .18);
   border-radius: 50%;
-  background: rgba(255, 255, 255, .045);
+  background: linear-gradient(145deg, rgba(27, 40, 78, .94), rgba(12, 21, 48, .98));
   color: var(--gold-light);
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+  box-shadow: 0 16px 34px -26px rgba(232, 199, 102, .72), inset 0 1px 0 rgba(232, 199, 102, .2);
+  transition: transform .18s var(--ease-premium), border-color .2s ease, background .2s ease, box-shadow .2s ease;
 }
 
 .settingsTrigger:hover {
   border-color: rgba(232, 199, 102, .5);
   background: rgba(232, 199, 102, .09);
   color: var(--text-heading);
+}
+.settingsTrigger:active {
+  transform: translateY(1px) scale(.94);
+  transition-duration: 70ms;
 }
 
 .settingsTrigger span {
@@ -362,19 +391,25 @@
   border: 1px solid rgba(232, 199, 102, .2);
   border-radius: var(--radius-pill);
   padding: 8px 15px;
-  background: rgba(255, 255, 255, .035);
+  background: linear-gradient(145deg, rgba(25, 38, 75, .94), rgba(12, 21, 48, .98));
   color: var(--text-body);
   cursor: pointer;
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 900;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+  box-shadow: 0 16px 34px -28px rgba(232, 199, 102, .64), inset 0 1px 0 rgba(232, 199, 102, .2);
+  transition: transform .18s var(--ease-premium), border-color .2s ease, background .2s ease, box-shadow .2s ease, color .2s ease;
 }
 
 .infoTrigger:hover {
   color: var(--text-heading);
   border-color: rgba(232, 199, 102, .48);
   background: rgba(232, 199, 102, .08);
+}
+.infoTrigger:active {
+  transform: translateY(1px) scale(.97);
+  transition-duration: 70ms;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, .22);
 }
 
 .infoTrigger span {
@@ -436,6 +471,7 @@
 .ayatToolbar {
   display: flex;
   justify-content: flex-start;
+  gap: 8px;
   margin-bottom: 14px;
 }
 
@@ -447,17 +483,22 @@
   min-height: 34px;
   border: 1px solid rgba(232, 199, 102, .22);
   border-radius: 50%;
-  background: rgba(255, 255, 255, .04);
+  background: linear-gradient(145deg, rgba(26, 39, 76, .96), rgba(12, 21, 48, .98));
   color: var(--gold-light);
   cursor: pointer;
   font-size: 12px;
   line-height: 1;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06);
+  box-shadow: 0 14px 30px -25px rgba(232, 199, 102, .72), inset 0 1px 0 rgba(232, 199, 102, .2);
+  transition: transform .16s var(--ease-premium), border-color .2s ease, background .2s ease, box-shadow .2s ease;
 }
 
 .ayatPlayButton:hover {
   border-color: rgba(232, 199, 102, .5);
   background: rgba(232, 199, 102, .09);
+}
+.ayatPlayButton:active {
+  transform: translateY(1px) scale(.92);
+  transition-duration: 65ms;
 }
 
 .ayatPlayButtonActive {
@@ -465,6 +506,65 @@
   background: var(--gold-gradient);
   border-color: transparent;
   box-shadow: 0 10px 22px -14px rgba(232, 199, 102, .9);
+}
+
+.ayatActionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  min-height: 34px;
+  border: 1px solid rgba(232, 199, 102, .18);
+  border-radius: 50%;
+  background: rgba(14, 24, 53, .72);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 17px;
+  transition: transform .16s var(--ease-premium), border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.ayatActionButton:hover,
+.ayatActionButtonActive {
+  border-color: rgba(232, 199, 102, .52);
+  background: rgba(232, 199, 102, .1);
+  color: var(--gold-light);
+}
+
+.ayatActionButton:active {
+  transform: translateY(1px) scale(.92);
+}
+
+.focusExit,
+.shareStatus {
+  position: fixed;
+  z-index: 82;
+  border: 1px solid rgba(232, 199, 102, .34);
+  border-radius: 999px;
+  background: rgba(8, 17, 35, .94);
+  color: var(--gold-light);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .32);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
+  font: 800 11px/1 var(--font-sans);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.focusExit {
+  top: 16px;
+  right: 18px;
+  padding: 13px 17px;
+}
+
+.shareStatus {
+  left: 50%;
+  bottom: 112px;
+  max-width: min(90vw, 420px);
+  padding: 14px 18px;
+  transform: translateX(-50%);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .ayatArabicLine {
@@ -685,7 +785,7 @@
 .ayatTranslation {
   max-width: 78ch;
   margin-top: 10px;
-  color: #D8DEEF;
+  color: var(--text-reading);
   font-size: clamp(16px, 1.65vw, 18px);
   font-weight: 500;
   line-height: 1.85;
@@ -1058,10 +1158,14 @@
   margin-top: 22px;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 919px) {
   .page {
     width: min(100% - 32px, 1040px);
     padding-top: 24px;
+  }
+
+  .pageFocused {
+    width: min(100% - 24px, 860px);
   }
 
   .readerDock {
@@ -1168,4 +1272,136 @@
     height: 1.38em;
   }
 
+}
+.infoLoading {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(4, 8, 20, .78);
+  color: var(--text-heading);
+  font-size: 14px;
+  font-weight: 800;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* The reading geometry is identical in daylight; only the ink, paper and
+   controls change material. Tajweed keeps every category but uses shades that
+   remain distinct on warm paper instead of colors tuned for navy. */
+:global(html[data-theme='light']) .page {
+  --tajweed-ham-wasl: #596987;
+  --tajweed-silent: #748198;
+  --tajweed-madda-normal: #0B6AAE;
+  --tajweed-madda-permissible: #365CA8;
+  --tajweed-madda-necessary: #6A3DA0;
+  --tajweed-madda-obligatory: #9B326B;
+  --tajweed-qalqalah: #B74A27;
+  --tajweed-ikhafa: #237A5D;
+  --tajweed-ikhafa-shafawi: #1E7185;
+  --tajweed-iqlab: #8A650C;
+  --tajweed-idgham-ghunnah: #3E7B2C;
+  --tajweed-idgham-wo-ghunnah: #A43E3A;
+  --tajweed-idgham-shafawi: #1E7669;
+  --tajweed-idgham-mutajanisayn: #73518F;
+  --tajweed-idgham-mutaqaribayn: #465E9F;
+  --tajweed-ghunnah: #9A3C72;
+  --tajweed-unknown: #344462;
+}
+
+:global(html[data-theme='light']) .ayatLatin,
+:global(html[data-theme='light']) .infoTrigger span {
+  color: #176F63;
+}
+
+:global(html[data-theme='light']) .readerSearchPanel,
+:global(html[data-theme='light']) .surahNav,
+:global(html[data-theme='light']) .settingsTrigger,
+:global(html[data-theme='light']) .infoTrigger,
+:global(html[data-theme='light']) .ayatPlayButton {
+  background: linear-gradient(145deg, #FFFFFF, #E8EEF7);
+  border-color: var(--control-border);
+  box-shadow: var(--shadow-control), inset 0 1px 0 var(--surface-highlight);
+}
+
+:global(html[data-theme='light']) .ayatActionButton,
+:global(html[data-theme='light']) .focusExit,
+:global(html[data-theme='light']) .shareStatus {
+  background: rgba(255, 255, 255, .94);
+  border-color: var(--control-border);
+  color: var(--text-body);
+}
+
+:global(html[data-theme='light']) .readerSearchClose,
+:global(html[data-theme='light']) .readerSearchSettings,
+:global(html[data-theme='light']) .fontControls,
+:global(html[data-theme='light']) .fontSliderRow .fontButton,
+:global(html[data-theme='light']) .legendButton,
+:global(html[data-theme='light']) .segmented,
+:global(html[data-theme='light']) .settingsClose {
+  background: var(--control-fill);
+  border-color: var(--control-border);
+  box-shadow: inset 0 1px 0 var(--surface-highlight);
+}
+
+:global(html[data-theme='light']) .readerSearchField input,
+:global(html[data-theme='light']) .reciterSelect {
+  background: var(--input-fill);
+  border-color: var(--control-border);
+}
+
+:global(html[data-theme='light']) .navLink,
+:global(html[data-theme='light']) .navDisabled,
+:global(html[data-theme='light']) .fontButton {
+  border-color: var(--surface-divider);
+}
+
+:global(html[data-theme='light']) .ayatList,
+:global(html[data-theme='light']) .ayatItem,
+:global(html[data-theme='light']) .settingsHeader,
+:global(html[data-theme='light']) .settingsGroup,
+:global(html[data-theme='light']) .legendUnknown {
+  border-color: var(--surface-divider);
+}
+
+:global(html[data-theme='light']) .ayatItemActive {
+  background: linear-gradient(90deg, rgba(214, 174, 55, .14), rgba(35, 122, 93, .045) 46%, transparent 82%);
+}
+
+:global(html[data-theme='light']) .settingsOverlay {
+  background: var(--overlay-backdrop);
+}
+
+:global(html[data-theme='light']) .settingsPanel {
+  background: linear-gradient(145deg, rgba(255, 255, 255, .98), rgba(232, 238, 247, .96));
+  border-color: var(--surface-border-strong);
+  box-shadow: var(--shadow-luxe), inset 0 1px 0 var(--surface-highlight);
+}
+
+:global(html[data-theme='light']) .segmentButton:hover,
+:global(html[data-theme='light']) .settingsClose:hover,
+:global(html[data-theme='light']) .legendButton:hover {
+  background: var(--control-fill-hover);
+}
+
+:global(html[data-theme='light']) .switchTrack {
+  background: rgba(10, 17, 40, .08);
+  border-color: var(--control-border);
+}
+
+:global(html[data-theme='light']) .tajweedLegend {
+  background: rgba(232, 238, 247, .76);
+  border-color: var(--surface-border);
+}
+
+:global(html[data-theme='light']) .legendSwatch {
+  box-shadow: 0 0 0 3px rgba(10, 17, 40, .06);
+}
+
+:global(html[data-theme='light']) .locked {
+  background: rgba(255, 255, 255, .64);
+  border-color: var(--surface-border-strong);
 }

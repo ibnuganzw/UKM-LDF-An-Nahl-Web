@@ -5,6 +5,7 @@ import type { Agenda, AgendaStatus, AgendaType, EnrichedAgenda } from '../types'
 import { MON3, formatAgendaDate, formatRelative, startOfToday } from '../lib/dates';
 import { STATUS_COLORS, TYPE_COLORS } from '../lib/colors';
 import { supabase } from '../lib/supabaseClient';
+import { isInternalTestAgenda } from '../lib/contentHygiene';
 
 interface AgendaRow {
   id: string;
@@ -89,41 +90,58 @@ export interface AgendaCollections {
   soon: EnrichedAgenda[];
   byId: (id: string | null | undefined) => EnrichedAgenda | undefined;
   loading: boolean;
+  error: string | null;
   refresh: () => void;
 }
 
-export function useAgendas(): AgendaCollections {
+export interface UseAgendasOptions {
+  /** Admin-only views use this so known test rows remain available for cleanup. */
+  includeInternalTestData?: boolean;
+}
+
+export function useAgendas({ includeInternalTestData = false }: UseAgendasOptions = {}): AgendaCollections {
   const { session } = useApp();
   const [agendas, setAgendas] = useState<Agenda[]>([]);
   const [attendedIds, setAttendedIds] = useState<Set<string>>(new Set());
   const [registeredIds, setRegisteredIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const userId = session?.user.id;
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data: agendaRows } = await supabase
-      .from('agendas')
-      .select(
-        'id, title, type, mode, event_date, start_time, end_time, location, pj, pemateri, description, qr_opened_at, created_by, created_at',
-      )
-      .order('event_date', { ascending: true });
-    setAgendas(((agendaRows as AgendaRow[] | null) ?? []).map(toAgenda));
+    try {
+      const { data: agendaRows, error: agendaError } = await supabase
+        .from('agendas')
+        .select(
+          'id, title, type, mode, event_date, start_time, end_time, location, pj, pemateri, description, qr_opened_at, created_by, created_at',
+        )
+        .order('event_date', { ascending: true });
+      if (agendaError) throw agendaError;
+      setAgendas(((agendaRows as AgendaRow[] | null) ?? []).map(toAgenda));
 
-    if (userId) {
-      const [{ data: attRows }, { data: regRows }] = await Promise.all([
-        supabase.from('event_attendance').select('agenda_id').eq('member_id', userId),
-        supabase.from('event_registrations').select('agenda_id').eq('member_id', userId),
-      ]);
-      setAttendedIds(new Set(((attRows ?? []) as { agenda_id: string }[]).map((r) => r.agenda_id)));
-      setRegisteredIds(new Set(((regRows ?? []) as { agenda_id: string }[]).map((r) => r.agenda_id)));
-    } else {
-      setAttendedIds(new Set());
-      setRegisteredIds(new Set());
+      if (userId) {
+        const [attendanceResult, registrationResult] = await Promise.all([
+          supabase.from('event_attendance').select('agenda_id').eq('member_id', userId),
+          supabase.from('event_registrations').select('agenda_id').eq('member_id', userId),
+        ]);
+        if (attendanceResult.error || registrationResult.error) {
+          throw attendanceResult.error ?? registrationResult.error;
+        }
+        setAttendedIds(new Set(((attendanceResult.data ?? []) as { agenda_id: string }[]).map((r) => r.agenda_id)));
+        setRegisteredIds(new Set(((registrationResult.data ?? []) as { agenda_id: string }[]).map((r) => r.agenda_id)));
+      } else {
+        setAttendedIds(new Set());
+        setRegisteredIds(new Set());
+      }
+      setError(null);
+    } catch {
+      setError('Agenda belum dapat dimuat. Periksa koneksi lalu coba lagi.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [userId]);
 
   useEffect(() => {
@@ -142,11 +160,12 @@ export function useAgendas(): AgendaCollections {
   return useMemo(() => {
     const nowMs = now.getTime();
     const today = startOfToday().getTime();
-    const all = agendas.map((a) => enrich(a, attendedIds, registeredIds, nowMs));
+    const visibleAgendas = includeInternalTestData ? agendas : agendas.filter((agenda) => !isInternalTestAgenda(agenda));
+    const all = visibleAgendas.map((a) => enrich(a, attendedIds, registeredIds, nowMs));
     const upcoming = all.filter((a) => a.date.getTime() >= today).sort((x, y) => x.date.getTime() - y.date.getTime());
     const past = all.filter((a) => a.date.getTime() < today).sort((x, y) => y.date.getTime() - x.date.getTime());
     const byId = (id: string | null | undefined) => all.find((a) => a.id === id);
-    return { all, upcoming, past, soon: upcoming.slice(0, 3), byId, loading, refresh };
+    return { all, upcoming, past, soon: upcoming.slice(0, 3), byId, loading, error, refresh };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [agendas, attendedIds, registeredIds, minuteKey, loading, refresh]);
+  }, [agendas, attendedIds, registeredIds, minuteKey, includeInternalTestData, loading, error, refresh]);
 }

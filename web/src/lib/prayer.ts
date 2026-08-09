@@ -7,15 +7,6 @@ export interface PrayerTime {
  * if the schedule fetch fails outright. Banda Aceh's typical schedule — a
  * reasonable placeholder anywhere in Aceh, and replaced by the real fetched
  * schedule for whichever city is actually selected. */
-export const DEFAULT_PRAYER_TIMES: PrayerTime[] = [
-  { name: 'Subuh', time: '05:12' },
-  { name: 'Syuruq', time: '06:29' },
-  { name: 'Dzuhur', time: '12:41' },
-  { name: 'Ashar', time: '16:05' },
-  { name: 'Maghrib', time: '18:48' },
-  { name: 'Isya', time: '20:01' },
-];
-
 function toSeconds(hhmm: string): number {
   if (!hhmm) return 0;
   const [hh, mm] = hhmm.split(':').map(Number);
@@ -56,15 +47,20 @@ export async function fetchPrayerSchedule(cityId: string, date: Date, signal?: A
 
   const j = payload.data.jadwal;
 
+  const prayerTimes = [
+    { name: 'Subuh', time: j.subuh ?? '' },
+    { name: 'Syuruq', time: j.terbit ?? '' },
+    { name: 'Dzuhur', time: j.dzuhur ?? '' },
+    { name: 'Ashar', time: j.ashar ?? '' },
+    { name: 'Maghrib', time: j.maghrib ?? '' },
+    { name: 'Isya', time: j.isya ?? '' },
+  ];
+  if (!prayerTimes.every((item) => /^(?:[01]\d|2[0-3]):[0-5]\d$/.test(item.time))) {
+    throw new Error('Data jadwal shalat yang diterima tidak lengkap.');
+  }
+
   return {
-    prayerTimes: [
-      { name: 'Subuh', time: j.subuh ?? '' },
-      { name: 'Syuruq', time: j.terbit ?? '' },
-      { name: 'Dzuhur', time: j.dzuhur ?? '' },
-      { name: 'Ashar', time: j.ashar ?? '' },
-      { name: 'Maghrib', time: j.maghrib ?? '' },
-      { name: 'Isya', time: j.isya ?? '' },
-    ],
+    prayerTimes,
     daerah: payload.data.daerah ?? '',
     lokasi: payload.data.lokasi ?? '',
   };
@@ -80,6 +76,10 @@ export function toZonedInstant(instant: Date, utcOffsetHours: number): Date {
 }
 
 export function getNextPrayer(now: Date, prayerTimes: PrayerTime[], utcOffsetHours: number): NextPrayerInfo {
+  if (prayerTimes.length === 0) {
+    return { index: -1, name: 'Jadwal', time: 'Belum tersedia', countdown: 'Belum tersedia' };
+  }
+
   const zoned = toZonedInstant(now, utcOffsetHours);
   const nowSec = zoned.getUTCHours() * 3600 + zoned.getUTCMinutes() * 60 + zoned.getUTCSeconds();
 

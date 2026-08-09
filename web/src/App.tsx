@@ -10,6 +10,7 @@ import Shalat from './pages/Shalat';
 import Konten from './pages/Konten';
 import Artikel from './pages/Artikel';
 import Login from './pages/Login';
+import NotFound from './pages/NotFound';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -32,6 +33,7 @@ const AdminAgendaRoster = lazy(() => import('./pages/AdminAgendaRoster'));
 const AdminArtikel = lazy(() => import('./pages/AdminArtikel'));
 const AdminArtikelEditor = lazy(() => import('./pages/AdminArtikelEditor'));
 const AdminStruktur = lazy(() => import('./pages/AdminStruktur'));
+const AdminAudit = lazy(() => import('./pages/AdminAudit'));
 
 export default function App() {
   return (
@@ -134,6 +136,14 @@ export default function App() {
           }
         />
         <Route
+          path="/admin/audit"
+          element={
+            <RequireAdmin>
+              <AdminAudit />
+            </RequireAdmin>
+          }
+        />
+        <Route
           path="/admin/struktur"
           element={
             <RequireAdmin>
@@ -141,7 +151,7 @@ export default function App() {
             </RequireAdmin>
           }
         />
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   );

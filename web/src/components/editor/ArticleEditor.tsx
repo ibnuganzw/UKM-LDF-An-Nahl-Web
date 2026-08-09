@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { EditorContent, useEditor } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react/menus';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import { Table } from '@tiptap/extension-table';
@@ -7,6 +8,9 @@ import TableRow from '@tiptap/extension-table-row';
 import TableHeader from '@tiptap/extension-table-header';
 import TableCell from '@tiptap/extension-table-cell';
 import styles from './ArticleEditor.module.css';
+import { EDITORIAL_BLOCKS } from '../../lib/articleEditorial';
+import type { EditorialBlockKind } from '../../types';
+import { EditorialBlock } from './EditorialBlock';
 import { FigureImage } from './FigureImage';
 import { uploadArticleImage } from '../../lib/articleImages';
 
@@ -20,11 +24,13 @@ export default function ArticleEditor({ contentHtml, onChange }: ArticleEditorPr
   const [imageCaption, setImageCaption] = useState('');
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [blockKind, setBlockKind] = useState<EditorialBlockKind>('dalil');
 
   const editor = useEditor({
     extensions: [
       StarterKit,
       Link.configure({ openOnClick: false, autolink: true }),
+      EditorialBlock,
       FigureImage,
       Table.configure({ resizable: false }),
       TableRow,
@@ -110,9 +116,35 @@ export default function ArticleEditor({ contentHtml, onChange }: ArticleEditorPr
           </>
         )}
         <span className={styles.sep} />
+        <select
+          className={styles.blockSelect}
+          aria-label="Jenis blok editorial"
+          value={blockKind}
+          onChange={(event) => setBlockKind(event.target.value as EditorialBlockKind)}
+        >
+          {EDITORIAL_BLOCKS.map((block) => (
+            <option key={block.kind} value={block.kind}>{block.label}</option>
+          ))}
+        </select>
+        <button
+          type="button"
+          className={styles.blockBtn}
+          onClick={() => editor.chain().focus().insertEditorialBlock(blockKind).run()}
+        >
+          + Blok editorial
+        </button>
+        <span className={styles.sep} />
         <button type="button" className={styles.btn} onClick={() => editor.chain().focus().undo().run()}>↺</button>
         <button type="button" className={styles.btn} onClick={() => editor.chain().focus().redo().run()}>↻</button>
       </div>
+
+      <BubbleMenu editor={editor} className={styles.bubbleMenu}>
+        <button type="button" className={editor.isActive('bold') ? styles.bubbleBtnActive : styles.bubbleBtn} onClick={() => editor.chain().focus().toggleBold().run()}>B</button>
+        <button type="button" className={editor.isActive('italic') ? styles.bubbleBtnActive : styles.bubbleBtn} onClick={() => editor.chain().focus().toggleItalic().run()}><em>I</em></button>
+        <button type="button" className={editor.isActive('strike') ? styles.bubbleBtnActive : styles.bubbleBtn} onClick={() => editor.chain().focus().toggleStrike().run()}>S</button>
+        <span className={styles.bubbleSep} />
+        <button type="button" className={editor.isActive('link') ? styles.bubbleBtnActive : styles.bubbleBtn} onClick={setLink}>Tautan</button>
+      </BubbleMenu>
 
       {imagePanelOpen && (
         <div className={styles.imagePanel}>

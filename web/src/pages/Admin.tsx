@@ -9,7 +9,7 @@ import { supabase } from '../lib/supabaseClient';
 
 export default function Admin() {
   const { profile } = useApp();
-  const { upcoming, past, refresh } = useAgendas();
+  const { upcoming, past, refresh } = useAgendas({ includeInternalTestData: true });
   const navigate = useNavigate();
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -65,6 +65,7 @@ export default function Admin() {
           <button className={styles.viewBtn} onClick={() => navigate('/admin/anggota')}>Kelola Anggota</button>
           <button className={styles.viewBtn} onClick={() => navigate('/admin/artikel')}>Kelola Artikel</button>
           <button className={styles.viewBtn} onClick={() => navigate('/admin/struktur')}>Kelola Struktur</button>
+          <button className={styles.viewBtn} onClick={() => navigate('/admin/audit')}>Audit Aktivitas</button>
           <button className={styles.makeBtn} onClick={() => navigate('/admin/agenda/baru')}>+ Buat Agenda</button>
         </div>
       </div>
@@ -82,7 +83,7 @@ export default function Admin() {
               <div className={styles.rowBadges}>
                 <Badge color={a.typeColor} style={{ padding: '3px 10px' }}>{a.type}</Badge>
                 <Badge
-                  color={a.mode === 'universal' ? '#8FAAF5' : '#EE9AC0'}
+                  color={a.mode === 'universal' ? 'var(--type-kajian)' : 'var(--type-oprec)'}
                   uppercase={false}
                   style={{ padding: '3px 10px' }}
                 >
@@ -95,14 +96,12 @@ export default function Admin() {
             </div>
             <div className={styles.rowActions}>
               <button className={styles.viewBtn} onClick={() => navigate(`/admin/agenda/${a.id}/edit`)}>Edit</button>
-              {a.mode === 'registration' && (
-                <button className={styles.viewBtn} onClick={() => navigate(`/admin/agenda/${a.id}/roster`)}>
-                  Kelola Peserta
-                </button>
-              )}
+              <button className={styles.viewBtn} onClick={() => navigate(`/admin/agenda/${a.id}/roster`)}>
+                {a.mode === 'registration' ? 'Kelola Peserta' : 'Laporan Kehadiran'}
+              </button>
               {a.qrActive ? (
                 <>
-                  <Badge color="#5CCBA0" uppercase={false} pulse style={{ fontSize: 11.5, padding: '7px 13px' }}>● Aktif</Badge>
+                  <Badge color="var(--success-light)" uppercase={false} pulse style={{ fontSize: 11.5, padding: '7px 13px' }}>● Aktif</Badge>
                   <button className={styles.viewBtn} onClick={() => navigate(`/admin/qr/${a.id}`)}>Lihat QR</button>
                 </>
               ) : (
@@ -131,6 +130,7 @@ export default function Admin() {
                 </div>
                 <div className={styles.rowActions}>
                   <button className={styles.viewBtn} onClick={() => navigate(`/admin/agenda/${a.id}/edit`)}>Edit</button>
+                  <button className={styles.viewBtn} onClick={() => navigate(`/admin/agenda/${a.id}/roster`)}>Laporan Kehadiran</button>
                   <button className={styles.deleteBtn} onClick={() => deleteAgenda(a.id)}>Hapus</button>
                 </div>
               </GlassCard>

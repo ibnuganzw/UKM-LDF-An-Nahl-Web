@@ -4,16 +4,21 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './QuranReader.module.css';
 import { Button, Hex } from '../components/ui';
 import { SurahHeader } from '../components/SurahHeader';
+import { QuranLibraryPanel } from '../components/quran/QuranLibraryPanel';
 import { JUZS } from '../data/juzs';
 import { SURAHS } from '../data/surahs';
-import { useQuranAudioPlayer } from '../hooks/useQuranAudioPlayer';
 import { cx } from '../lib/cx';
 import { fetchQuranJuz, fetchQuranJuzSupplements, getFallbackQuranVerses } from '../lib/quranClient';
 import { DEFAULT_RECITER_ID, isKnownReciter, RECITERS } from '../lib/quranAudio';
 import { quranText } from '../lib/quranText';
+import { createReadingProgress } from '../lib/quranLibrary';
+import { shareVerseCard } from '../lib/quranShare';
+import { createBreadcrumbStructuredData, setPageSeo } from '../lib/seo';
 import { loadJSON, saveJSON } from '../lib/storage';
 import { scanTajweedClasses, TAJWEED_LEGEND, type TajweedLegendItem } from '../lib/tajweedLegend';
 import type { QuranReaderSettings, QuranVerse, Juz } from '../types';
+import { useQuranAudio } from '../state/QuranAudioContext';
+import { useQuranLibrary } from '../state/QuranLibraryContext';
 
 const ARABIC_INDIC_DIGITS = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
 const ARABIC_DISPLAY_STRIP_PATTERN = /[\u061c\u200b-\u200f\ufeff]/g;
@@ -462,12 +467,16 @@ export default function JuzReader() {
   const prevJuz = currentIndex > 0 ? JUZS[currentIndex - 1] : undefined;
   const nextJuz = currentIndex < JUZS.length - 1 ? JUZS[currentIndex + 1] : undefined;
   const activeTarget = getAyahFromHash(location.hash, rd);
+  const activeChapterId = activeTarget?.chapterId;
+  const activeVerseNumber = activeTarget?.verseNumber;
   const selectedPosition = (activeTarget && findJuzPosition(rd, activeTarget.chapterId, activeTarget.verseNumber)) ?? 1;
   const [juzQuery, setJuzQuery] = useState(formatJuzOption(rd));
   const [ayahQuery, setAyahQuery] = useState(String(selectedPosition));
   const [dockOpen, setDockOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [shareStatus, setShareStatus] = useState<string | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
   const [settings, setSettings] = useState<QuranReaderSettings>(() =>
     normalizeReaderSettings(loadJSON<Partial<QuranReaderSettings> | null>(READER_SETTINGS_KEY, null)),
@@ -477,7 +486,41 @@ export default function JuzReader() {
   const tajweedClasses = useMemo(() => scanTajweedClasses(chapterState.verses), [chapterState.verses]);
   const quranPageFontCss = '';
   const tajweedUnavailable = settings.script === 'indopak' && settings.tajweedEnabled;
-  const audioPlayer = useQuranAudioPlayer(chapterState.verses, settings.reciter);
+  const audioPlayer = useQuranAudio();
+  const setAudioReciter = audioPlayer.setReciter;
+  const currentReaderAudio = audioPlayer.sourceTitle === `Juz ${rd.juz_number}`;
+  const {
+    activeCollection,
+    focusMode,
+    isBookmarked,
+    saveProgress,
+    setFocusMode,
+    toggleBookmark,
+  } = useQuranLibrary();
+
+  useEffect(() => {
+    const path = `/quran/juz/${rd.juz_number}`;
+    const description = `Baca Al-Qur'an Juz ${rd.juz_number} dengan teks Arab, transliterasi, terjemahan, tajwid, dan audio.`;
+    setPageSeo({
+      title: `Juz ${rd.juz_number}`,
+      description,
+      path,
+      structuredData: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: `Juz ${rd.juz_number}`,
+          description,
+          inLanguage: ['ar', 'id-ID'],
+        },
+        createBreadcrumbStructuredData([
+          { name: 'Beranda', path: '/' },
+          { name: "Al-Qur'an", path: '/quran' },
+          { name: `Juz ${rd.juz_number}`, path },
+        ]),
+      ],
+    });
+  }, [rd]);
 
   useEffect(() => {
     setJuzQuery(formatJuzOption(rd));
@@ -485,25 +528,45 @@ export default function JuzReader() {
   }, [rd, selectedPosition]);
 
   useEffect(() => {
-    return () => {
-      audioPlayer.stop();
-    };
-  }, [rd.juz_number]);
+    setAudioReciter(settings.reciter);
+  }, [setAudioReciter, settings.reciter]);
+
+  useEffect(() => () => setFocusMode(false), [setFocusMode]);
 
   useEffect(() => {
-    if (!audioPlayer.playingVerseKey) {
+    if (!audioPlayer.currentVerse || audioPlayer.sourceTitle !== `Juz ${rd.juz_number}`) {
       return;
     }
 
-    const [chapterIdPart, verseNumberPart] = audioPlayer.playingVerseKey.split(':');
-    const chapterId = Number(chapterIdPart);
-    const verseNumber = Number(verseNumberPart);
+    const chapterId = audioPlayer.currentVerse.chapter_id;
+    const verseNumber = audioPlayer.currentVerse.verse_number;
     if (!Number.isFinite(chapterId) || !Number.isFinite(verseNumber)) {
       return;
     }
 
     document.getElementById(`ayat-${chapterId}-${verseNumber}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, [audioPlayer.playingVerseKey]);
+  }, [audioPlayer.currentVerse, audioPlayer.sourceTitle, rd.juz_number]);
+
+  useEffect(() => {
+    if (!readerReady || !('IntersectionObserver' in window)) return;
+    const verseByKey = new Map(chapterState.verses.map((verse) => [verse.verse_key, verse]));
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      const verseKey = (visible?.target as HTMLElement | undefined)?.dataset.verseKey;
+      const verse = verseKey ? verseByKey.get(verseKey) : undefined;
+      if (!verse) return;
+      const surahName = SURAHS.find((surah) => surah.no === verse.chapter_id)?.name ?? `Surah ${verse.chapter_id}`;
+      saveProgress(createReadingProgress(
+        verse,
+        `/quran/juz/${rd.juz_number}#ayat-${verse.chapter_id}-${verse.verse_number}`,
+        `Juz ${rd.juz_number} · ${surahName} · Ayat ${verse.verse_number}`,
+      ));
+    }, { rootMargin: '-18% 0px -32%', threshold: [.55, .8] });
+    document.querySelectorAll<HTMLElement>('[data-reading-verse="juz"]').forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [chapterState.verses, rd.juz_number, readerReady, saveProgress]);
 
   useEffect(() => {
     saveJSON(READER_SETTINGS_KEY, settings);
@@ -581,19 +644,19 @@ export default function JuzReader() {
   }, [rd.juz_number]);
 
   useEffect(() => {
-    if (!activeTarget || !readerReady) {
+    if (!activeChapterId || !activeVerseNumber || !readerReady) {
       return;
     }
 
     const timer = window.setTimeout(() => {
-      document.getElementById(`ayat-${activeTarget.chapterId}-${activeTarget.verseNumber}`)?.scrollIntoView({
+      document.getElementById(`ayat-${activeChapterId}-${activeVerseNumber}`)?.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
       });
     }, 90);
 
     return () => window.clearTimeout(timer);
-  }, [activeTarget?.chapterId, activeTarget?.verseNumber, readerReady, location.pathname]);
+  }, [activeChapterId, activeVerseNumber, readerReady, location.pathname]);
 
   useEffect(() => {
     if (!infoOpen && !settingsOpen) {
@@ -648,7 +711,7 @@ export default function JuzReader() {
   }
 
   function handleJuzPlayToggle() {
-    if (audioPlayer.playingVerseKey) {
+    if (audioPlayer.currentVerse && audioPlayer.sourceTitle === `Juz ${rd.juz_number}`) {
       audioPlayer.togglePlayback();
       return;
     }
@@ -661,13 +724,25 @@ export default function JuzReader() {
       chapterState.verses[0];
 
     if (startVerse) {
-      audioPlayer.playVerse(startVerse);
+      audioPlayer.playVerse(startVerse, chapterState.verses, {
+        title: `Juz ${rd.juz_number}`,
+        hrefForVerse: (verse) => `/quran/juz/${rd.juz_number}#ayat-${verse.chapter_id}-${verse.verse_number}`,
+      }, settings.reciter);
+    }
+  }
+
+  async function handleShareVerse(verse: QuranVerse) {
+    try {
+      const result = await shareVerseCard(verse);
+      setShareStatus(result === 'shared' ? 'Kartu ayat berhasil dibagikan.' : 'Kartu ayat berhasil diunduh.');
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') setShareStatus('Kartu ayat belum berhasil dibuat.');
     }
   }
 
   return (
     <main
-      className={styles.page}
+      className={cx(styles.page, focusMode && styles.pageFocused)}
       style={{ '--arabic-font-size': `${settings.arabicFontSize}px` } as CSSProperties}
     >
       {quranPageFontCss && <style>{quranPageFontCss}</style>}
@@ -767,6 +842,12 @@ export default function JuzReader() {
         </nav>
 
         <div className={styles.topbarActions}>
+          <button type="button" className={styles.settingsTrigger} aria-label="Buka bookmark dan koleksi" onClick={() => setLibraryOpen(true)}>
+            <span aria-hidden="true">♡</span>
+          </button>
+          <button type="button" className={styles.settingsTrigger} aria-label="Aktifkan mode fokus" onClick={() => setFocusMode(true)}>
+            <span aria-hidden="true">◫</span>
+          </button>
           <button
             type="button"
             className={styles.settingsTrigger}
@@ -790,8 +871,8 @@ export default function JuzReader() {
         </h1>
         <div className={styles.surahIntroActions}>
           <button type="button" className={styles.infoTrigger} onClick={handleJuzPlayToggle} disabled={!readerReady}>
-            <span aria-hidden="true">{audioPlayer.isPlaying ? '❚❚' : '▶'}</span>
-            {audioPlayer.isPlaying ? 'Jeda Murottal' : 'Putar Murottal'}
+            <span aria-hidden="true">{currentReaderAudio && audioPlayer.isPlaying ? '❚❚' : '▶'}</span>
+            {currentReaderAudio && audioPlayer.isPlaying ? 'Jeda Murottal' : 'Putar Murottal'}
           </button>
         </div>
       </section>
@@ -808,7 +889,8 @@ export default function JuzReader() {
             {chapterState.verses.map((verse, index) => {
               const isNewSurah = verse.verse_number === 1;
               const surahInfo = isNewSurah ? SURAHS.find((s) => s.no === verse.chapter_id) : undefined;
-              const isPlayingVerse = audioPlayer.playingVerseKey === verse.verse_key;
+              const isPlayingVerse = audioPlayer.currentVerse?.verse_key === verse.verse_key;
+              const bookmarked = isBookmarked(verse.verse_key);
 
               return (
                 <div key={verse.verse_key}>
@@ -834,6 +916,8 @@ export default function JuzReader() {
                         ? 'true'
                         : undefined
                     }
+                    data-reading-verse="juz"
+                    data-verse-key={verse.verse_key}
                   >
                     <div className={styles.ayatBody}>
                       <div className={styles.ayatToolbar}>
@@ -845,10 +929,25 @@ export default function JuzReader() {
                             if (isPlayingVerse) {
                               audioPlayer.togglePlayback();
                             } else {
-                              audioPlayer.playVerse(verse);
+                              audioPlayer.playVerse(verse, chapterState.verses, {
+                                title: `Juz ${rd.juz_number}`,
+                                hrefForVerse: (item) => `/quran/juz/${rd.juz_number}#ayat-${item.chapter_id}-${item.verse_number}`,
+                              }, settings.reciter);
                             }
                           }}
                         />
+                        <button
+                          type="button"
+                          className={cx(styles.ayatActionButton, bookmarked && styles.ayatActionButtonActive)}
+                          aria-label={`${bookmarked ? 'Hapus dari' : 'Simpan ke'} koleksi ${activeCollection}`}
+                          aria-pressed={bookmarked}
+                          onClick={() => toggleBookmark(verse, `/quran/juz/${rd.juz_number}#ayat-${verse.chapter_id}-${verse.verse_number}`)}
+                        >
+                          <span aria-hidden="true">{bookmarked ? '♥' : '♡'}</span>
+                        </button>
+                        <button type="button" className={styles.ayatActionButton} aria-label={`Bagikan ayat ${verse.verse_number} sebagai kartu`} onClick={() => void handleShareVerse(verse)}>
+                          <span aria-hidden="true">↗</span>
+                        </button>
                       </div>
                       <div className={styles.ayatArabicLine}>
                         <QuranArabic settings={settings} verse={verse} />
@@ -889,7 +988,7 @@ export default function JuzReader() {
         </>
       ) : (
         <section className={styles.locked}>
-          <Hex width={54} height={59} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={24} fontFamily="var(--font-arabic-ui)" className={styles.lockedIcon}>
+          <Hex width={54} height={59} bg="rgba(232,199,102,.12)" color="var(--gold-light)" fontSize={24} fontFamily="var(--font-arabic-ui)" className={styles.lockedIcon}>
             ق
           </Hex>
           <div className={styles.lockedTitle}>{chapterState.status === 'loading' ? 'Memuat teks juz' : 'Teks juz ini belum tersedia'}</div>
@@ -918,6 +1017,17 @@ export default function JuzReader() {
           onToggleLegend={() => setLegendOpen((open) => !open)}
           settings={settings}
         />
+      )}
+      <QuranLibraryPanel open={libraryOpen} onClose={() => setLibraryOpen(false)} />
+      {focusMode && (
+        <button type="button" className={styles.focusExit} onClick={() => setFocusMode(false)}>
+          Keluar mode fokus
+        </button>
+      )}
+      {shareStatus && (
+        <button type="button" className={styles.shareStatus} onClick={() => setShareStatus(null)}>
+          {shareStatus}
+        </button>
       )}
     </main>
   );

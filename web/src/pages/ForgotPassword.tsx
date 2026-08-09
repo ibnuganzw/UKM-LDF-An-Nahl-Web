@@ -33,12 +33,13 @@ export default function ForgotPassword() {
         </div>
 
         {message ? (
-          <p className={styles.successText}>{message}</p>
+          <p className={styles.successText} role="status">{message}</p>
         ) : (
           <form className={styles.form} onSubmit={submit}>
             <div>
-              <div className={styles.fieldLabel}>NIM</div>
+              <label className={styles.fieldLabel} htmlFor="forgot-nim">NIM</label>
               <input
+                id="forgot-nim"
                 className={styles.input}
                 value={nim}
                 onChange={(e) => setNim(e.target.value)}

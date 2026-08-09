@@ -5,7 +5,9 @@ import { Badge, GlassCard } from '../components/ui';
 import { supabase } from '../lib/supabaseClient';
 import { collectArticleImageUrls, deleteArticleImagesByUrls } from '../lib/articleImages';
 import { CATEGORY_COLORS } from '../lib/colors';
-import type { ArticleCategory, ArticleStatus } from '../types';
+import { assessArticlePublication, REVIEW_STATUS_LABELS } from '../lib/articleEditorial';
+import { isEditorialSchemaUnavailable } from '../lib/articleSchema';
+import type { ArticleCategory, ArticleReviewStatus, ArticleStatus } from '../types';
 
 interface ArticleRow {
   id: string;
@@ -14,6 +16,10 @@ interface ArticleRow {
   title: string;
   excerpt: string;
   status: ArticleStatus;
+  review_status?: ArticleReviewStatus | null;
+  scientific_reviewer_name?: string | null;
+  sharia_reviewer_name?: string | null;
+  is_featured?: boolean | null;
   updated_at: string;
 }
 
@@ -23,13 +29,28 @@ export default function AdminArtikel() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [editorialSchemaReady, setEditorialSchemaReady] = useState<boolean | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const { data, error: err } = await supabase
+    const legacyColumns = 'id, slug, category, title, excerpt, status, updated_at';
+    const editorialResult = await supabase
       .from('articles')
-      .select('id, slug, category, title, excerpt, status, updated_at')
+      .select(`${legacyColumns}, review_status, scientific_reviewer_name, sharia_reviewer_name, is_featured`)
       .order('updated_at', { ascending: false });
+    let data = editorialResult.data as ArticleRow[] | null;
+    let err = editorialResult.error;
+    let schemaReady = true;
+    if (isEditorialSchemaUnavailable(err)) {
+      schemaReady = false;
+      const fallback = await supabase
+        .from('articles')
+        .select(legacyColumns)
+        .order('updated_at', { ascending: false });
+      data = fallback.data as ArticleRow[] | null;
+      err = fallback.error;
+    }
+    setEditorialSchemaReady(schemaReady);
     if (err) {
       setError(err.message);
       setLoading(false);
@@ -48,6 +69,17 @@ export default function AdminArtikel() {
     setBusyId(a.id);
     try {
       const nextStatus: ArticleStatus = a.status === 'published' ? 'draft' : 'published';
+      const assessment = assessArticlePublication({
+        category: a.category,
+        status: nextStatus,
+        reviewStatus: a.review_status ?? 'unreviewed',
+        scientificReviewerName: a.scientific_reviewer_name ?? '',
+        shariaReviewerName: a.sharia_reviewer_name ?? '',
+      });
+      if (!assessment.allowed) {
+        setError(assessment.reason);
+        return;
+      }
       const { error: err } = await supabase.from('articles').update({ status: nextStatus }).eq('id', a.id);
       if (err) {
         setError(err.message);
@@ -92,6 +124,11 @@ export default function AdminArtikel() {
       </div>
 
       {error && <div className={styles.error}>{error}</div>}
+      {editorialSchemaReady === false && (
+        <div className={styles.editorialWarning}>
+          Metadata penelaahan belum aktif. Terapkan migrasi fase 9 sebelum menerbitkan artikel Islam Veteriner.
+        </div>
+      )}
       {loading && <div className={styles.loading}>Memuat…</div>}
 
       {!loading && (
@@ -102,9 +139,15 @@ export default function AdminArtikel() {
               <div className={styles.rowLeft}>
                 <div className={styles.rowBadges}>
                   <Badge color={CATEGORY_COLORS[a.category]} style={{ padding: '3px 10px' }}>{a.category}</Badge>
-                  <Badge color={a.status === 'published' ? '#5CCBA0' : '#8E99BB'} uppercase={false} style={{ padding: '3px 10px' }}>
+                  <Badge color={a.status === 'published' ? 'var(--success-light)' : 'var(--text-muted)'} uppercase={false} style={{ padding: '3px 10px' }}>
                     {a.status === 'published' ? 'Terbit' : 'Draft'}
                   </Badge>
+                  {editorialSchemaReady && (
+                    <Badge color={a.review_status === 'reviewed' ? 'var(--success-light)' : 'var(--text-muted)'} uppercase={false} style={{ padding: '3px 10px' }}>
+                      {REVIEW_STATUS_LABELS[a.review_status ?? 'unreviewed']}
+                    </Badge>
+                  )}
+                  {a.is_featured && <Badge color="var(--gold-light)" uppercase={false} style={{ padding: '3px 10px' }}>Utama</Badge>}
                 </div>
                 <div className={styles.rowTitle}>{a.title}</div>
                 <div className={styles.rowMeta}>{a.excerpt}</div>

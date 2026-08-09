@@ -57,6 +57,15 @@ export interface EnrichedAgenda extends Agenda {
 
 export type ArticleCategory = 'Islam Veteriner' | 'Kisah' | 'Renungan';
 export type ArticleStatus = 'draft' | 'published';
+export type ArticleReviewStatus = 'unreviewed' | 'in_review' | 'reviewed';
+export type EditorialBlockKind =
+  | 'dalil'
+  | 'hadis'
+  | 'khilaf'
+  | 'bukti-ilmiah'
+  | 'keselamatan'
+  | 'kesimpulan'
+  | 'referensi';
 
 export interface Article {
   id: string;
@@ -64,10 +73,24 @@ export interface Article {
   cat: ArticleCategory;
   title: string;
   excerpt: string;
+  dek: string;
+  topics: string[];
   contentHtml: string;
   coverImageUrl: string | null;
+  coverImageAlt: string;
+  coverImageCaption: string | null;
   status: ArticleStatus;
   authorId: string | null;
+  authorName: string;
+  authorRole: string;
+  scientificReviewerName: string | null;
+  scientificReviewerRole: string | null;
+  shariaReviewerName: string | null;
+  shariaReviewerRole: string | null;
+  reviewStatus: ArticleReviewStatus;
+  reviewedAt: string | null;
+  verificationSummary: string | null;
+  isFeatured: boolean;
   createdAt: string;
   updatedAt: string;
   publishedAt: string | null;
@@ -92,6 +115,7 @@ export interface Surah {
 /** Depth of the encyclopedic write-up available for a surah. 'ringkas' entries are
  * candidates for a future enrichment pass — see [[quran-surah-info-schema]] memory. */
 export type SurahInfoTier = 'lengkap' | 'ringkas';
+export type SurahInfoReviewStatus = 'draft' | 'reviewed';
 
 export interface SurahInfoRange {
   dari: number;
@@ -147,6 +171,8 @@ export interface SurahInfo {
   ringkasanSingkat: string;
   sumberRujukan: string[];
   tier: SurahInfoTier;
+  /** Absent entries are treated as draft until a human editorial review records otherwise. */
+  reviewStatus?: SurahInfoReviewStatus;
 }
 
 export interface Juz {
@@ -261,6 +287,22 @@ export interface OrgPosition {
   roleTitle: string | null;
   divisionDesc: string | null;
   divisionColor: string | null;
+  photoUrl: string | null;
+  sortOrder: number;
+  createdAt: string;
+}
+
+/** A person inside a division. 'ketua' heads it (at most one); 'wakil'/
+ *  'sekretaris'/'bendahara' are optional single officers; 'anggota' are the
+ *  members (unlimited). Enforced by a partial unique index at the DB level. */
+export type DivisionRole = 'ketua' | 'wakil' | 'sekretaris' | 'bendahara' | 'anggota';
+
+export interface DivisionMember {
+  id: string;
+  /** References the divisi row's OrgPosition.id (tier 3, positionKey null). */
+  divisionId: string;
+  name: string;
+  role: DivisionRole;
   photoUrl: string | null;
   sortOrder: number;
   createdAt: string;

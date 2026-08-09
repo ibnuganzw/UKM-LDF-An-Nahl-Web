@@ -49,7 +49,7 @@ export default function ResetPassword() {
           <div className={styles.head}>
             <h1 className={styles.title}>Kata sandi diperbarui</h1>
           </div>
-          <p className={styles.successText}>Kata sandi kamu berhasil diganti.</p>
+          <p className={styles.successText} role="status">Kata sandi kamu berhasil diganti.</p>
           <Button variant="primary" fullWidth className={styles.submitBtn} onClick={() => navigate('/dashboard')}>
             Lanjut ke Dashboard
           </Button>
@@ -65,7 +65,7 @@ export default function ResetPassword() {
           <div className={styles.head}>
             <h1 className={styles.title}>Link tidak valid</h1>
           </div>
-          <p className={styles.errorText}>
+          <p className={styles.errorText} role="alert">
             Link reset password ini sudah kedaluwarsa atau tidak valid. Minta link baru dari halaman lupa kata sandi.
           </p>
         </div>
@@ -81,8 +81,9 @@ export default function ResetPassword() {
         </div>
         <div className={styles.form}>
           <div>
-            <div className={styles.fieldLabel}>Kata sandi baru</div>
+            <label className={styles.fieldLabel} htmlFor="reset-password">Kata sandi baru</label>
             <input
+              id="reset-password"
               type="password"
               className={styles.input}
               value={password}
@@ -92,8 +93,9 @@ export default function ResetPassword() {
             />
           </div>
           <div>
-            <div className={styles.fieldLabel}>Konfirmasi kata sandi</div>
+            <label className={styles.fieldLabel} htmlFor="reset-password-confirm">Konfirmasi kata sandi</label>
             <input
+              id="reset-password-confirm"
               type="password"
               className={styles.input}
               value={confirmPassword}
@@ -102,7 +104,7 @@ export default function ResetPassword() {
               autoComplete="new-password"
             />
           </div>
-          {error && <div className={styles.errorText}>{error}</div>}
+          {error && <div className={styles.errorText} role="alert">{error}</div>}
           <Button type="submit" variant="primary" fullWidth className={styles.submitBtn} disabled={submitting}>
             {submitting ? 'Menyimpan…' : 'Simpan kata sandi baru'}
           </Button>

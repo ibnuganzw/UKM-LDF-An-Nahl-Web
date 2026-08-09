@@ -1,7 +1,7 @@
 .divider {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
 }
 
 .line {
@@ -16,8 +16,10 @@
   background: linear-gradient(270deg, transparent, rgba(232, 199, 102, .35));
 }
 
-.cluster {
-  display: flex;
-  gap: 3px;
-  align-items: center;
+.mark {
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--gold-gradient);
+  opacity: .72;
 }

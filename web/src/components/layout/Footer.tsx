@@ -2,12 +2,22 @@ import { Link } from 'react-router-dom';
 import styles from './Footer.module.css';
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
         <div className={styles.brandCol}>
           <div className={styles.brandRow}>
-            <img src="/assets/logo.png" alt="Logo" className={styles.logo} />
+            <img
+              src="/assets/logo-96.jpg"
+              srcSet="/assets/logo-96.jpg 1x, /assets/logo-192.jpg 2x"
+              width="42"
+              height="42"
+              alt="Logo LDF An-Nahl"
+              className={styles.logo}
+              loading="lazy"
+              decoding="async"
+            />
             <div>
               <div className={styles.brandName}>LDF An-Nahl</div>
               <div className={styles.brandSub}>FKH USK</div>
@@ -35,8 +45,7 @@ export function Footer() {
 
       <div className={styles.bottomBar}>
         <div className={styles.bottomInner}>
-          <span>© 1448 H / 2026 LDF An-Nahl · Fakultas Kedokteran Hewan USK</span>
-          <span>Prototype v2</span>
+          <span>© {currentYear} LDF An-Nahl · Fakultas Kedokteran Hewan USK</span>
         </div>
       </div>
 

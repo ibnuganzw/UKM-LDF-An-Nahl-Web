@@ -41,6 +41,37 @@
   gap: 12px;
 }
 
+.loadingList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.loadingRow {
+  height: 92px;
+  border: 1px solid var(--surface-border);
+  border-radius: 18px;
+  background:
+    linear-gradient(100deg, transparent 28%, rgba(255, 255, 255, .04) 42%, transparent 56%),
+    var(--surface-1);
+  background-size: 240% 100%;
+  animation: agendaLoadingSweep 1.5s ease-in-out infinite;
+}
+
+@keyframes agendaLoadingSweep {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+/* Unlike the small ambient drift globals.css exempts from reduced-motion
+   (hero bees/glow), this is continuous positional sweeping — freeze it in
+   place instead; the skeleton shape alone still reads as "loading". */
+@media (prefers-reduced-motion: reduce) {
+  .loadingRow {
+    animation: none;
+  }
+}
+
 .row {
   display: flex;
   align-items: center;
@@ -48,7 +79,15 @@
 }
 
 .dateBadge {
+  width: 58px;
+  height: 58px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
+  border: 1px solid;
+  border-radius: 14px;
 }
 
 .dateNum {
@@ -101,9 +140,38 @@
   font-weight: 800;
 }
 
-.empty {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 14px;
-  padding: 40px 0;
+@media (max-width: 640px) {
+  .page {
+    padding: 40px 18px 84px;
+  }
+
+  .lead {
+    font-size: 15.5px;
+  }
+
+  .chipRow {
+    margin-right: -18px;
+    margin-left: -18px;
+    padding: 0 18px 5px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .chipRow::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chipRow > * {
+    flex: none;
+  }
+
+  .row {
+    gap: 13px;
+  }
+
+  .rowMeta {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
 }

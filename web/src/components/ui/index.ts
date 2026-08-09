@@ -6,3 +6,5 @@ export { FilterChip } from './FilterChip';
 export { SectionHeader } from './SectionHeader';
 export { Divider } from './Divider';
 export { DashedNote } from './DashedNote';
+export { EmptyState } from './EmptyState';
+export { ThemeToggle } from './ThemeToggle';

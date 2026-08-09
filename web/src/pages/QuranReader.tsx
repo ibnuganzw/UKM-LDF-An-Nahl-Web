@@ -1,20 +1,27 @@
 import DOMPurify from 'dompurify';
-import { useEffect, useMemo, useState, type CSSProperties, type FormEvent, type PointerEvent } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type FormEvent, type PointerEvent } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import styles from './QuranReader.module.css';
 import { Button, Hex } from '../components/ui';
 import { SurahHeader } from '../components/SurahHeader';
-import { SurahInfoDialog } from '../components/SurahInfoDialog';
+import { QuranLibraryPanel } from '../components/quran/QuranLibraryPanel';
 import { SURAHS } from '../data/surahs';
-import { SURAH_INFO } from '../data/surahInfo';
-import { useQuranAudioPlayer } from '../hooks/useQuranAudioPlayer';
 import { cx } from '../lib/cx';
 import { fetchQuranChapter, fetchQuranSupplements, getFallbackQuranVerses, mergeQuranSupplements } from '../lib/quranClient';
 import { DEFAULT_RECITER_ID, isKnownReciter, RECITERS } from '../lib/quranAudio';
 import { quranText } from '../lib/quranText';
+import { createReadingProgress } from '../lib/quranLibrary';
+import { shareVerseCard } from '../lib/quranShare';
+import { createBreadcrumbStructuredData, setPageSeo } from '../lib/seo';
 import { loadJSON, saveJSON } from '../lib/storage';
 import { scanTajweedClasses, TAJWEED_LEGEND, type TajweedLegendItem } from '../lib/tajweedLegend';
 import type { QuranReaderSettings, QuranVerse, Surah } from '../types';
+import { useQuranAudio } from '../state/QuranAudioContext';
+import { useQuranLibrary } from '../state/QuranLibraryContext';
+
+const LazySurahInfoDialog = lazy(() =>
+  import('../components/SurahInfoDialog').then((module) => ({ default: module.SurahInfoDialog })),
+);
 
 const ARABIC_INDIC_DIGITS = ['\u0660', '\u0661', '\u0662', '\u0663', '\u0664', '\u0665', '\u0666', '\u0667', '\u0668', '\u0669'];
 const ARABIC_DISPLAY_STRIP_PATTERN = /[\u061c\u200b-\u200f\ufeff]/g;
@@ -419,18 +426,53 @@ export default function QuranReader() {
   const [dockOpen, setDockOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [shareStatus, setShareStatus] = useState<string | null>(null);
   const [legendOpen, setLegendOpen] = useState(false);
   const [settings, setSettings] = useState<QuranReaderSettings>(() =>
     normalizeReaderSettings(loadJSON<Partial<QuranReaderSettings> | null>(READER_SETTINGS_KEY, null)),
   );
   const [chapterState, setChapterState] = useState<ChapterState>(() => getInitialChapterState(rd.no));
   const revelationPlace = getRevelationPlace(rd.tempat);
-  const surahInfo = useMemo(() => SURAH_INFO.find((info) => info.no === rd.no), [rd.no]);
   const readerReady = chapterState.verses.length > 0;
   const tajweedClasses = useMemo(() => scanTajweedClasses(chapterState.verses), [chapterState.verses]);
   const quranPageFontCss = '';
   const tajweedUnavailable = settings.script === 'indopak' && settings.tajweedEnabled;
-  const audioPlayer = useQuranAudioPlayer(chapterState.verses, settings.reciter);
+  const audioPlayer = useQuranAudio();
+  const setAudioReciter = audioPlayer.setReciter;
+  const currentReaderAudio = audioPlayer.currentVerse?.chapter_id === rd.no;
+  const {
+    activeCollection,
+    focusMode,
+    isBookmarked,
+    saveProgress,
+    setFocusMode,
+    toggleBookmark,
+  } = useQuranLibrary();
+
+  useEffect(() => {
+    const path = `/quran/${rd.no}`;
+    const description = `Baca Surah ${rd.name} (${rd.arti}), ${rd.ayat} ayat, dengan teks Arab, transliterasi, terjemahan, tajwid, dan audio.`;
+    setPageSeo({
+      title: `Surah ${rd.name}`,
+      description,
+      path,
+      structuredData: [
+        {
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: `Surah ${rd.name}`,
+          description,
+          inLanguage: ['ar', 'id-ID'],
+        },
+        createBreadcrumbStructuredData([
+          { name: 'Beranda', path: '/' },
+          { name: "Al-Qur'an", path: '/quran' },
+          { name: `Surah ${rd.name}`, path },
+        ]),
+      ],
+    });
+  }, [rd]);
 
   useEffect(() => {
     setSurahQuery(formatSurahOption(rd));
@@ -438,23 +480,44 @@ export default function QuranReader() {
   }, [rd, selectedAyah]);
 
   useEffect(() => {
-    return () => {
-      audioPlayer.stop();
-    };
-  }, [rd.no]);
+    setAudioReciter(settings.reciter);
+  }, [setAudioReciter, settings.reciter]);
+
+  useEffect(() => () => setFocusMode(false), [setFocusMode]);
 
   useEffect(() => {
-    if (!audioPlayer.playingVerseKey) {
+    if (!audioPlayer.currentVerse || audioPlayer.currentVerse.chapter_id !== rd.no) {
       return;
     }
 
-    const verseNumber = Number(audioPlayer.playingVerseKey.split(':')[1]);
+    const verseNumber = audioPlayer.currentVerse.verse_number;
     if (!Number.isFinite(verseNumber)) {
       return;
     }
 
     document.getElementById(`ayat-${verseNumber}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, [audioPlayer.playingVerseKey]);
+  }, [audioPlayer.currentVerse, rd.no]);
+
+  useEffect(() => {
+    if (!readerReady || !('IntersectionObserver' in window)) return;
+    const verseByKey = new Map(chapterState.verses.map((verse) => [verse.verse_key, verse]));
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      const verseKey = (visible?.target as HTMLElement | undefined)?.dataset.verseKey;
+      const verse = verseKey ? verseByKey.get(verseKey) : undefined;
+      if (verse) {
+        saveProgress(createReadingProgress(
+          verse,
+          `/quran/${rd.no}#ayat-${verse.verse_number}`,
+          `Surah ${rd.name} · Ayat ${verse.verse_number}`,
+        ));
+      }
+    }, { rootMargin: '-18% 0px -32%', threshold: [.55, .8] });
+    document.querySelectorAll<HTMLElement>('[data-reading-verse="surah"]').forEach((item) => observer.observe(item));
+    return () => observer.disconnect();
+  }, [chapterState.verses, rd.name, rd.no, readerReady, saveProgress]);
 
   useEffect(() => {
     saveJSON(READER_SETTINGS_KEY, settings);
@@ -607,7 +670,7 @@ export default function QuranReader() {
   }
 
   function handleSurahPlayToggle() {
-    if (audioPlayer.playingVerseKey) {
+    if (audioPlayer.currentVerse?.chapter_id === rd.no) {
       audioPlayer.togglePlayback();
       return;
     }
@@ -615,13 +678,25 @@ export default function QuranReader() {
     const startVerse = chapterState.verses.find((verse) => verse.verse_number === selectedAyah) ?? chapterState.verses[0];
 
     if (startVerse) {
-      audioPlayer.playVerse(startVerse);
+      audioPlayer.playVerse(startVerse, chapterState.verses, {
+        title: `Surah ${rd.name}`,
+        hrefForVerse: (verse) => `/quran/${rd.no}#ayat-${verse.verse_number}`,
+      }, settings.reciter);
+    }
+  }
+
+  async function handleShareVerse(verse: QuranVerse) {
+    try {
+      const result = await shareVerseCard(verse);
+      setShareStatus(result === 'shared' ? 'Kartu ayat berhasil dibagikan.' : 'Kartu ayat berhasil diunduh.');
+    } catch (error) {
+      if ((error as Error).name !== 'AbortError') setShareStatus('Kartu ayat belum berhasil dibuat.');
     }
   }
 
   return (
     <main
-      className={styles.page}
+      className={cx(styles.page, focusMode && styles.pageFocused)}
       style={{ '--arabic-font-size': `${settings.arabicFontSize}px` } as CSSProperties}
     >
       {quranPageFontCss && <style>{quranPageFontCss}</style>}
@@ -641,6 +716,18 @@ export default function QuranReader() {
           onPointerEnter={() => setDockOpen(true)}
           onPointerLeave={handleDockLeave}
         >
+          <button
+            type="button"
+            className={styles.readerSearchSettings}
+            aria-label="Buka pengaturan bacaan"
+            aria-expanded={settingsOpen}
+            onClick={() => {
+              setSettingsOpen(true);
+              setDockOpen(false);
+            }}
+          >
+            <span aria-hidden="true">⚙</span>
+          </button>
           <button
             type="button"
             className={styles.readerSearchClose}
@@ -721,6 +808,12 @@ export default function QuranReader() {
         </nav>
 
         <div className={styles.topbarActions}>
+          <button type="button" className={styles.settingsTrigger} aria-label="Buka bookmark dan koleksi" onClick={() => setLibraryOpen(true)}>
+            <span aria-hidden="true">♡</span>
+          </button>
+          <button type="button" className={styles.settingsTrigger} aria-label="Aktifkan mode fokus" onClick={() => setFocusMode(true)}>
+            <span aria-hidden="true">◫</span>
+          </button>
           <button
             type="button"
             className={styles.settingsTrigger}
@@ -750,8 +843,8 @@ export default function QuranReader() {
             Informasi Surat
           </button>
           <button type="button" className={styles.infoTrigger} onClick={handleSurahPlayToggle} disabled={!readerReady}>
-            <span aria-hidden="true">{audioPlayer.isPlaying ? '❚❚' : '▶'}</span>
-            {audioPlayer.isPlaying ? 'Jeda Murottal' : 'Putar Murottal'}
+            <span aria-hidden="true">{currentReaderAudio && audioPlayer.isPlaying ? '❚❚' : '▶'}</span>
+            {currentReaderAudio && audioPlayer.isPlaying ? 'Jeda Murottal' : 'Putar Murottal'}
           </button>
         </div>
       </section>
@@ -766,7 +859,8 @@ export default function QuranReader() {
 
           <section className={styles.ayatList} aria-label={`Bacaan ${rd.name}`} data-source={chapterState.source}>
             {chapterState.verses.map((verse) => {
-              const isPlayingVerse = audioPlayer.playingVerseKey === verse.verse_key;
+              const isPlayingVerse = audioPlayer.currentVerse?.verse_key === verse.verse_key;
+              const bookmarked = isBookmarked(verse.verse_key);
 
               return (
                 <article
@@ -774,6 +868,8 @@ export default function QuranReader() {
                   key={verse.verse_key}
                   className={cx(styles.ayatItem, (activeAyah === verse.verse_number || isPlayingVerse) && styles.ayatItemActive)}
                   aria-current={activeAyah === verse.verse_number ? 'true' : undefined}
+                  data-reading-verse="surah"
+                  data-verse-key={verse.verse_key}
                 >
                   <div className={styles.ayatBody}>
                     <div className={styles.ayatToolbar}>
@@ -785,10 +881,25 @@ export default function QuranReader() {
                           if (isPlayingVerse) {
                             audioPlayer.togglePlayback();
                           } else {
-                            audioPlayer.playVerse(verse);
+                            audioPlayer.playVerse(verse, chapterState.verses, {
+                              title: `Surah ${rd.name}`,
+                              hrefForVerse: (item) => `/quran/${rd.no}#ayat-${item.verse_number}`,
+                            }, settings.reciter);
                           }
                         }}
                       />
+                      <button
+                        type="button"
+                        className={cx(styles.ayatActionButton, bookmarked && styles.ayatActionButtonActive)}
+                        aria-label={`${bookmarked ? 'Hapus dari' : 'Simpan ke'} koleksi ${activeCollection}`}
+                        aria-pressed={bookmarked}
+                        onClick={() => toggleBookmark(verse, `/quran/${rd.no}#ayat-${verse.verse_number}`)}
+                      >
+                        <span aria-hidden="true">{bookmarked ? '♥' : '♡'}</span>
+                      </button>
+                      <button type="button" className={styles.ayatActionButton} aria-label={`Bagikan ayat ${verse.verse_number} sebagai kartu`} onClick={() => void handleShareVerse(verse)}>
+                        <span aria-hidden="true">↗</span>
+                      </button>
                     </div>
                     <div className={styles.ayatArabicLine}>
                       <QuranArabic settings={settings} verse={verse} />
@@ -828,7 +939,7 @@ export default function QuranReader() {
         </>
       ) : (
         <section className={styles.locked}>
-          <Hex width={54} height={59} bg="rgba(232,199,102,.12)" color="#E8C766" fontSize={24} fontFamily="var(--font-arabic-ui)" className={styles.lockedIcon}>
+          <Hex width={54} height={59} bg="rgba(232,199,102,.12)" color="var(--gold-light)" fontSize={24} fontFamily="var(--font-arabic-ui)" className={styles.lockedIcon}>
             ق
           </Hex>
           <div className={styles.lockedTitle}>{chapterState.status === 'loading' ? 'Memuat teks surah' : 'Teks surah ini belum tersedia'}</div>
@@ -860,7 +971,20 @@ export default function QuranReader() {
       )}
 
       {infoOpen && (
-        <SurahInfoDialog key={rd.no} surah={rd} info={surahInfo} revelationPlace={revelationPlace} onClose={() => setInfoOpen(false)} />
+        <Suspense fallback={<div className={styles.infoLoading} role="status">Menyiapkan informasi surah…</div>}>
+          <LazySurahInfoDialog key={rd.no} surah={rd} revelationPlace={revelationPlace} onClose={() => setInfoOpen(false)} />
+        </Suspense>
+      )}
+      <QuranLibraryPanel open={libraryOpen} onClose={() => setLibraryOpen(false)} />
+      {focusMode && (
+        <button type="button" className={styles.focusExit} onClick={() => setFocusMode(false)}>
+          Keluar mode fokus
+        </button>
+      )}
+      {shareStatus && (
+        <button type="button" className={styles.shareStatus} onClick={() => setShareStatus(null)}>
+          {shareStatus}
+        </button>
       )}
     </main>
   );

@@ -23,15 +23,39 @@
 }
 
 :root {
+  /* The whole app is dark — telling the UA so gives us dark scrollbars and
+     dark native form controls (date pickers, selects) instead of glaring
+     white Windows chrome on a navy page. */
+  color-scheme: dark;
+
   /* Backgrounds */
   --bg-page: #0A1128;
   --bg-header: rgba(8, 14, 34, .82);
   --bg-deep: #070E22;
   --bg-deeper: #060D20;
   --bg-menu-panel: #0B1430;
+  --surface-1: #101936;
+  --surface-2: #141F40;
+  --surface-featured: #182342;
+  --surface-border: rgba(169, 179, 209, .14);
+  --surface-border-strong: rgba(232, 199, 102, .25);
   --glass-fill: rgba(255, 255, 255, .045);
   --glass-fill-soft: rgba(255, 255, 255, .04);
   --glass-fill-faint: rgba(255, 255, 255, .03);
+  --surface-highlight: rgba(255, 255, 255, .08);
+  --surface-divider: rgba(255, 255, 255, .1);
+  --control-fill: rgba(255, 255, 255, .05);
+  --control-fill-hover: rgba(232, 199, 102, .075);
+  --control-border: rgba(255, 255, 255, .1);
+  --input-fill: rgba(4, 9, 24, .64);
+  --panel-solid: #0D1525;
+  --panel-translucent: rgba(12, 21, 48, .96);
+  --overlay-backdrop: rgba(2, 5, 14, .78);
+  --card-default: rgba(16, 25, 54, .82);
+  --card-hover-wash: linear-gradient(145deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .015));
+  --card-featured-bg: linear-gradient(145deg, rgba(232, 199, 102, .11), rgba(20, 31, 64, .98) 58%);
+  --card-featured-wash: radial-gradient(circle at 12% 0%, rgba(232, 199, 102, .14), transparent 34%), linear-gradient(110deg, rgba(232, 199, 102, .07), transparent 38%);
+  --reading-canvas: var(--bg-page);
 
   /* Text */
   --text-heading: #F5EFDC;
@@ -46,6 +70,18 @@
   --gold-light: #E8C766;
   --gold-dark: #C9A227;
   --gold-gradient: linear-gradient(135deg, #E8C766, #C9A227);
+  --gold-highlight: #F4DB8A;
+  --shadow-luxe: 0 26px 60px -38px rgba(0, 0, 0, .9);
+  --shadow-gold: 0 20px 48px -30px rgba(201, 162, 39, .48);
+  --shadow-control: 0 14px 30px -24px rgba(0, 0, 0, .75);
+  --theme-icon: var(--gold-light);
+
+  /* Motion — micro-interactions vs floating reveals */
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --ease-float: cubic-bezier(.25, .46, .45, .94);
+  --t-fast: 150ms;
+  --t-slow: 900ms;
+  --ease-premium: var(--ease);
 
   /* Status / semantic */
   --success-light: #5CCBA0;
@@ -67,10 +103,25 @@
   --cat-vet: #8FAAF5;
   --cat-kisah: #E8C766;
   --cat-renungan: #5FC6DE;
+  --status-done: #8E99BB;
+  --status-today: #5CCBA0;
+  --status-upcoming: #8FAAF5;
 
   /* Typography */
   --font-serif: 'Cormorant Garamond', serif;
   --font-sans: Manrope, system-ui, sans-serif;
+
+  /* Type scale — fixed steps for new/touched UI (not retrofitted onto
+     every existing px value). Cormorant only holds its character at
+     --text-2xl and up; below that, card/list titles use sans at 700. */
+  --text-2xs: 11px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 15px;
+  --text-md: 16px;
+  --text-lg: 19px;
+  --text-xl: 24px;
+  --text-2xl: clamp(28px, 4vw, 40px);
   --font-arabic-uthmani: 'AnnahlQuranUthmani', serif;
   --font-arabic-indopak: 'AnnahlQuranIndoPak', serif;
   --font-arabic: var(--font-arabic-indopak);
@@ -78,17 +129,92 @@
   --font-surah-name: 'SurahNameV4', var(--font-arabic-ui);
 
   /* Radii */
-  --radius-sm: 12px;
-  --radius-md: 20px;
-  --radius-lg: 24px;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
   --radius-xl: 28px;
   --radius-pill: 999px;
 
   /* Shape */
   --hex-clip: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
 
+  /* Rhythm — vertical gap between page sections */
+  --space-tight: 56px;
+  --space-section: 80px;
+
   /* Layout */
   --header-h: 66px;
   --bottom-nav-h: 78px;
   --breakpoint-mobile: 919px;
+}
+
+/* Aceh Dawn — the same An-Nahl system under daylight. Navy stays the ink,
+   cream stays the reading material, and gold remains a deliberate accent. */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg-page: #F5F7FB;
+  --bg-header: rgba(248, 250, 253, .88);
+  --bg-deep: #E8EEF7;
+  --bg-deeper: #DEE7F2;
+  --bg-menu-panel: #FBFCFE;
+  --surface-1: #FFFFFF;
+  --surface-2: #EEF3FA;
+  --surface-featured: #E4ECF7;
+  --surface-border: rgba(10, 17, 40, .12);
+  --surface-border-strong: rgba(118, 87, 10, .28);
+  --glass-fill: rgba(255, 255, 255, .82);
+  --glass-fill-soft: rgba(255, 255, 255, .68);
+  --glass-fill-faint: rgba(10, 17, 40, .025);
+  --surface-highlight: rgba(255, 255, 255, .9);
+  --surface-divider: rgba(10, 17, 40, .12);
+  --control-fill: rgba(255, 255, 255, .76);
+  --control-fill-hover: #FFFFFF;
+  --control-border: rgba(10, 17, 40, .14);
+  --input-fill: rgba(255, 255, 255, .9);
+  --panel-solid: #FFFFFF;
+  --panel-translucent: rgba(255, 255, 255, .96);
+  --overlay-backdrop: rgba(10, 17, 40, .38);
+  --card-default: rgba(255, 255, 255, .88);
+  --card-hover-wash: linear-gradient(145deg, rgba(232, 238, 247, .68), rgba(255, 255, 255, .1));
+  --card-featured-bg: linear-gradient(145deg, rgba(214, 174, 55, .13), rgba(232, 238, 247, .98) 62%);
+  --card-featured-wash: radial-gradient(circle at 12% 0%, rgba(214, 174, 55, .15), transparent 34%), linear-gradient(110deg, rgba(10, 17, 40, .035), transparent 42%);
+  --reading-canvas: #FCF9F1;
+
+  --text-heading: #0A1128;
+  --text-body: #344462;
+  --text-muted: #5D6D87;
+  --text-faint: #748198;
+  --text-reading: #243858;
+  --text-on-gold: #241B04;
+  --text-on-gold-alt: #0A1128;
+
+  --gold-light: #76570A;
+  --gold-dark: #76570A;
+  --gold-gradient: linear-gradient(135deg, #E1BE58, #C99A22);
+  --gold-highlight: #E7C96F;
+  --shadow-luxe: 0 24px 58px -38px rgba(10, 17, 40, .38);
+  --shadow-gold: 0 18px 42px -30px rgba(118, 87, 10, .34);
+  --shadow-control: 0 12px 26px -22px rgba(10, 17, 40, .38);
+  --theme-icon: #9A710E;
+
+  --success-light: #2E9C77;
+  --success-dark: #1F765A;
+  --success-scan-btn: #1F765A;
+  --danger-text: #A43E3A;
+
+  --type-kajian: #365CA8;
+  --type-rapat: #596987;
+  --type-mentoring: #237A5D;
+  --type-sosial: #76570A;
+  --type-olahraga: #1E7185;
+  --type-rihlah: #73518F;
+  --type-oprec: #985276;
+
+  --cat-vet: #365CA8;
+  --cat-kisah: #76570A;
+  --cat-renungan: #1E7185;
+  --status-done: #5D6D87;
+  --status-today: #237A5D;
+  --status-upcoming: #365CA8;
 }

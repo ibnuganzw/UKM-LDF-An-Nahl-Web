@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from './Header.module.css';
-import { Hex } from '../ui';
+import { Hex, ThemeToggle } from '../ui';
 import { useApp } from '../../state/AppContext';
 import { NAV_LINKS, getNavGroup } from '../../lib/nav';
 import { cx } from '../../lib/cx';
@@ -19,6 +19,15 @@ export function Header() {
     setMenuOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [menuOpen]);
+
   const menuLinks = [
     ...NAV_LINKS,
     ...(isAdmin ? [{ label: 'Panel Admin', to: '/admin', group: 'akun' as const }] : []),
@@ -29,7 +38,15 @@ export function Header() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <Link to="/" className={styles.brand}>
-          <img src="/assets/logo.png" alt="Logo LDF An-Nahl" className={styles.logo} />
+          <img
+            src="/assets/logo-96.jpg"
+            srcSet="/assets/logo-96.jpg 1x, /assets/logo-192.jpg 2x"
+            width="42"
+            height="42"
+            alt="Logo LDF An-Nahl"
+            className={styles.logo}
+            decoding="async"
+          />
           <div className={styles.brandText}>
             <div className={styles.brandName}>LDF An-Nahl</div>
             <div className={styles.brandSub}>FKH USK</div>
@@ -45,6 +62,7 @@ export function Header() {
         </nav>
 
         <div className={styles.right}>
+          <ThemeToggle />
           {profile ? (
             <Link to={accountRoute} className={styles.accountPill}>
               <Hex width={34} height={34} bg="linear-gradient(135deg,#E8C766,#C9A227)" color="#241B04" fontSize={14}>
@@ -57,7 +75,13 @@ export function Header() {
               Masuk
             </Link>
           )}
-          <button className={styles.hamburger} aria-label="Menu" onClick={() => setMenuOpen((v) => !v)}>
+          <button
+            className={styles.hamburger}
+            aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-main-menu"
+            onClick={() => setMenuOpen((v) => !v)}
+          >
             <span className={styles.hamburgerBar} />
             <span className={styles.hamburgerBar} />
             <span className={styles.hamburgerBarShort} />
@@ -66,14 +90,14 @@ export function Header() {
       </div>
 
       {menuOpen && (
-        <div className={styles.mobileMenu}>
+        <div id="mobile-main-menu" className={styles.mobileMenu}>
           {menuLinks.map((l) => (
             <Link
               key={l.label}
               to={l.to}
               className={cx(styles.mobileMenuLink, group === l.group && styles.mobileMenuLinkActive)}
             >
-              <Hex width={7} height={8} bg={group === l.group ? '#E8C766' : 'rgba(255,255,255,.25)'} />
+              <Hex width={7} height={8} bg={group === l.group ? 'var(--gold-light)' : 'var(--text-faint)'} />
               {l.label}
             </Link>
           ))}

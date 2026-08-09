@@ -1,5 +1,7 @@
 import mammoth from 'mammoth';
 import { uploadArticleImage } from './articleImages';
+import { classifyEditorialHeading } from './articleEditorial';
+import type { EditorialBlockKind } from '../types';
 
 const MIME_EXT: Record<string, string> = {
   'image/png': 'png',
@@ -21,6 +23,20 @@ export interface ParsedDocxArticle {
   title: string | null;
   coverImageUrl: string | null;
   contentHtml: string;
+  preview: DocxImportPreview;
+}
+
+export interface DocxImportPreview {
+  titleSource: 'document-title' | 'none';
+  titleCandidates: string[];
+  imageCount: number;
+  coverStrategy: 'first-image' | 'keep-all-in-content';
+  semanticBlocks: Partial<Record<EditorialBlockKind, number>>;
+  warnings: string[];
+}
+
+export interface DocxImportOptions {
+  firstImageAsCover?: boolean;
 }
 
 /**
@@ -31,7 +47,10 @@ export interface ParsedDocxArticle {
  * through the FigureImage Tiptap node if reopened for editing). Excerpt is
  * intentionally left for the admin to write themselves.
  */
-export async function parseDocxArticle(file: File): Promise<ParsedDocxArticle> {
+export async function parseDocxArticle(
+  file: File,
+  { firstImageAsCover = true }: DocxImportOptions = {},
+): Promise<ParsedDocxArticle> {
   const arrayBuffer = await file.arrayBuffer();
 
   const convertImage = mammoth.images.imgElement(async (image) => {
@@ -51,6 +70,11 @@ export async function parseDocxArticle(file: File): Promise<ParsedDocxArticle> {
 
   const doc = new DOMParser().parseFromString(result.value, 'text/html');
 
+  const titleCandidates = Array.from(doc.body.querySelectorAll('h1, h2, h3'))
+    .map((heading) => heading.textContent?.trim() ?? '')
+    .filter(Boolean)
+    .slice(0, 5);
+
   let title: string | null = null;
   const h1 = doc.body.querySelector('h1');
   if (h1) {
@@ -68,9 +92,10 @@ export async function parseDocxArticle(file: File): Promise<ParsedDocxArticle> {
     el.replaceWith(h2);
   });
 
+  const imageCount = doc.body.querySelectorAll('img').length;
   let coverImageUrl: string | null = null;
-  const firstImg = doc.body.querySelector('img');
-  if (firstImg) {
+  const firstImg = firstImageAsCover ? doc.body.querySelector('img') : null;
+  if (firstImg && firstImageAsCover) {
     coverImageUrl = firstImg.getAttribute('src');
     (firstImg.closest('p') ?? firstImg).remove();
   }
@@ -87,5 +112,40 @@ export async function parseDocxArticle(file: File): Promise<ParsedDocxArticle> {
     figure.appendChild(img);
   });
 
-  return { title, coverImageUrl, contentHtml: doc.body.innerHTML };
+  const semanticBlocks: Partial<Record<EditorialBlockKind, number>> = {};
+  let currentSection: HTMLElement | null = null;
+  Array.from(doc.body.children).forEach((element) => {
+    const isHeading = element.matches('h2, h3');
+    const kind = isHeading ? classifyEditorialHeading(element.textContent ?? '') : null;
+    if (kind) {
+      const section = doc.createElement('section');
+      section.setAttribute('data-editorial-block', kind);
+      element.before(section);
+      section.appendChild(element);
+      currentSection = section;
+      semanticBlocks[kind] = (semanticBlocks[kind] ?? 0) + 1;
+      return;
+    }
+    if (currentSection) currentSection.appendChild(element);
+  });
+
+  const warnings = result.messages.map((message) => message.message).filter(Boolean);
+  if (!title) warnings.unshift('Judul utama tidak terdeteksi. Pilih kandidat judul atau isi secara manual.');
+  if (imageCount > 0 && !firstImageAsCover) {
+    warnings.push('Semua gambar dipertahankan di isi tulisan; sampul tidak dipilih otomatis.');
+  }
+
+  return {
+    title,
+    coverImageUrl,
+    contentHtml: doc.body.innerHTML,
+    preview: {
+      titleSource: title ? 'document-title' : 'none',
+      titleCandidates,
+      imageCount,
+      coverStrategy: firstImageAsCover ? 'first-image' : 'keep-all-in-content',
+      semanticBlocks,
+      warnings,
+    },
+  };
 }

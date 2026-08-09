@@ -7,7 +7,6 @@ import { useNow } from '../hooks/useNow';
 import { usePrayerSchedule } from '../hooks/usePrayerSchedule';
 import { getNextPrayer } from '../lib/prayer';
 import { getGreeting } from '../lib/greeting';
-import { cx } from '../lib/cx';
 import { quranText } from '../lib/quranText';
 import { isAdminRole } from '../lib/roles';
 
@@ -19,6 +18,7 @@ export default function Dashboard() {
 
   const schedule = usePrayerSchedule(now);
   const prayer = getNextPrayer(now, schedule.prayerTimes, schedule.utcOffsetHours);
+  const prayerAvailable = schedule.source !== 'unavailable';
   const greeting = getGreeting(now);
   const absenRows = upcoming.slice(0, 4);
   const histRows = all
@@ -55,25 +55,29 @@ export default function Dashboard() {
       </div>
 
       <div className={styles.statGrid}>
-        <GlassCard variant="featured" radius={22} padding="22px 24px" borderColor="rgba(232,199,102,.32)" background="linear-gradient(150deg,rgba(201,162,39,.18),rgba(255,255,255,.03))">
-          <div className={styles.statLabel} style={{ color: '#C9A227' }}>Total kehadiran</div>
+        <GlassCard variant="featured" radius={20} padding="22px 24px">
+          <div className={styles.statLabel} style={{ color: 'var(--gold-dark)' }}>Total kehadiran</div>
           <div className={styles.statValue}>{histRows.length}</div>
-          <div className={styles.statSub} style={{ color: '#A9B3D1' }}>kegiatan tercatat</div>
+          <div className={styles.statSub} style={{ color: 'var(--text-body)' }}>kegiatan tercatat</div>
         </GlassCard>
-        <GlassCard radius={22} padding="22px 24px">
-          <div className={styles.statLabel} style={{ color: '#8E99BB' }}>Agenda mendatang</div>
+        <GlassCard radius={20} padding="22px 24px">
+          <div className={styles.statLabel} style={{ color: 'var(--text-muted)' }}>Agenda mendatang</div>
           <div className={styles.statValue}>{upcoming.length}</div>
-          <div className={styles.statSub} style={{ color: '#8E99BB' }}>dalam waktu dekat</div>
+          <div className={styles.statSub} style={{ color: 'var(--text-muted)' }}>dalam waktu dekat</div>
         </GlassCard>
-        <GlassCard radius={22} padding="22px 24px" borderColor="rgba(232,199,102,.26)">
-          <div className={styles.statLabel} style={{ color: '#C9A227' }}>Menuju {prayer.name}</div>
-          <div className={cx('cdGlow', styles.statCountdown)}>{prayer.countdown}</div>
+        <GlassCard radius={20} padding="22px 24px" borderColor="rgba(232,199,102,.26)">
+          <div className={styles.statLabel} style={{ color: 'var(--gold-dark)' }}>
+            {prayerAvailable ? `Menuju ${prayer.name}` : 'Jadwal shalat'}
+          </div>
+          <div className={styles.statCountdown}>
+            {prayerAvailable ? prayer.countdown : schedule.status === 'loading' ? 'Memuat…' : 'Belum tersedia'}
+          </div>
           <div className={styles.statLink} onClick={() => navigate('/shalat')}>Jadwal shalat →</div>
         </GlassCard>
       </div>
 
       <div className={styles.bodyGrid}>
-        <GlassCard radius={24} padding="24px">
+        <GlassCard radius={20} padding="24px">
           <div className={styles.panelHead}>
             <div className={styles.panelTitle}>Absensi kegiatan</div>
             <span className={styles.panelHint}>Pindai QR di lokasi</span>
@@ -88,9 +92,9 @@ export default function Dashboard() {
                   </div>
                 </div>
                 {a.attended ? (
-                  <Badge color="#5CCBA0" uppercase={false} style={{ fontSize: 12, padding: '8px 14px' }}>Hadir ✓</Badge>
+                  <Badge color="var(--success-light)" uppercase={false} style={{ fontSize: 12, padding: '8px 14px' }}>Hadir ✓</Badge>
                 ) : (
-                  <button className={styles.absenBtn} style={{ background: 'transparent', color: '#8E99BB' }} onClick={() => navigate(`/agenda/${a.id}`)}>
+                  <button className={styles.absenBtn} style={{ background: 'transparent', color: 'var(--text-muted)' }} onClick={() => navigate(`/agenda/${a.id}`)}>
                     Detail
                   </button>
                 )}
@@ -103,7 +107,7 @@ export default function Dashboard() {
         </GlassCard>
 
         <div className={styles.rightCol}>
-          <GlassCard radius={24} padding="24px">
+          <GlassCard radius={20} padding="24px">
             <div className={styles.panelTitle} style={{ marginBottom: 14 }}>Riwayat kehadiran</div>
             <div className={styles.histList}>
               {histRows.map((a) => (
@@ -122,10 +126,8 @@ export default function Dashboard() {
 
           <GlassCard
             variant="featured"
-            radius={24}
+            radius={28}
             padding="22px 24px"
-            borderColor="rgba(232,199,102,.32)"
-            background="linear-gradient(150deg,rgba(201,162,39,.18),rgba(255,255,255,.03))"
             to="/quran"
             className={styles.quranBanner}
           >

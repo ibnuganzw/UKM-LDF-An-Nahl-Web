@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import styles from './AgendaDetail.module.css';
-import { Badge, Button, GlassCard } from '../components/ui';
+import { Badge, Button, EmptyState, GlassCard } from '../components/ui';
 import { useAgendas } from '../hooks/useAgendas';
 import { useApp } from '../state/AppContext';
 import { supabase } from '../lib/supabaseClient';
 import { isMemberCurrentlyActive } from '../lib/memberStatus';
+import {
+  createBreadcrumbStructuredData,
+  createEventStructuredData,
+  createOrganizationStructuredData,
+  setPageSeo,
+} from '../lib/seo';
 import { cx } from '../lib/cx';
 import type { Profile } from '../types';
+import { buildGoogleCalendarUrl, downloadAgendaIcs } from '../lib/calendar';
 
 /** Why a logged-in user can't self-register — mirrors the event_registrations
  *  insert RLS check (active member only), so we explain it up front instead of
@@ -21,12 +28,51 @@ function registrationBlockedReason(profile: Profile | null): string {
 
 export default function AgendaDetail() {
   const { id } = useParams<{ id: string }>();
-  const { all, refresh } = useAgendas();
+  const { all, loading, error: loadError, refresh } = useAgendas();
   const { session, profile } = useApp();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const det = all.find((a) => a.id === id);
+
+  useEffect(() => {
+    if (det) {
+      const path = `/agenda/${det.id}`;
+      const eventStatus = det.statusLabel === 'Selesai' ? 'past' : det.statusLabel === 'Hari ini' ? 'today' : 'upcoming';
+      setPageSeo({
+        title: det.title,
+        description: det.description,
+        path,
+        structuredData: [
+          createOrganizationStructuredData(),
+          createEventStructuredData({
+            path,
+            title: det.title,
+            description: det.description,
+            eventDate: det.eventDate,
+            startTime: det.startTime,
+            endTime: det.endTime,
+            location: det.location,
+            status: eventStatus,
+            speaker: det.pemateri,
+          }),
+          createBreadcrumbStructuredData([
+            { name: 'Beranda', path: '/' },
+            { name: 'Agenda', path: '/agenda' },
+            { name: det.title, path },
+          ]),
+        ],
+      });
+    } else if (!loading) {
+      setPageSeo({
+        title: 'Agenda Tidak Ditemukan',
+        description: 'Agenda yang diminta tidak ditemukan atau sudah dihapus.',
+        path: `/agenda/${id ?? ''}`,
+        noIndex: true,
+      });
+    }
+  }, [det, id, loading]);
+
   const loggedIn = !!session;
   const activeMember =
     !!profile &&
@@ -37,8 +83,38 @@ export default function AgendaDetail() {
       academicOverride: profile.academicOverride,
     });
 
+  if (loading) {
+    return <div className={styles.page} role="status">Memuat agenda…</div>;
+  }
+
+  if (loadError) {
+    return (
+      <div className={styles.page}>
+        <EmptyState
+          title="Agenda belum dapat dimuat."
+          body={loadError}
+          action={{ label: 'Coba lagi', onClick: refresh }}
+        />
+      </div>
+    );
+  }
+
   if (!det) {
-    return <div className={styles.page}>Agenda tidak ditemukan.</div>;
+    return (
+      <div className={styles.page}>
+        <EmptyState
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3.5" y="5.5" width="17" height="15" rx="2.5" />
+              <path d="M8 3.5v4M16 3.5v4M3.5 10h17M8 14h.01M12 14h.01M16 14h.01" />
+            </svg>
+          }
+          title="Agenda ini tidak ditemukan."
+          body="Mungkin sudah dihapus oleh pengurus, atau tautannya keliru."
+          action={{ label: 'Semua agenda →', to: '/agenda' }}
+        />
+      </div>
+    );
   }
 
   const toggleRegistration = async () => {
@@ -63,17 +139,17 @@ export default function AgendaDetail() {
     <div className={styles.page}>
       <Link to="/agenda" className={styles.back}>← Semua agenda</Link>
 
-      <GlassCard radius={26} borderColor="rgba(232,199,102,.2)" padding="clamp(24px,4vw,38px)" className={styles.panel}>
+      <GlassCard radius={28} borderColor="rgba(232,199,102,.2)" padding="clamp(24px,4vw,38px)" className={styles.panel}>
         <div className={styles.badgeRow}>
           <Badge color={det.typeColor} style={{ fontSize: 11, padding: '5px 13px' }}>{det.type}</Badge>
           <Badge color={det.statusColor} uppercase={false} style={{ fontSize: 12, padding: '5px 13px' }}>{det.statusLabel}</Badge>
           {det.mode === 'universal' && det.qrActive && (
-            <Badge color="#5CCBA0" uppercase={false} pulse style={{ fontSize: 12, padding: '5px 13px' }}>
+            <Badge color="var(--success-light)" uppercase={false} pulse style={{ fontSize: 12, padding: '5px 13px' }}>
               ● QR absensi aktif
             </Badge>
           )}
           {det.mode === 'registration' && (
-            <Badge color="#EE9AC0" uppercase={false} style={{ fontSize: 12, padding: '5px 13px' }}>
+            <Badge color="var(--type-oprec)" uppercase={false} style={{ fontSize: 12, padding: '5px 13px' }}>
               Perlu daftar
             </Badge>
           )}
@@ -102,6 +178,16 @@ export default function AgendaDetail() {
               <div className={styles.infoValue}>{det.pemateri}</div>
             </div>
           )}
+        </div>
+
+        <div className={styles.calendarActions} aria-label="Simpan pengingat agenda">
+          <button type="button" onClick={() => downloadAgendaIcs(det)}>
+            <span aria-hidden="true">＋</span>
+            Unduh kalender · pengingat 30 menit
+          </button>
+          <a href={buildGoogleCalendarUrl(det)} target="_blank" rel="noreferrer">
+            Buka di Google Calendar <span aria-hidden="true">↗</span>
+          </a>
         </div>
 
         <div className={styles.actionArea}>

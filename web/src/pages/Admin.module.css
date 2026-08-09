@@ -57,7 +57,7 @@
 
 .backBtn {
   border: 1px solid rgba(245, 239, 220, .25);
-  background: rgba(255, 255, 255, .04);
+  background: var(--glass-fill-soft);
   color: var(--text-heading);
   font-weight: 800;
   font-size: 13.5px;
@@ -132,7 +132,7 @@
 
 .viewBtn {
   border: 1px solid rgba(245, 239, 220, .25);
-  background: rgba(255, 255, 255, .04);
+  background: var(--glass-fill-soft);
   color: var(--text-heading);
   font-weight: 800;
   font-size: 13px;

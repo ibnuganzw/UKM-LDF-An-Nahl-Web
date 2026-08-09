@@ -1,4 +1,11 @@
 .footer {
+  --bg-deep: #070E22;
+  --text-heading: #F5EFDC;
+  --text-body: #A9B3D1;
+  --text-faint: #5E6B8F;
+  --gold-light: #E8C766;
+  --gold-dark: #C9A227;
+
   border-top: 1px solid rgba(232, 199, 102, .16);
   background: var(--bg-deep);
 }
@@ -111,6 +118,36 @@
 }
 
 @media (max-width: 919px) {
+  .inner {
+    padding: 30px 18px 22px;
+    justify-content: center;
+  }
+
+  .brandCol {
+    text-align: center;
+  }
+
+  .brandRow {
+    justify-content: center;
+  }
+
+  .tagline {
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  .cols {
+    display: none;
+  }
+
+  .bottomInner {
+    justify-content: center;
+    padding: 14px 18px;
+    text-align: center;
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+
   .mobileSpacer {
     display: block;
     height: var(--bottom-nav-h);

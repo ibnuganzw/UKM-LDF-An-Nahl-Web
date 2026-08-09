@@ -32,6 +32,16 @@
   line-height: 1.1;
 }
 
+.titleRow { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
+.titleRow .h1 { margin-bottom: 0; }
+.exportBtn { min-height: 44px; flex: none; border: 1px solid rgba(232,199,102,.3); border-radius: 999px; padding: 0 18px; background: rgba(232,199,102,.08); color: var(--gold-light); cursor: pointer; font: 800 13px var(--font-sans); }
+.exportBtn:disabled { opacity: .5; cursor: wait; }
+
+@media (max-width: 620px) {
+  .titleRow { align-items: stretch; flex-direction: column; }
+  .exportBtn { width: 100%; }
+}
+
 .error {
   color: var(--danger-text);
   font-weight: 700;

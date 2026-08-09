@@ -21,14 +21,14 @@
 }
 
 .card {
-  background: rgba(255, 255, 255, .045);
+  background: var(--card-default);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(232, 199, 102, .24);
   border-radius: 28px;
   padding: 28px;
   text-align: center;
-  box-shadow: 0 30px 60px -32px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .06);
+  box-shadow: var(--shadow-luxe), inset 0 1px 0 var(--surface-highlight);
 }
 
 .eyebrow {
@@ -205,7 +205,7 @@
 .retryBtn {
   flex: 1;
   border: 1px solid rgba(245, 239, 220, .25);
-  background: rgba(255, 255, 255, .04);
+  background: var(--control-fill);
   color: var(--text-heading);
   font-weight: 800;
   font-size: 14px;

@@ -1,23 +1,73 @@
 .card {
-  background: var(--card-bg, rgba(255, 255, 255, .045));
-  border: 1px solid var(--card-border, rgba(232, 199, 102, .16));
-  border-radius: var(--card-radius, 22px);
-  padding: var(--card-padding, 26px);
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--card-bg, var(--card-default));
   backdrop-filter: blur(var(--card-blur, 18px));
   -webkit-backdrop-filter: blur(var(--card-blur, 18px));
-  box-shadow: var(--card-shadow, inset 0 1px 0 rgba(255, 255, 255, .05));
+  border: 1px solid var(--card-border, var(--surface-border));
+  border-radius: var(--card-radius, var(--radius-lg));
+  padding: var(--card-padding, 24px);
+  box-shadow: var(--card-shadow, var(--shadow-luxe)), inset 0 1px 0 var(--surface-highlight);
   position: relative;
+}
+
+/* Gold wash is opt-in (set by GlassCard's `featured` variant via
+   --card-wash) rather than automatic — a plain card doesn't need a tint
+   to look intentional, and a wash on every card left nothing to look
+   "featured" when one actually needed to stand out.
+   z-index: -1 (not 0) is load-bearing: `.card` establishes a stacking
+   context via `isolation: isolate`, and within it a z-index:0 positioned
+   element paints ABOVE plain static children, not behind them — at 0
+   this wash rendered on top of the card's own text. -1 puts it in the
+   "negative descendants" paint step, which is the one step that runs
+   before ordinary in-flow content. */
+.card::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: var(--card-wash-inset, 0);
+  pointer-events: none;
+  /* Featured cards set --card-hairline + a 6px --card-wash-inset: the wash
+     (and its honeycomb engraving) stops short of the edge and a 1px gold
+     ring marks the boundary — a matted frame inside the card border. The
+     inner radius tracks the outer one minus the inset so the two curves
+     stay concentric. */
+  border: 1px solid var(--card-hairline, transparent);
+  border-radius: calc(var(--card-radius, var(--radius-lg)) - var(--card-wash-inset, 0px));
+  background: var(--card-wash, none);
 }
 
 .hover {
   cursor: pointer;
-  transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+  transition: transform var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
+}
+
+/* Hover "lift" is a translucent wash faded in via opacity — background-image
+   itself can't transition, which used to make the card color snap.
+   z-index: -1 for the same reason as .card::before above: keep the wash
+   behind the card's own (static-positioned) text instead of over it. */
+.hover::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  pointer-events: none;
+  background: var(--card-hover-wash);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
 }
 
 .hover:hover {
-  transform: translateY(-4px);
-  border-color: rgba(232, 199, 102, .5);
-  box-shadow: 0 22px 46px -20px rgba(201, 162, 39, .3), inset 0 1px 0 rgba(255, 255, 255, .08);
+  border-color: rgba(232, 199, 102, .3);
+}
+
+.hover:hover::after {
+  opacity: 1;
+}
+
+.hover:active {
+  transform: scale(.99);
+  transition-duration: 80ms;
 }
 
 .asLink {

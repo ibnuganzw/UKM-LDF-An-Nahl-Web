@@ -161,7 +161,7 @@ export default function AdminAnggota() {
               </div>
               <div className={styles.rowActions}>
                 {m.role === 'super_admin' ? (
-                  <Badge color="#E8C766" uppercase={false}>Pemilik — tidak bisa diubah</Badge>
+                  <Badge color="var(--gold-light)" uppercase={false}>Pemilik — tidak bisa diubah</Badge>
                 ) : (
                   <button className={styles.rejectBtn} disabled={busyId === m.id} onClick={() => demote(m.id)}>
                     Turunkan ke anggota
@@ -214,16 +214,16 @@ export default function AdminAnggota() {
                 </div>
                 <div className={styles.rowActions}>
                   {m.role === 'super_admin' && (
-                    <Badge color="#E8C766" uppercase={false}>Pemilik</Badge>
+                    <Badge color="var(--gold-light)" uppercase={false}>Pemilik</Badge>
                   )}
                   {m.role === 'admin' && (
-                    <Badge color="#8FAAF5" uppercase={false}>Admin</Badge>
+                    <Badge color="var(--type-kajian)" uppercase={false}>Admin</Badge>
                   )}
-                  <Badge color={active ? '#5CCBA0' : '#8E99BB'} uppercase={false}>
+                  <Badge color={active ? 'var(--success-light)' : 'var(--text-muted)'} uppercase={false}>
                     {active ? 'Aktif' : 'Alumni'}
                   </Badge>
                   {m.academic_override && m.role !== 'super_admin' && (
-                    <Badge color="#E8C766" uppercase={false}>Override manual</Badge>
+                    <Badge color="var(--gold-light)" uppercase={false}>Override manual</Badge>
                   )}
                   {/* super_admin is always active by the formula — an override is a no-op, so no toggle. */}
                   {m.role !== 'super_admin' &&

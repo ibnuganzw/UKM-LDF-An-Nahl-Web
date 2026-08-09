@@ -4,9 +4,10 @@ const ALLOWED_TAGS = [
   'p', 'br', 'strong', 'em', 's', 'u', 'code',
   'h2', 'h3', 'ul', 'ol', 'li', 'blockquote', 'a',
   'figure', 'figcaption', 'img', 'hr',
+  'section',
   'table', 'thead', 'tbody', 'tr', 'th', 'td',
 ];
-const ALLOWED_ATTR = ['href', 'target', 'rel', 'src', 'alt', 'colspan', 'rowspan'];
+const ALLOWED_ATTR = ['href', 'target', 'rel', 'src', 'alt', 'colspan', 'rowspan', 'data-type', 'data-editorial-block'];
 
 /**
  * Shared sanitize config for article content_html. Called both when the editor

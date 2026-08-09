@@ -1,0 +1,163 @@
+.main {
+  flex: 1;
+  min-width: 0;
+}
+
+.utilityMain {
+  --font-serif: var(--font-sans);
+  --radius-md: 14px;
+  --radius-lg: 16px;
+  --radius-xl: 18px;
+}
+
+.readerMain {
+  min-width: 0;
+}
+
+.audioActive {
+  padding-bottom: 96px;
+}
+
+@media (max-width: 680px) {
+  .audioActive {
+    padding-bottom: 136px;
+  }
+}
+
+:global(html[data-theme='light']) .readerMain {
+  background: var(--reading-canvas);
+}
+
+/* ---------- Auth split shell ----------
+   Login/register are the org's front gate, so they get the mushalla photo as
+   a side panel with the An-Nahl verse — the same welcome the campus building
+   itself gives. The photo is a media-queried CSS background (not an <img>)
+   so phones, where the panel is hidden entirely, never download it. */
+.authShell {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  min-height: calc(100vh - var(--header-h));
+}
+
+.authAside {
+  --text-heading: #F5EFDC;
+  --gold-light: #E8C766;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(32px, 5vh, 56px) clamp(26px, 3.5vw, 54px);
+  border-right: 1px solid rgba(232, 199, 102, .14);
+}
+
+.authAside::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(180deg, rgba(6, 13, 32, .5), rgba(6, 13, 32, .16) 46%, rgba(6, 13, 32, .93) 100%),
+    linear-gradient(90deg, rgba(6, 13, 32, .3), rgba(6, 13, 32, .5));
+}
+
+.authQuote {
+  max-width: 46ch;
+  margin: 0;
+}
+
+.authQuote p {
+  margin: 0;
+  color: var(--text-heading);
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 1.9vw, 25px);
+  font-weight: 500;
+  line-height: 1.55;
+  text-wrap: pretty;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, .5);
+}
+
+.authQuote cite {
+  display: block;
+  margin-top: 13px;
+  color: var(--gold-light);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, .6);
+}
+
+.authMain {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (min-width: 920px) {
+  .authAside {
+    /* 72% horizontal keeps the mushalla building (right of the photo's
+       frame) in view inside this narrower column. */
+    background: var(--bg-deep) url('/assets/photos/hero-mushalla-desktop-v1.jpg') 72% 45% / cover no-repeat;
+  }
+}
+
+@media (max-width: 919px) {
+  .authShell {
+    display: block;
+    min-height: 0;
+  }
+
+  .authAside {
+    display: none;
+  }
+}
+
+.routeFallback {
+  min-height: 46vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.routeFallbackLine {
+  position: relative;
+  width: 120px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(232, 199, 102, .12);
+}
+
+.routeFallbackLine::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 42%;
+  border-radius: inherit;
+  background: var(--gold-gradient);
+  animation: routeProgress 1.15s ease-in-out infinite alternate;
+}
+
+@keyframes routeProgress {
+  from { transform: translateX(-15%); }
+  to { transform: translateX(155%); }
+}
+
+/* Unlike the small ambient drift globals.css exempts from reduced-motion
+   (hero bees/glow), this is continuous positional sweeping — freeze it in
+   place instead; the gold bar alone still reads as "loading". */
+@media (prefers-reduced-motion: reduce) {
+  .routeFallbackLine::after {
+    animation: none;
+  }
+}

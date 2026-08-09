@@ -1,0 +1,9 @@
+{
+  "advisories": {
+    "GHSA-qwww-vcr4-c8h2": {
+      "packages": ["react-router", "react-router-dom"],
+      "expires": "2026-10-31",
+      "reason": "Affects React Router RSC action handling. This repository is a client-only Vite SPA and ships no RSC runtime or server actions."
+    }
+  }
+}

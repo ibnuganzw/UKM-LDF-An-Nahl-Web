@@ -33,7 +33,7 @@
 }
 
 .card {
-  background: rgba(255, 255, 255, .045);
+  background: var(--glass-fill);
   backdrop-filter: blur(18px);
   border: 1px solid rgba(232, 199, 102, .16);
   border-radius: 22px;
@@ -77,21 +77,21 @@
   font-size: 14.5px;
   color: var(--text-heading);
   outline: none;
-  background: rgba(255, 255, 255, .05);
+  background: var(--control-fill);
   font-family: inherit;
 }
 .input:focus,
 .select:focus,
 .textarea:focus {
   border-color: rgba(232, 199, 102, .6);
-  background: rgba(255, 255, 255, .08);
+  background: var(--control-fill-hover);
 }
 .textarea {
   resize: vertical;
   min-height: 90px;
 }
 .select option {
-  background: #0A1128;
+  background: var(--panel-solid);
   color: var(--text-heading);
 }
 
