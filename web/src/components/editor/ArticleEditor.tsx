@@ -28,7 +28,7 @@ export default function ArticleEditor({ contentHtml, onChange }: ArticleEditorPr
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({ link: false }),
       Link.configure({ openOnClick: false, autolink: true }),
       EditorialBlock,
       FigureImage,

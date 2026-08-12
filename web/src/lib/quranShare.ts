@@ -1,5 +1,6 @@
 import { SURAHS } from '../data/surahs';
 import type { QuranVerse } from '../types';
+import { shareBlobOrDownload } from './download';
 
 export function buildVerseShareText(verse: QuranVerse): string {
   const surah = SURAHS.find((item) => item.no === verse.chapter_id);
@@ -104,16 +105,5 @@ export async function shareVerseCard(verse: QuranVerse): Promise<'shared' | 'dow
   const blob = await createVerseCardBlob(verse);
   const file = new File([blob], `ayat-${verse.chapter_id}-${verse.verse_number}.png`, { type: 'image/png' });
   const shareData = { files: [file], text: buildVerseShareText(verse), title: `Ayat ${verse.verse_key}` };
-  if (navigator.share && navigator.canShare?.(shareData)) {
-    await navigator.share(shareData);
-    return 'shared';
-  }
-
-  const href = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = href;
-  link.download = file.name;
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(href), 1_000);
-  return 'downloaded';
+  return shareBlobOrDownload(blob, file.name, shareData);
 }

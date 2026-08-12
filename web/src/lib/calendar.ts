@@ -1,4 +1,5 @@
 import type { Agenda } from '../types';
+import { downloadBlob } from './download';
 
 function escapeIcs(value: string): string {
   return value.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
@@ -52,12 +53,7 @@ export function buildGoogleCalendarUrl(agenda: Pick<Agenda, 'title' | 'descripti
 
 export function downloadAgendaIcs(agenda: Agenda): void {
   const blob = new Blob([buildAgendaIcs(agenda)], { type: 'text/calendar;charset=utf-8' });
-  const href = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = href;
-  link.download = `agenda-${agenda.eventDate}-${agenda.id.slice(0, 8)}.ics`;
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(href), 1_000);
+  downloadBlob(blob, `agenda-${agenda.eventDate}-${agenda.id.slice(0, 8)}.ics`);
 }
 
 export { escapeIcs };

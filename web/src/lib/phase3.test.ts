@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { buildAgendaIcs, buildGoogleCalendarUrl } from './calendar';
 import { buildAttendanceCsv, escapeCsvCell } from './csv';
 import {
@@ -9,6 +9,7 @@ import {
   toggleQuranBookmark,
 } from './quranLibrary';
 import { buildVerseShareText } from './quranShare';
+import { downloadBlob, shareBlobOrDownload } from './download';
 import { QURAN_DATA_URLS, QURAN_OFFLINE_URLS } from './pwa';
 import type { Agenda, QuranVerse } from '../types';
 
@@ -40,6 +41,31 @@ const agenda: Agenda = {
   createdAt: '2026-08-01T00:00:00Z',
 };
 
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
+function installDownloadHarness() {
+  const link = {
+    href: '',
+    download: '',
+    rel: '',
+    style: { display: '' },
+    click: vi.fn(),
+    remove: vi.fn(),
+  };
+  const appendChild = vi.fn();
+  const createObjectURL = vi.fn(() => 'blob:acceptance-download');
+  const revokeObjectURL = vi.fn();
+  const setTimeout = vi.fn();
+
+  vi.stubGlobal('document', { createElement: vi.fn(() => link), body: { appendChild } });
+  vi.stubGlobal('window', { setTimeout });
+  vi.stubGlobal('URL', { createObjectURL, revokeObjectURL });
+
+  return { link, appendChild, createObjectURL, revokeObjectURL, setTimeout };
+}
+
 describe('Phase 3 Quran continuity', () => {
   it('normalizes collections and toggles one verse per collection', () => {
     expect(normalizeCollections([' Favorit ', 'Tadabbur', 'tadabbur', 'Hafalan'])).toEqual(['Favorit', 'Tadabbur', 'Hafalan']);
@@ -56,6 +82,35 @@ describe('Phase 3 Quran continuity', () => {
     });
     expect(buildVerseShareText(verse)).toContain('QS. Al-Fatihah: 1');
     expect(buildVerseShareText(verse)).toContain('LDF An-Nahl FKH USK');
+  });
+
+  it('attaches blob downloads to the document before clicking them', () => {
+    const harness = installDownloadHarness();
+    downloadBlob(new Blob(['acceptance']), 'acceptance.txt');
+
+    expect(harness.createObjectURL).toHaveBeenCalledOnce();
+    expect(harness.appendChild).toHaveBeenCalledWith(harness.link);
+    expect(harness.link).toMatchObject({
+      href: 'blob:acceptance-download',
+      download: 'acceptance.txt',
+      rel: 'noopener',
+      style: { display: 'none' },
+    });
+    expect(harness.link.click).toHaveBeenCalledOnce();
+    expect(harness.link.remove).toHaveBeenCalledOnce();
+    expect(harness.setTimeout).toHaveBeenCalledOnce();
+  });
+
+  it('falls back to the generated download when native sharing fails', async () => {
+    const harness = installDownloadHarness();
+    const share = vi.fn().mockRejectedValue(Object.assign(new Error('activation expired'), { name: 'NotAllowedError' }));
+    vi.stubGlobal('navigator', { share, canShare: vi.fn(() => true) });
+
+    await expect(shareBlobOrDownload(new Blob(['card']), 'ayat-1-1.png', { title: 'Ayat 1:1' }))
+      .resolves.toBe('downloaded');
+    expect(share).toHaveBeenCalledOnce();
+    expect(harness.link.download).toBe('ayat-1-1.png');
+    expect(harness.link.click).toHaveBeenCalledOnce();
   });
 
   it('keeps one global audio provider and removes route-local teardown', () => {
@@ -102,6 +157,19 @@ describe('Phase 3 offline, calendar, and operations', () => {
     const csv = buildAttendanceCsv([{ name: 'Ibnu, A', nim: '123', registered: true, registeredAt: '', attended: true, checkedInAt: '', method: 'self_scan' }]);
     expect(csv).toContain('"Ibnu, A"');
     expect(csv).toContain('"Pindai QR"');
+  });
+
+  it('uses the same attached blob-download path for calendar and attendance files', () => {
+    const calendar = readFileSync(new URL('./calendar.ts', import.meta.url), 'utf8');
+    const csv = readFileSync(new URL('./csv.ts', import.meta.url), 'utf8');
+    expect(calendar).toContain('downloadBlob(blob, `agenda-${agenda.eventDate}-${agenda.id.slice(0, 8)}.ics`)');
+    expect(csv).toContain('downloadBlob(blob, filename)');
+  });
+
+  it('configures exactly one Tiptap link extension', () => {
+    const editor = readFileSync(new URL('../components/editor/ArticleEditor.tsx', import.meta.url), 'utf8');
+    expect(editor).toContain('StarterKit.configure({ link: false })');
+    expect(editor).toContain('Link.configure({ openOnClick: false, autolink: true })');
   });
 
   it('defines a DB-side, admin-readable audit log without retaining QR tokens or article HTML', () => {
