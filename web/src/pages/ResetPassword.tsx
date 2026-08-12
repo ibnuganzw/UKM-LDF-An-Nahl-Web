@@ -4,6 +4,7 @@ import styles from './Auth.module.css';
 import { Button } from '../components/ui';
 import { supabase } from '../lib/supabaseClient';
 import { useApp } from '../state/AppContext';
+import { MIN_PASSWORD_LENGTH, passwordPolicyError } from '../lib/passwordPolicy';
 
 export default function ResetPassword() {
   const { session, authLoading } = useApp();
@@ -18,8 +19,9 @@ export default function ResetPassword() {
     e.preventDefault();
     setError(null);
 
-    if (password.length < 6) {
-      setError('Kata sandi minimal 6 karakter.');
+    const policyError = passwordPolicyError(password);
+    if (policyError) {
+      setError(policyError);
       return;
     }
     if (password !== confirmPassword) {
@@ -88,7 +90,7 @@ export default function ResetPassword() {
               className={styles.input}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Minimal 6 karakter"
+              placeholder={`Minimal ${MIN_PASSWORD_LENGTH} karakter, huruf & angka`}
               autoComplete="new-password"
             />
           </div>

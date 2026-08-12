@@ -3,6 +3,7 @@
 // server-side (using the service role key) and verifies the password via
 // Supabase Auth, without ever returning the email address to the browser.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { consumeRateLimits, requestIp } from '../_shared/authRateLimit.ts';
 
 // Comma-separated allowlist from the ALLOWED_ORIGINS secret (`supabase secrets
 // set ALLOWED_ORIGINS=https://your-site.com,...`). Falls back to the local dev
@@ -21,6 +22,7 @@ const GENERIC_ERROR = 'NIM atau kata sandi salah';
 // a NIM/password oracle the way the generic message guards against.
 const EMAIL_NOT_CONFIRMED_ERROR =
   'Email kamu belum dikonfirmasi. Cek kotak masuk email untuk link konfirmasi, lalu coba masuk lagi.';
+const RATE_LIMIT_ERROR = 'Terlalu banyak percobaan masuk. Tunggu beberapa menit lalu coba lagi.';
 const NIM_PATTERN = /^[0-9]{1,20}$/;
 
 function corsHeaders(origin: string | null): Record<string, string> {
@@ -77,6 +79,17 @@ Deno.serve(async (req) => {
   const adminClient = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false },
   });
+
+  const rateLimit = await consumeRateLimits(adminClient, serviceRoleKey, [
+    { scope: 'nim-login-ip', identifier: requestIp(req), limit: 15, windowSeconds: 300 },
+    { scope: 'nim-login-nim', identifier: nim, limit: 8, windowSeconds: 600 },
+  ]);
+  if (!rateLimit.available) {
+    return jsonResponse({ ok: false, error: 'Layanan login sedang tidak tersedia. Coba lagi nanti.' }, 200, headers);
+  }
+  if (!rateLimit.allowed) {
+    return jsonResponse({ ok: false, error: RATE_LIMIT_ERROR }, 200, headers);
+  }
 
   const { data: profile } = await adminClient
     .from('profiles')
