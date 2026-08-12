@@ -44,4 +44,26 @@ describe('Phase 4 trust and release closure', () => {
     expect(migration).toContain('revoke all on private.auth_rate_limit_buckets from public, anon, authenticated');
     expect(migration).toContain('to service_role');
   });
+
+  it('declares narrow Data API grants without exposing agenda QR tokens', () => {
+    const migration = readFileSync(
+      new URL('../../supabase/migrations/20260812130000_phase12_explicit_data_api_grants.sql', import.meta.url),
+      'utf8',
+    );
+    const agendaSelect = migration.match(/grant select \(([\s\S]*?)\) on public\.agendas to anon, authenticated;/i);
+
+    expect(agendaSelect).not.toBeNull();
+    expect(agendaSelect?.[1]).not.toContain('qr_token');
+    expect(migration).toContain('grant select on public.profiles to authenticated;');
+    expect(migration).toContain('grant select, insert, delete on public.event_registrations to authenticated;');
+    expect(migration).toContain('grant select on public.event_attendance to authenticated;');
+    expect(migration).toContain('grant select on public.articles to anon, authenticated;');
+    expect(migration).toContain('grant select on public.org_positions to anon, authenticated;');
+    expect(migration).toContain('grant select on public.division_members to anon, authenticated;');
+    expect(migration).toContain('to service_role;');
+    expect(migration).not.toMatch(/alter default privileges/i);
+    expect(migration).not.toMatch(
+      /grant all(?: privileges)? on (?:table )?public\.agendas to (?:anon|authenticated)/i,
+    );
+  });
 });
