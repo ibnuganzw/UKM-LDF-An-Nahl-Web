@@ -149,6 +149,16 @@ export default function Profil() {
             ))}
           </div>
         </div>
+
+        <div className={styles.mobileDivisionList} aria-label="Divisi organisasi">
+          {divisi.map((d) => (
+            <MobileDivisionAccordion
+              key={d.id}
+              division={d}
+              members={members.filter((m) => m.divisionId === d.id)}
+            />
+          ))}
+        </div>
       </div>}
     </div>
   );
@@ -157,6 +167,29 @@ export default function Profil() {
 interface DivisionColumnProps {
   division: OrgPosition;
   members: DivisionMember[];
+}
+
+function MobileDivisionAccordion({ division, members }: DivisionColumnProps) {
+  const color = division.divisionColor ?? '#8FAAF5';
+  const peopleCount = members.length;
+
+  return (
+    <details className={styles.divisionAccordion} style={{ '--div-color': color } as CSSVarStyle}>
+      <summary className={styles.divisionSummary}>
+        <span className={styles.divisionSummaryMark} aria-hidden="true">
+          {initialOf(division.name)}
+        </span>
+        <span className={styles.divisionSummaryCopy}>
+          <strong>{division.name}</strong>
+          <small>{peopleCount > 0 ? `${peopleCount} pengurus tercatat` : 'Susunan pengurus belum diisi'}</small>
+        </span>
+        <span className={styles.divisionSummaryChevron} aria-hidden="true">⌄</span>
+      </summary>
+      <div className={styles.mobileDivisionBody}>
+        <DivisionColumn division={division} members={members} />
+      </div>
+    </details>
+  );
 }
 
 /** One division rendered as a vertical subtree: the ketua divisi at the head,

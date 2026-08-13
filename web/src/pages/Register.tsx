@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './Auth.module.css';
 import { Button } from '../components/ui';
 import { supabase } from '../lib/supabaseClient';
+import { MIN_PASSWORD_LENGTH, passwordPolicyError } from '../lib/passwordPolicy';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -58,8 +59,9 @@ export default function Register() {
       setError(`Angkatan harus tahun yang wajar (2000–${CURRENT_YEAR + 1}).`);
       return;
     }
-    if (pass.length < 6) {
-      setError('Kata sandi minimal 6 karakter.');
+    const passwordError = passwordPolicyError(pass);
+    if (passwordError) {
+      setError(passwordError);
       return;
     }
 
@@ -172,7 +174,7 @@ export default function Register() {
               className={styles.input}
               value={pass}
               onChange={(e) => setPass(e.target.value)}
-              placeholder="Minimal 6 karakter"
+              placeholder={`Minimal ${MIN_PASSWORD_LENGTH} karakter, huruf & angka`}
               autoComplete="new-password"
             />
           </div>

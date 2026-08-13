@@ -1,3 +1,5 @@
+import { downloadBlob } from './download';
+
 export interface AttendanceExportRow {
   name: string;
   nim: string;
@@ -30,10 +32,5 @@ export function buildAttendanceCsv(rows: AttendanceExportRow[]): string {
 
 export function downloadCsv(filename: string, content: string): void {
   const blob = new Blob([`\uFEFF${content}`], { type: 'text/csv;charset=utf-8' });
-  const href = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = href;
-  link.download = filename;
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(href), 1_000);
+  downloadBlob(blob, filename);
 }

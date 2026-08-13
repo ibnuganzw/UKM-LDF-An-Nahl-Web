@@ -3,6 +3,7 @@
 // password-reset email internally. Always returns the same generic message,
 // regardless of whether the NIM exists, to avoid enumeration.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { consumeRateLimits, requestIp } from '../_shared/authRateLimit.ts';
 
 // Comma-separated allowlist from the ALLOWED_ORIGINS secret (`supabase secrets
 // set ALLOWED_ORIGINS=https://your-site.com,...`). Falls back to the local dev
@@ -67,6 +68,14 @@ Deno.serve(async (req) => {
     const adminClient = createClient(supabaseUrl, serviceRoleKey, {
       auth: { persistSession: false },
     });
+    const rateLimit = await consumeRateLimits(adminClient, serviceRoleKey, [
+      { scope: 'nim-reset-ip', identifier: requestIp(req), limit: 5, windowSeconds: 3600 },
+      { scope: 'nim-reset-nim', identifier: nim, limit: 3, windowSeconds: 3600 },
+    ]);
+    if (!rateLimit.available || !rateLimit.allowed) {
+      return jsonResponse({ message: GENERIC_MESSAGE }, 200, headers);
+    }
+
     const { data: profile } = await adminClient
       .from('profiles')
       .select('email')
