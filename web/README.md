@@ -31,6 +31,7 @@ npm run preview  # preview the production build
 - Known internal agenda fixtures are withheld from public routes but remain visible to admins for source-level cleanup.
 - Registration and password reset enforce at least ten characters containing letters and digits. The hosted Supabase Auth policy must match `supabase/config.toml` before this branch is released.
 - Apply `supabase/migrations/20260809160000_phase11_auth_rate_limits.sql` before deploying the NIM login/reset Edge Functions from this branch; the functions deliberately fail closed when the limiter is unavailable.
+- Cloudflare Pages hosts under `ldf-annahl-fkh-usk-staging.pages.dev` fail closed unless their bundle targets the dedicated staging Supabase project. This prevents a staging-labelled artifact from silently reading or writing production data.
 - `.github/workflows/app-quality.yml` runs the complete quality gate for changes under `web/`.
 - `.github/workflows/supabase-keepalive.yml` performs a minimal scheduled public database read and requires repository secrets `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
 

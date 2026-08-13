@@ -1,5 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import {
+  deploymentTargetError,
+  STAGING_PAGES_HOST,
+  STAGING_SUPABASE_REF,
+} from './deploymentTarget';
 import { MIN_PASSWORD_LENGTH, passwordPolicyError } from './passwordPolicy';
 
 describe('Phase 4 trust and release closure', () => {
@@ -65,5 +70,19 @@ describe('Phase 4 trust and release closure', () => {
     expect(migration).not.toMatch(
       /grant all(?: privileges)? on (?:table )?public\.agendas to (?:anon|authenticated)/i,
     );
+  });
+
+  it('fails closed when a staging Pages artifact targets a non-staging Supabase project', () => {
+    const stagingUrl = `https://${STAGING_SUPABASE_REF}.supabase.co`;
+    const productionUrl = 'https://rdbjmmgzmfyrphxiimcf.supabase.co';
+
+    expect(deploymentTargetError(STAGING_PAGES_HOST, stagingUrl)).toBeNull();
+    expect(deploymentTargetError(`185f56ea.${STAGING_PAGES_HOST}`, stagingUrl)).toBeNull();
+    expect(deploymentTargetError(STAGING_PAGES_HOST, productionUrl)).toContain('menolak');
+    expect(deploymentTargetError(STAGING_PAGES_HOST, 'not-a-url')).toContain('menolak');
+    expect(deploymentTargetError('ldf-annahl.example.org', productionUrl)).toBeNull();
+
+    const client = readFileSync(new URL('./supabaseClient.ts', import.meta.url), 'utf8');
+    expect(client).toContain('assertDeploymentTarget(window.location.hostname, url)');
   });
 });
