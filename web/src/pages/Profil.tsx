@@ -74,6 +74,93 @@ export default function Profil() {
         </GlassCard>
       </div>
 
+      <section className={styles.historySection} aria-labelledby="sejarah-annahl-heading">
+        <div className={styles.historyHeading}>
+          <div className={styles.eyebrow}>Jejak Awal</div>
+          <h2 id="sejarah-annahl-heading" className={styles.historyTitle}>Dari Bale-Bale ke Estafet Dakwah</h2>
+          <p className={styles.historyDek}>Sebuah gerak yang tumbuh dari ruang sederhana, lalu dirawat lintas generasi.</p>
+        </div>
+
+        <div className={styles.historyStage}>
+          <div className={styles.historyNarrative}>
+            <p className={styles.historyLead}>
+              Perjalanan ini tidak dimulai dari ruang yang luas atau organisasi yang telah mapan. Ia tumbuh dari
+              kegelisahan mahasiswa Fakultas Kedokteran Hewan Unsyiah yang ingin dakwah kampus hadir lebih hidup.
+            </p>
+            <p>
+              Di sebuah bale-bale kecil berukuran kurang lebih 3 × 3,5 meter, mereka membangun ruang untuk salat,
+              bertemu, mengaji, dan menyiapkan kader. Bale-bale itu kemudian dibenahi menjadi mushalla sekaligus
+              sekretariat.
+            </p>
+            <p>
+              Pada <time dateTime="1996-10-13">13 Oktober 1996</time>, kepengurusan Mushalla An-Nahl dibentuk.
+              Dari ruang sederhana itu, satu generasi mulai meneruskan amanah kepada generasi berikutnya.
+            </p>
+            <div className={styles.historySource}>
+              <span className={styles.historySourceMark} aria-hidden="true">A</span>
+              <span>Dirangkum dari arsip <em>5 Tahun An-Nahl</em>, bagian “Kilas Balik”.</span>
+            </div>
+          </div>
+
+          <figure className={styles.archiveFeature}>
+            <div className={styles.archivePhotoFrame}>
+              <img
+                src="/assets/photos/annahl-arsip-kilas-balik-5-tahun.jpg"
+                alt="Halaman Kilas Balik dari buku arsip 5 Tahun An-Nahl"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className={styles.archivePageMark}>Arsip • hlm. 2</span>
+            </div>
+            <figcaption>Catatan yang menyimpan titik mula perjalanan An-Nahl.</figcaption>
+          </figure>
+        </div>
+
+        <ol className={styles.historyTimeline}>
+          <li>
+            <span className={styles.timelineMarker} aria-hidden="true" />
+            <div className={styles.timelineMeta}>Sebelum terbentuk</div>
+            <h3>Kegelisahan yang mempertemukan.</h3>
+            <p>Kajian jumatan dan ikhtiar dakwah mulai dirintis oleh mahasiswa di lingkungan FKH.</p>
+          </li>
+          <li>
+            <span className={styles.timelineMarker} aria-hidden="true" />
+            <div className={styles.timelineMeta}><time dateTime="1996-10-13">13 Oktober 1996</time></div>
+            <h3>Mushalla An-Nahl berpengurus.</h3>
+            <p>Tonggak pembentukan kepengurusan pertama yang dicatat dalam arsip peringatan lima tahun.</p>
+          </li>
+          <li>
+            <span className={styles.timelineMarker} aria-hidden="true" />
+            <div className={styles.timelineMeta}>Hari ini dan seterusnya</div>
+            <h3>Estafet yang terus dirawat.</h3>
+            <p>Ruang, ilmu, dan amanah terus dihidupkan oleh generasi An-Nahl yang datang setelahnya.</p>
+          </li>
+        </ol>
+
+        <div className={styles.estafetNote}>
+          <figure className={styles.estafetArchive}>
+            <img
+              src="/assets/photos/annahl-arsip-mukadimah-5-tahun.jpg"
+              alt="Halaman mukadimah buku arsip 5 Tahun An-Nahl"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+          <div className={styles.estafetCopy}>
+            <div className={styles.cardEyebrow}>Mengapa sejarah ini dirawat</div>
+            <blockquote>
+              Sejarah bukan pajangan masa lalu. Ia adalah pegangan agar dakwah tidak kehilangan arah ketika generasi
+              berganti.
+            </blockquote>
+            <p>
+              Gagasan itu sudah dicatat dalam mukadimah buku peringatan lima tahun An-Nahl. Karena itu, halaman ini
+              tidak menutup kisahnya di masa lalu: ia menghubungkan para perintis dengan wajah-wajah yang melanjutkan
+              amanah hari ini.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <div className={styles.strukturHead}>
         <div className={styles.eyebrow}>Struktur</div>
         <h2 className={styles.strukturHeading}>{hasPublishedLeadership ? 'Susunan Kepengurusan' : 'Bidang Gerak'}</h2>

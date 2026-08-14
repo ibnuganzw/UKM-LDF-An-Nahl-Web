@@ -32,6 +32,209 @@
   line-height: 1.1;
 }
 
+.importCard {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid rgba(232, 199, 102, .24);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(232, 199, 102, .10), transparent 52%),
+    var(--glass-fill-faint);
+}
+
+.importEyebrow {
+  color: var(--gold-dark);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.importTitle {
+  margin: 6px 0 0;
+  color: var(--text-heading);
+  font-family: var(--font-serif);
+  font-size: 25px;
+  line-height: 1.14;
+}
+
+.importLead {
+  max-width: 610px;
+  margin: 9px 0 14px;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+
+.importFileButton {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: rgba(232, 199, 102, .14);
+  color: var(--gold-light);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 800;
+}
+
+.importFileButton input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.importFileButton:has(input:focus-visible) {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
+}
+
+.importFileButton:has(input:disabled) {
+  cursor: wait;
+  opacity: .68;
+}
+
+.importFileName {
+  margin-top: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.importPreview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 17px;
+}
+
+.importNotice,
+.importWarning,
+.importProblem {
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.importNotice {
+  border: 1px solid rgba(143, 170, 245, .25);
+  background: rgba(143, 170, 245, .08);
+  color: var(--text-muted);
+}
+
+.importWarning {
+  border: 1px solid rgba(232, 199, 102, .22);
+  background: rgba(232, 199, 102, .08);
+  color: var(--gold-light);
+}
+
+.importProblem {
+  border: 1px solid rgba(229, 138, 138, .32);
+  background: rgba(229, 138, 138, .08);
+  color: var(--danger-text);
+  font-weight: 700;
+}
+
+.importSection {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding-top: 4px;
+}
+
+.importSectionRow,
+.importDivisionTop,
+.importMember {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+}
+
+.importSectionRow {
+  justify-content: space-between;
+}
+
+.importCoreGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.importDivisions,
+.importMembers {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.importDivision {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 12px;
+  border: 1px solid rgba(232, 199, 102, .16);
+  border-radius: 15px;
+  background: rgba(8, 17, 40, .12);
+}
+
+.importGrow {
+  flex: 1;
+  min-width: 0;
+}
+
+.importMember .input {
+  flex: 1;
+  min-width: 0;
+}
+
+.importMinorButton,
+.importRemoveButton {
+  border: 1px solid rgba(232, 199, 102, .25);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--gold-light);
+  cursor: pointer;
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+  min-height: 32px;
+  padding: 6px 11px;
+}
+
+.importRemoveButton {
+  border-color: rgba(229, 138, 138, .3);
+  color: var(--danger-text);
+}
+
+.importMinorButton:hover,
+.importRemoveButton:hover {
+  background: rgba(232, 199, 102, .10);
+}
+
+.importApplyButton {
+  align-self: flex-start;
+  border: none;
+  border-radius: 999px;
+  background: var(--gold-gradient);
+  color: var(--text-on-gold);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  min-height: 42px;
+  padding: 10px 17px;
+}
+
+.importApplyButton:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
 .error {
   color: var(--danger-text);
   font-weight: 700;
@@ -430,6 +633,20 @@
 }
 
 @media (max-width: 560px) {
+  .importCoreGrid {
+    grid-template-columns: 1fr;
+  }
+  .importDivisionTop,
+  .importMember {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+  .importDivisionTop > label:first-child {
+    width: 100%;
+  }
+  .importMember .input {
+    flex-basis: calc(100% - 118px);
+  }
   .memberFieldsRow,
   .addMemberRow {
     grid-template-columns: 1fr;
