@@ -4,7 +4,7 @@ import styles from './Auth.module.css';
 import { Button } from '../components/ui';
 import { supabase } from '../lib/supabaseClient';
 import { useApp } from '../state/AppContext';
-import { MIN_PASSWORD_LENGTH, passwordPolicyError } from '../lib/passwordPolicy';
+import { MIN_PASSWORD_LENGTH, passwordAuthError, passwordPolicyError } from '../lib/passwordPolicy';
 
 export default function ResetPassword() {
   const { session, authLoading } = useApp();
@@ -33,7 +33,7 @@ export default function ResetPassword() {
     try {
       const { error: updateError } = await supabase.auth.updateUser({ password });
       if (updateError) {
-        setError(updateError.message);
+        setError(passwordAuthError(updateError.message));
         return;
       }
       setDone(true);

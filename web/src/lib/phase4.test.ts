@@ -5,7 +5,7 @@ import {
   STAGING_PAGES_HOST,
   STAGING_SUPABASE_REF,
 } from './deploymentTarget';
-import { MIN_PASSWORD_LENGTH, passwordPolicyError } from './passwordPolicy';
+import { MIN_PASSWORD_LENGTH, passwordAuthError, passwordPolicyError } from './passwordPolicy';
 
 describe('Phase 4 trust and release closure', () => {
   it('uses one strong password contract for registration and reset', () => {
@@ -14,6 +14,10 @@ describe('Phase 4 trust and release closure', () => {
     expect(passwordPolicyError('sepuluhhuruf')).toContain('huruf dan satu angka');
     expect(passwordPolicyError('1234567890')).toContain('huruf dan satu angka');
     expect(passwordPolicyError('amansekali1')).toBeNull();
+    expect(passwordAuthError(
+      'Password should contain at least one character of each: abc, ABC, 012.',
+    )).toBe('Kata sandi minimal 10 karakter dan harus memuat setidaknya satu huruf dan satu angka.');
+    expect(passwordAuthError('Pesan layanan lain.')).toBe('Pesan layanan lain.');
 
     const register = readFileSync(new URL('../pages/Register.tsx', import.meta.url), 'utf8');
     const reset = readFileSync(new URL('../pages/ResetPassword.tsx', import.meta.url), 'utf8');

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styles from './Auth.module.css';
 import { Button } from '../components/ui';
 import { supabase } from '../lib/supabaseClient';
-import { MIN_PASSWORD_LENGTH, passwordPolicyError } from '../lib/passwordPolicy';
+import { MIN_PASSWORD_LENGTH, passwordAuthError, passwordPolicyError } from '../lib/passwordPolicy';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -26,7 +26,7 @@ function friendlySignUpError(message: string): string {
   if (m.includes('database error')) {
     return 'Pendaftaran gagal — NIM ini kemungkinan sudah terdaftar. Coba masuk, atau periksa lagi NIM kamu.';
   }
-  return message;
+  return passwordAuthError(message);
 }
 
 export default function Register() {
