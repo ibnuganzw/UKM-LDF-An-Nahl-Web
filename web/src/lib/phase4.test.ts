@@ -41,6 +41,8 @@ describe('Phase 4 trust and release closure', () => {
 
     expect(login).toContain("scope: 'nim-login-ip'");
     expect(login).toContain("scope: 'nim-login-nim'");
+    expect(shared).toContain('for (const rule of rules)');
+    expect(shared).not.toContain('Promise.all(rules.map');
     expect(reset).toContain("scope: 'nim-reset-ip'");
     expect(reset).toContain("scope: 'nim-reset-nim'");
     expect(shared).toContain("crypto.subtle.digest('SHA-256'");
