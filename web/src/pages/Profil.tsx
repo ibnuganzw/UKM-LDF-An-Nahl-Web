@@ -187,7 +187,7 @@ export default function Profil() {
               <div className={styles.intiName}>{dosenPembina.name}</div>
               <div className={styles.intiRole}>{dosenPembina.roleTitle}</div>
             </GlassCard>
-            <div className={styles.connector} />
+            {(ketuaUmum || intiDuo.length > 0 || divisi.length > 0) && <div className={styles.connector} />}
           </>
         )}
 
@@ -202,7 +202,7 @@ export default function Profil() {
               <div className={styles.ketuaName}>{ketuaUmum.name}</div>
               <div className={styles.ketuaRole}>{ketuaUmum.roleTitle}</div>
             </GlassCard>
-            <div className={styles.connector} />
+            {(intiDuo.length > 0 || divisi.length > 0) && <div className={styles.connector} />}
           </>
         )}
 
@@ -221,21 +221,19 @@ export default function Profil() {
                 </GlassCard>
               ))}
             </div>
-            <div className={styles.connector} />
+            {divisi.length > 0 && <div className={styles.connector} />}
           </>
         )}
 
         {divisi.length > 0 && (
-          <div className={styles.branch} style={{ '--cols': divisi.length } as CSSVarStyle} />
-        )}
-
-        <div className={styles.treeScroll}>
-          <div className={styles.divisionTree} style={{ '--cols': divisi.length } as CSSVarStyle}>
-            {divisi.map((d) => (
-              <DivisionColumn key={d.id} division={d} members={members.filter((m) => m.divisionId === d.id)} />
-            ))}
+          <div className={styles.treeScroll}>
+            <div className={styles.divisionTree} style={{ '--cols': divisi.length } as CSSVarStyle}>
+              {divisi.map((d) => (
+                <DivisionColumn key={d.id} division={d} members={members.filter((m) => m.divisionId === d.id)} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className={styles.mobileDivisionList} aria-label="Divisi organisasi">
           {divisi.map((d) => (

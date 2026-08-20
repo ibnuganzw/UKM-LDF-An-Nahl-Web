@@ -482,6 +482,10 @@
 }
 
 .strukturWrap {
+  --tree-line: color-mix(in srgb, var(--gold-dark) 52%, transparent);
+  --tree-gap: 18px;
+  --tree-branch-depth: 26px;
+  --tree-branch-offset: -26px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -536,7 +540,7 @@
 .connector {
   width: 1px;
   height: 26px;
-  background: rgba(232, 199, 102, .3);
+  background: var(--tree-line);
 }
 
 .intiRow {
@@ -590,18 +594,23 @@
 
 /* ── Division tree: each divisi is one column (ketua → pengurus → anggota).
    A row subgrid keeps the three bands level across every column ("sejajar"). ── */
-.branch {
-  align-self: stretch;
-  height: 0;
-  margin: 0 calc(50% / var(--cols));
-  border-top: 1px solid rgba(232, 199, 102, .28);
-}
-
 .treeScroll {
+  position: relative;
   align-self: stretch;
   width: 100%;
   overflow-x: auto;
   padding-bottom: 4px;
+}
+
+.treeScroll::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: var(--tree-branch-depth);
+  background: var(--tree-line);
+  pointer-events: none;
 }
 
 .mobileDivisionList {
@@ -612,17 +621,47 @@
   display: grid;
   grid-template-columns: repeat(var(--cols), minmax(152px, 1fr));
   grid-template-rows: auto auto auto;
-  column-gap: 12px;
+  column-gap: var(--tree-gap);
   row-gap: 16px;
-  padding-top: 14px;
+  padding-top: var(--tree-branch-depth);
   min-width: min-content;
 }
 
 .divisionCol {
+  position: relative;
   display: grid;
   grid-row: 1 / span 3;
   grid-template-rows: subgrid;
   row-gap: 12px;
+}
+
+/* Each child gets a vertical drop. Every sibling after the first draws only
+   the rail segment from the previous card centre to its own card centre. */
+.divisionCol::before,
+.divisionCol:not(:first-child)::after {
+  content: '';
+  position: absolute;
+  top: var(--tree-branch-offset);
+  background: var(--tree-line);
+  pointer-events: none;
+}
+
+.divisionCol::before {
+  left: 50%;
+  width: 1px;
+  height: var(--tree-branch-depth);
+  transform: translateX(-50%);
+}
+
+.divisionCol:not(:first-child)::after {
+  left: calc(-50% - var(--tree-gap));
+  width: calc(100% + var(--tree-gap));
+  height: 1px;
+}
+
+.divisionCol > * {
+  position: relative;
+  z-index: 1;
 }
 
 .divisionHead {
@@ -632,19 +671,6 @@
   text-align: center;
   transition: border-color .3s;
 }
-/* Stub that reaches up from the head into the tree's top padding, meeting the
-   horizontal .branch rail (which sits directly above, gap-free). */
-.divisionHead::before {
-  content: '';
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  width: 1px;
-  height: 14px;
-  background: rgba(232, 199, 102, .28);
-  transform: translateX(-50%);
-}
-
 .headPhoto {
   width: 46px;
   height: 46px;
@@ -930,7 +956,6 @@
     font-size: 23px;
   }
 
-  .branch,
   .treeScroll {
     display: none;
   }
@@ -949,7 +974,8 @@
     padding-top: 14px;
   }
 
-  .mobileDivisionBody .divisionHead::before {
+  .mobileDivisionBody .divisionCol::before,
+  .mobileDivisionBody .divisionCol::after {
     display: none;
   }
 }
