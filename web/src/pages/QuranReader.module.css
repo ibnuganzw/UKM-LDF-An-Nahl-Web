@@ -15,6 +15,7 @@
   --tajweed-idgham-mutajanisayn: #C39BE8;
   --tajweed-idgham-mutaqaribayn: #8FAAF5;
   --tajweed-ghunnah: #F48FB1;
+  --tajweed-laam-shamsiyah: #E6B85C;
   --tajweed-unknown: #D8DEEF;
 
   width: min(1040px, calc(100vw - 40px));
@@ -709,6 +710,11 @@
   color: var(--tajweed-ghunnah);
 }
 
+:global(.quran-arabic tajweed.laam_shamsiyah),
+:global(.quran-arabic span.laam_shamsiyah) {
+  color: var(--tajweed-laam-shamsiyah);
+}
+
 .tajweedContent {
   display: block;
   min-width: 0;
@@ -1309,6 +1315,7 @@
   --tajweed-idgham-mutajanisayn: #73518F;
   --tajweed-idgham-mutaqaribayn: #465E9F;
   --tajweed-ghunnah: #9A3C72;
+  --tajweed-laam-shamsiyah: #855A12;
   --tajweed-unknown: #344462;
 }
 
