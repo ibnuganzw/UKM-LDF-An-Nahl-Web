@@ -6,7 +6,7 @@ const DARK_THEME_COLOR = '#0A1128';
 const LIGHT_THEME_COLOR = '#F5F7FB';
 
 function readInitialTheme(): Theme {
-  return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+  return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
 }
 
 function applyTheme(theme: Theme): void {

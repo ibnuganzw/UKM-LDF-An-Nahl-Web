@@ -49,11 +49,11 @@
 }
 
 .placeSlot { left: var(--place-x); display: grid; place-items: center; }
-.verseSlot { left: var(--verse-x); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-heading); font-family: var(--font-sans); text-decoration: none; transform: translate(-57%, -50%); }
+.verseSlot { left: var(--verse-x); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .035em; text-align: center; color: var(--text-heading); font-family: var(--font-sans); text-decoration: none; transform: translate(-50%, -50%); }
 .placeIcon { display: block; color: var(--text-heading); font-family: 'quran-common'; font-size: .14em; font-feature-settings: "liga" 1, "calt" 1; line-height: 1; text-decoration: none; margin: 0; transform: translateX(-25%); }
 .placeSlot svg, .placeSlot img { display: block; width: 58%; height: 58%; object-fit: contain; margin: 0; transform: none; }
 .verseNumber { display: block; font-size: .18em; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; margin: 0; }
-.verseLabel { display: block; font-size: .1em; font-weight: 850; line-height: 1; opacity: .9; margin: 4px 0 0; }
+.verseLabel { display: block; font-size: .1em; font-weight: 850; line-height: 1; opacity: .9; margin: 0; }
 .titleSlot { position: absolute; left: var(--title-x); top: 50%; display: flex; align-items: center; justify-content: center; width: 45%; min-width: 0; gap: .11em; color: var(--text-heading); line-height: 1; text-align: center; text-decoration: none; text-shadow: 0 0 18px rgba(232, 199, 102, .12); transform: translate(-50%, -50%); }
 .titleLabel { flex: 0 0 auto; font-family: var(--font-surah-name); font-size: .55em; font-feature-settings: "liga" 1, "calt" 1; font-weight: 400; line-height: 1; opacity: .96; direction: ltr; transform: translateY(.035em); }
 .titleName { flex: 0 1 auto; min-width: 0; font-family: var(--font-surah-name); font-size: .62em; font-feature-settings: "liga" 1, "calt" 1; font-weight: 400; line-height: .92; white-space: nowrap; direction: ltr; }
@@ -82,7 +82,20 @@
 }
 
 @media (max-width: 480px) {
-  .frame {
-    font-size: clamp(39px, 10.5vw, 45px);
+  .wrapper {
+    width: calc(100% + 32px);
+    margin-inline: -16px;
   }
+
+  .frame {
+    font-size: clamp(36px, 13.1vw, 54px);
+    transform: translateX(8.25%);
+  }
+
+  .placeIcon { font-size: .19em; }
+  .verseNumber { font-size: .19em; }
+  .verseLabel { font-size: .105em; }
+  .titleSlot { width: 46%; gap: .07em; }
+  .titleLabel { font-size: .56em; }
+  .titleName { font-size: .68em; }
 }

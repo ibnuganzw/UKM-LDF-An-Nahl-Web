@@ -10,7 +10,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0A1128" />
+    <meta name="theme-color" content="#F5F7FB" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="description" content="LDF An-Nahl — Lembaga Dakwah Fakultas, Fakultas Kedokteran Hewan Universitas Syiah Kuala. Serdadu Lebah, Bersenjata Dakwah." />
 
@@ -64,19 +64,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400..800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
     <title>LDF An-Nahl — FKH USK</title>
     <script>
-      // Apply the saved palette before CSS paints so a returning light-theme
-      // reader never sees a dark flash while React starts.
+      // Apply the saved palette before CSS paints. New visitors start in the
+      // light theme; an explicit saved dark preference still takes priority.
       (function () {
-        var theme = 'dark';
+        var theme = 'light';
         try {
-          theme = localStorage.getItem('annahl_theme') === 'light' ? 'light' : 'dark';
+          var savedTheme = localStorage.getItem('annahl_theme');
+          theme = savedTheme === 'dark' ? 'dark' : 'light';
         } catch (_) {
-          // Storage can be unavailable in private browsing; dark is the safe default.
+          // Storage can be unavailable in private browsing; light stays the default.
         }
         document.documentElement.dataset.theme = theme;
         document.documentElement.style.colorScheme = theme;
         var themeMeta = document.querySelector('meta[name="theme-color"]');
-        if (themeMeta && theme === 'light') themeMeta.setAttribute('content', '#F5F7FB');
+        if (themeMeta && theme === 'dark') themeMeta.setAttribute('content', '#0A1128');
       })();
     </script>
     <script>

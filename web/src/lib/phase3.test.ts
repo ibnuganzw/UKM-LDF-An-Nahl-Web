@@ -123,6 +123,15 @@ describe('Phase 3 Quran continuity', () => {
     expect(surahReader).not.toContain('useQuranAudioPlayer');
     expect(juzReader).not.toContain('useQuranAudioPlayer');
   });
+
+  it('gives the mobile surah ornament a full-width, readable composition', () => {
+    const styles = readFileSync(new URL('../components/SurahHeader.module.css', import.meta.url), 'utf8');
+
+    expect(styles).toMatch(/@media \(max-width: 480px\)[\s\S]*\.wrapper[\s\S]*width: calc\(100% \+ 32px\)/);
+    expect(styles).toMatch(/@media \(max-width: 480px\)[\s\S]*\.titleName \{ font-size: \.68em; \}/);
+    expect(styles).toMatch(/@media \(max-width: 480px\)[\s\S]*\.verseNumber \{ font-size: \.19em; \}/);
+    expect(styles).toContain('transform: translate(-50%, -50%)');
+  });
 });
 
 describe('Phase 3 offline, calendar, and operations', () => {

@@ -174,7 +174,7 @@ export default function Register() {
               className={styles.input}
               value={pass}
               onChange={(e) => setPass(e.target.value)}
-              placeholder={`Minimal ${MIN_PASSWORD_LENGTH} karakter, huruf & angka`}
+              placeholder={`${MIN_PASSWORD_LENGTH}+ karakter · huruf+angka`}
               autoComplete="new-password"
             />
           </div>
