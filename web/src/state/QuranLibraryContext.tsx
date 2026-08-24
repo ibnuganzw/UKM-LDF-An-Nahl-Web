@@ -39,7 +39,6 @@ interface QuranLibraryValue {
   collections: string[];
   activeCollection: string;
   progress: QuranReadingProgress | null;
-  focusMode: boolean;
   setActiveCollection: (collection: string) => void;
   addCollection: (name: string) => string | null;
   removeCollection: (name: string) => void;
@@ -47,7 +46,6 @@ interface QuranLibraryValue {
   removeBookmark: (id: string) => void;
   isBookmarked: (verseKey: string) => boolean;
   saveProgress: (value: QuranReadingProgress) => void;
-  setFocusMode: (value: boolean) => void;
 }
 
 const QuranLibraryContext = createContext<QuranLibraryValue | null>(null);
@@ -73,8 +71,6 @@ export function QuranLibraryProvider({ children }: { children: ReactNode }) {
       ? item as QuranReadingProgress
       : null;
   });
-  const [focusMode, setFocusMode] = useState(false);
-
   useEffect(() => saveStored(BOOKMARKS_KEY, bookmarks), [bookmarks]);
   useEffect(() => saveStored(COLLECTIONS_KEY, collections), [collections]);
   useEffect(() => saveStored(ACTIVE_COLLECTION_KEY, activeCollection), [activeCollection]);
@@ -130,7 +126,6 @@ export function QuranLibraryProvider({ children }: { children: ReactNode }) {
     collections,
     activeCollection,
     progress,
-    focusMode,
     setActiveCollection,
     addCollection,
     removeCollection,
@@ -138,13 +133,11 @@ export function QuranLibraryProvider({ children }: { children: ReactNode }) {
     removeBookmark,
     isBookmarked,
     saveProgress,
-    setFocusMode,
   }), [
     activeCollection,
     addCollection,
     bookmarks,
     collections,
-    focusMode,
     isBookmarked,
     progress,
     removeBookmark,

@@ -23,11 +23,6 @@
   padding: 36px 0 96px;
 }
 
-.pageFocused {
-  width: min(860px, calc(100vw - 40px));
-  padding-top: 24px;
-}
-
 .readerDock {
   position: fixed;
   top: calc(var(--header-h) + 2px);
@@ -535,7 +530,6 @@
   transform: translateY(1px) scale(.92);
 }
 
-.focusExit,
 .shareStatus {
   position: fixed;
   z-index: 82;
@@ -550,12 +544,6 @@
   font: 800 11px/1 var(--font-sans);
   letter-spacing: .08em;
   text-transform: uppercase;
-}
-
-.focusExit {
-  top: 16px;
-  right: 18px;
-  padding: 13px 17px;
 }
 
 .shareStatus {
@@ -1170,10 +1158,6 @@
     padding-top: 24px;
   }
 
-  .pageFocused {
-    width: min(100% - 24px, 860px);
-  }
-
   .readerDock {
     top: calc(var(--header-h) + 2px);
     padding: 0 12px;
@@ -1335,7 +1319,6 @@
 }
 
 :global(html[data-theme='light']) .ayatActionButton,
-:global(html[data-theme='light']) .focusExit,
 :global(html[data-theme='light']) .shareStatus {
   background: rgba(255, 255, 255, .94);
   border-color: var(--control-border);
