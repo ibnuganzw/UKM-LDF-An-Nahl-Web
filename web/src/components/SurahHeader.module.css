@@ -88,11 +88,13 @@
   }
 
   .frame {
+    --verse-x: 72.2%;
     font-size: clamp(36px, 11.9vw, 54px);
     transform: translateX(4.25%);
   }
 
   .placeIcon { font-size: .19em; }
+  .verseSlot { transform: translate(-50%, calc(-50% - .015em)); }
   .verseNumber { font-size: .19em; }
   .verseLabel { font-size: .105em; }
   .titleSlot { width: 46%; gap: .07em; }
