@@ -88,8 +88,8 @@
   }
 
   .frame {
-    font-size: clamp(36px, 13.1vw, 54px);
-    transform: translateX(8.25%);
+    font-size: clamp(36px, 11.9vw, 54px);
+    transform: translateX(4.25%);
   }
 
   .placeIcon { font-size: .19em; }
