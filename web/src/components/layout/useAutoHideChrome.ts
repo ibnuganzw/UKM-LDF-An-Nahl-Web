@@ -3,7 +3,9 @@ import { useEffect, useState } from 'react';
 const TOP_EDGE = 12;
 const HIDE_START = 96;
 const HIDE_TRAVEL = 28;
-const SHOW_TRAVEL = 7;
+const SHOW_TRAVEL = 24;
+const DIRECTION_DEAD_ZONE = 2;
+const INTENT_GAP_MS = 180;
 
 type ScrollDirection = 'up' | 'down' | null;
 
@@ -23,6 +25,18 @@ export function createChromeScrollState(scrollY = 0): ChromeScrollState {
   };
 }
 
+export function resetChromeScrollIntent(
+  state: ChromeScrollState,
+  scrollY = state.lastY,
+): ChromeScrollState {
+  return {
+    ...state,
+    direction: null,
+    lastY: Math.max(0, scrollY),
+    travel: 0,
+  };
+}
+
 export function advanceChromeScrollState(
   state: ChromeScrollState,
   scrollY: number,
@@ -39,7 +53,7 @@ export function advanceChromeScrollState(
   }
 
   const delta = nextY - state.lastY;
-  if (Math.abs(delta) < 0.5) return { ...state, lastY: nextY };
+  if (Math.abs(delta) < DIRECTION_DEAD_ZONE) return state;
 
   const direction: ScrollDirection = delta > 0 ? 'down' : 'up';
   const travel = direction === state.direction
@@ -84,11 +98,18 @@ export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
 
     const mobile = window.matchMedia('(max-width: 919px)');
     let frame = 0;
+    let lastScrollAt = 0;
     let state = createChromeScrollState(window.scrollY);
 
     const holdOpen = () => {
       state = createChromeScrollState(window.scrollY);
+      lastScrollAt = 0;
       setVisible(true);
+    };
+
+    const resetIntent = () => {
+      state = resetChromeScrollIntent(state, window.scrollY);
+      lastScrollAt = 0;
     };
 
     const update = () => {
@@ -98,6 +119,11 @@ export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
         return;
       }
 
+      const now = window.performance.now();
+      if (lastScrollAt && now - lastScrollAt > INTENT_GAP_MS) {
+        state = resetChromeScrollIntent(state);
+      }
+      lastScrollAt = now;
       state = advanceChromeScrollState(state, window.scrollY);
       setVisible((current) => current === state.visible ? current : state.visible);
     };
@@ -112,6 +138,7 @@ export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', handleViewportChange);
     document.addEventListener('focusin', holdOpen);
+    document.addEventListener('pointerdown', resetIntent, { passive: true });
     mobile.addEventListener('change', handleViewportChange);
 
     return () => {
@@ -119,6 +146,7 @@ export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', handleViewportChange);
       document.removeEventListener('focusin', holdOpen);
+      document.removeEventListener('pointerdown', resetIntent);
       mobile.removeEventListener('change', handleViewportChange);
     };
   }, [enabled, routeKey]);
