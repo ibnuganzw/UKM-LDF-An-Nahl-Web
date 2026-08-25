@@ -61,8 +61,12 @@ describe('Phase 4 trust and release closure', () => {
   it('keeps the profile history editorial and the organisation roster free of generated initial cards', () => {
     const profile = readFileSync(new URL('../pages/Profil.tsx', import.meta.url), 'utf8');
     const styles = readFileSync(new URL('../pages/Profil.module.css', import.meta.url), 'utf8');
-    expect(profile).toContain('Berawal dari bale-bale kecil');
+    expect(profile).toContain('Dari bale-bale, An-Nahl bertumbuh');
+    expect(profile).toContain('Noma Khairil');
+    expect(profile).toContain('Sri Evi Yarni');
+    expect(profile).toContain('Wahidin Beruh');
     expect(profile).toContain('Sumber ringkas: buku peringatan');
+    expect(profile).not.toContain('historyTimeline');
     expect(profile).not.toContain('annahl-arsip-');
     expect(profile).not.toContain('pengurus tercatat');
     expect(styles).toContain('.leadershipRoster');

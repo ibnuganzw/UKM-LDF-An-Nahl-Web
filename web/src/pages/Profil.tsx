@@ -128,10 +128,10 @@ export default function Profil() {
       <section className={styles.historySection} aria-labelledby="sejarah-annahl-heading">
         <div className={styles.historyHeading}>
           <div className={styles.eyebrow}>Jejak Awal</div>
-          <h2 id="sejarah-annahl-heading" className={styles.historyTitle}>Berawal dari bale-bale kecil</h2>
+          <h2 id="sejarah-annahl-heading" className={styles.historyTitle}>Dari bale-bale, An-Nahl bertumbuh</h2>
           <p className={styles.historyDek}>
-            Sebelum memiliki mushalla, mahasiswa FKH berkumpul di ruang sederhana untuk salat, mengaji, dan
-            menyiapkan kajian.
+            Kisahnya dimulai pada pertengahan 1990-an, ketika beberapa mahasiswa FKH berusaha menghadirkan ruang
+            salat dan kajian di kampus mereka sendiri.
           </p>
         </div>
 
@@ -141,39 +141,55 @@ export default function Profil() {
             <strong>1996</strong>
           </div>
           <div className={styles.historyNarrative}>
-            <p>
-              An-Nahl tidak lahir dari gedung atau program besar. Sebelum kepengurusan dibentuk pada 1996, sejumlah
-              mahasiswa Fakultas Kedokteran Hewan Unsyiah mulai merintis kajian Jumat dan kegiatan dakwah dari
-              bale-bale berukuran sekitar 3 × 3,5 meter.
+            <p className={styles.historyOpening}>
+              Saat itu, kegiatan dakwah di FKH belum seramai fakultas lain. Beberapa mahasiswi lebih dahulu menjaga
+              kajian Jumat dari pekan ke pekan. Tak lama kemudian, mahasiswa lain ikut berkumpul. Keinginan mereka
+              sederhana: memiliki tempat untuk salat, belajar, dan menghidupkan suasana Islam di kampus.
             </p>
             <p>
-              Tempat itu dibenahi sedikit demi sedikit hingga menjadi mushalla sekaligus sekretariat. Pada
-              <time dateTime="1996-10-13"> 13 Oktober 1996</time>, kepengurusan Mushalla An-Nahl dibentuk.
+              Ruang yang tersedia ketika itu hanyalah bale-bale sekitar 3 × 3,5 meter. Tempat tersebut biasa dipakai
+              untuk salat dan, menurut catatan lama, kadang menjadi tempat kambing-kambing FKH bermalam. Bale-bale
+              itu kemudian dibersihkan dan dibenahi sedikit demi sedikit sampai dapat dipakai sebagai mushalla
+              sekaligus sekretariat.
+            </p>
+
+            <div className={styles.founderPassage}>
+              <div className={styles.historyKicker}>Kepengurusan pertama</div>
+              <p>
+                Pada <time dateTime="1996-10-13">13 Oktober 1996</time>, Mushalla An-Nahl resmi memiliki
+                kepengurusan. Arsip tidak menyebut satu per satu semua mahasiswa yang mula-mula berkumpul, tetapi
+                mencatat dua nama pada kepemimpinan pertamanya: <strong>Noma Khairil</strong>, mahasiswa angkatan
+                1994, sebagai ketua mushalla; dan <strong>Sri Evi Yarni</strong>, mahasiswa angkatan 1995, sebagai
+                ketua keputrian.
+              </p>
+              <p>
+                Kajian Islam Jumatan dan Kajian Islam Sabtuan menjadi kegiatan utama pada masa itu. An-Nahl juga
+                mulai menerbitkan majalah dinding sederhana. Dari situlah mushalla kecil ini perlahan mendapat
+                tempat dalam kehidupan kampus.
+              </p>
+            </div>
+
+            <p>
+              Dua tahun kemudian, amanah ketua beralih kepada <strong>Wahidin Beruh</strong>, angkatan 1995.
+              Kepengurusan keputrian mula-mula dipegang <strong>Tati Meutia Asmara</strong>, lalu diteruskan oleh
+              <strong> Rita Salawati</strong>; keduanya dari angkatan 1996. Pada masa inilah mushalla direnovasi dan
+              diperluas dengan infak mahasiswa serta dosen, hingga azan mulai berkumandang di lingkungan FKH.
             </p>
             <p>
-              Sejak itu pengurus terus berganti, tetapi pekerjaan yang dijaga tetap sama: menghidupkan mushalla,
-              menyiapkan kader, dan menghadirkan dakwah yang dekat dengan kehidupan mahasiswa.
+              Memasuki Februari 2000, musyawarah pergantian pengurus memilih <strong>Indra</strong>, angkatan 1996,
+              sebagai ketua dan <strong>Leliana</strong>, angkatan 1997, sebagai wakil. Pembinaan kader mulai lebih
+              diperhatikan, perpustakaan mushalla “Abu Hurairah” dibenahi, dan bidang Mahasiswa Pencinta Alam
+              An-Nahl dibentuk. Bentuk organisasinya terus berkembang, tetapi kebiasaan yang diwariskan para
+              perintis tetap sama: merawat mushalla, belajar bersama, dan menjaga dakwah tetap dekat dengan
+              mahasiswa FKH.
             </p>
+
             <div className={styles.historySource}>
-              Sumber ringkas: buku peringatan <em>5 Tahun An-Nahl</em>, bagian “Kilas Balik” dan “Mukadimah”.
+              Sumber ringkas: buku peringatan <em>5 Tahun An-Nahl</em>, bagian “Kilas Balik”, “An-Nahl dari Waktu ke
+              Waktu”, dan “Mukadimah”. Ejaan nama mengikuti arsip.
             </div>
           </div>
         </div>
-
-        <ol className={styles.historyTimeline}>
-          <li>
-            <div className={styles.timelineMeta}>Masa perintisan</div>
-            <p>Kajian Jumat mulai dirintis oleh mahasiswa FKH dari ruang yang masih sangat sederhana.</p>
-          </li>
-          <li>
-            <div className={styles.timelineMeta}><time dateTime="1996-10-13">13 Oktober 1996</time></div>
-            <p>Kepengurusan Mushalla An-Nahl dibentuk dan kegiatan dakwah mulai dikelola bersama.</p>
-          </li>
-          <li>
-            <div className={styles.timelineMeta}>Sekarang</div>
-            <p>An-Nahl bergerak sebagai Lembaga Dakwah Fakultas di FKH Universitas Syiah Kuala.</p>
-          </li>
-        </ol>
       </section>
 
     </div>
