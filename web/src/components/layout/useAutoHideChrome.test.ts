@@ -3,6 +3,7 @@ import {
   advanceChromeScrollState,
   createChromeScrollState,
   resetChromeScrollIntent,
+  shouldKeepChromeOpen,
 } from './useAutoHideChrome';
 
 describe('mobile chrome scroll intent', () => {
@@ -71,5 +72,14 @@ describe('mobile chrome scroll intent', () => {
     state = advanceChromeScrollState(state, 120);
     expect(state.visible).toBe(false);
     expect(advanceChromeScrollState(state, 8).visible).toBe(true);
+  });
+
+  it('keeps chrome open for interactive focus and newly opened overlays', () => {
+    const input = { matches: () => true } as unknown as Element;
+    const content = { matches: () => false } as unknown as Element;
+
+    expect(shouldKeepChromeOpen(input, false)).toBe(true);
+    expect(shouldKeepChromeOpen(content, true)).toBe(true);
+    expect(shouldKeepChromeOpen(content, false)).toBe(false);
   });
 });

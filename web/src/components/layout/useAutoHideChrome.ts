@@ -6,6 +6,7 @@ const HIDE_TRAVEL = 28;
 const SHOW_TRAVEL = 24;
 const DIRECTION_DEAD_ZONE = 2;
 const INTENT_GAP_MS = 180;
+const VIEWPORT_SETTLE_MS = 240;
 
 type ScrollDirection = 'up' | 'down' | null;
 
@@ -75,18 +76,21 @@ export function advanceChromeScrollState(
   };
 }
 
-function shouldHoldChromeOpen(): boolean {
-  const active = document.activeElement;
-  if (
-    active instanceof HTMLElement
-    && active.matches('input, textarea, select, [contenteditable="true"]')
-  ) {
-    return true;
-  }
+export function shouldKeepChromeOpen(
+  active: Pick<Element, 'matches'> | null,
+  hasOpenOverlay: boolean,
+): boolean {
+  if (active?.matches('input, textarea, select, [contenteditable="true"]')) return true;
+  return hasOpenOverlay;
+}
 
-  return Boolean(document.querySelector(
-    'dialog[open], [role="dialog"][aria-modal="true"], [aria-controls="mobile-main-menu"][aria-expanded="true"]',
-  ));
+function shouldHoldChromeOpen(): boolean {
+  return shouldKeepChromeOpen(
+    document.activeElement,
+    Boolean(document.querySelector(
+      'dialog[open], [role="dialog"][aria-modal="true"], [aria-controls="mobile-main-menu"][aria-expanded="true"]',
+    )),
+  );
 }
 
 export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
@@ -99,6 +103,8 @@ export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
     const mobile = window.matchMedia('(max-width: 919px)');
     let frame = 0;
     let lastScrollAt = 0;
+    let viewportSettling = false;
+    let viewportTimer = 0;
     let state = createChromeScrollState(window.scrollY);
 
     const holdOpen = () => {
@@ -114,7 +120,7 @@ export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
 
     const update = () => {
       frame = 0;
-      if (!mobile.matches || shouldHoldChromeOpen()) {
+      if (!mobile.matches || viewportSettling || shouldHoldChromeOpen()) {
         holdOpen();
         return;
       }
@@ -133,7 +139,34 @@ export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
       if (!frame) frame = window.requestAnimationFrame(update);
     };
 
-    const handleViewportChange = () => holdOpen();
+    const handleViewportChange = () => {
+      viewportSettling = true;
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      holdOpen();
+      if (viewportTimer) window.clearTimeout(viewportTimer);
+      viewportTimer = window.setTimeout(() => {
+        viewportSettling = false;
+        holdOpen();
+      }, VIEWPORT_SETTLE_MS);
+    };
+
+    const overlayObserver = new MutationObserver(() => {
+      if (!mobile.matches || !shouldHoldChromeOpen()) return;
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+        frame = 0;
+      }
+      holdOpen();
+    });
+    overlayObserver.observe(document.body, {
+      attributeFilter: ['open', 'aria-expanded', 'aria-modal'],
+      attributes: true,
+      childList: true,
+      subtree: true,
+    });
 
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', handleViewportChange);
@@ -143,6 +176,8 @@ export function useAutoHideChrome(enabled: boolean, routeKey: string): boolean {
 
     return () => {
       if (frame) window.cancelAnimationFrame(frame);
+      if (viewportTimer) window.clearTimeout(viewportTimer);
+      overlayObserver.disconnect();
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', handleViewportChange);
       document.removeEventListener('focusin', holdOpen);
