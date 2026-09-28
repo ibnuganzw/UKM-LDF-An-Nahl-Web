@@ -393,9 +393,12 @@ async function dynamicRoutes() {
           ],
         };
       });
+    // Mirror the known fixture IDs in src/lib/contentHygiene.ts so test rows
+    // cannot leak through prerendered detail pages or sitemap.xml.
     const agendaRoutes = agendas
       .filter((row) => /^[0-9a-f-]{20,}$/i.test(row.id))
       .filter((row) => row.id !== '5ca48413-2ddf-4708-96bd-8669b2ceb768')
+      .filter((row) => row.id !== '32e2bd52-4000-4438-bc10-3ef1c76b04db')
       .filter((row) => !(
         row.event_date === '2026-07-10' &&
         (row.title === 'Ibnu Ganteng' || row.title === 'Review')
