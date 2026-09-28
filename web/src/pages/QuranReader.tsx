@@ -5,6 +5,7 @@ import styles from './QuranReader.module.css';
 import { Button, Hex } from '../components/ui';
 import { SurahHeader } from '../components/SurahHeader';
 import { QuranLibraryPanel } from '../components/quran/QuranLibraryPanel';
+import { useModalFocus } from '../hooks/useModalFocus';
 import { SURAHS } from '../data/surahs';
 import { cx } from '../lib/cx';
 import { fetchQuranChapter, fetchQuranSupplements, getFallbackQuranVerses, mergeQuranSupplements } from '../lib/quranClient';
@@ -271,6 +272,7 @@ interface ReaderSettingsPanelProps {
 }
 
 function ReaderSettingsPanel({ legendClasses, legendOpen, onChange, onClose, onToggleLegend, settings }: ReaderSettingsPanelProps) {
+  const dialogRef = useModalFocus(true, onClose);
   const knownLegendItems = legendClasses
     .map((className) => TAJWEED_LEGEND[className])
     .filter((item): item is TajweedLegendItem => Boolean(item));
@@ -279,6 +281,7 @@ function ReaderSettingsPanel({ legendClasses, legendOpen, onChange, onClose, onT
   return (
     <div className={styles.settingsOverlay} role="presentation" onMouseDown={onClose}>
       <section
+        ref={dialogRef}
         className={cx(styles.settingsPanel, 'reader-settings-panel')}
         role="dialog"
         aria-modal="true"
@@ -617,29 +620,6 @@ export default function QuranReader() {
 
     return () => window.clearTimeout(timer);
   }, [activeAyah, readerReady, location.pathname]);
-
-  useEffect(() => {
-    if (!infoOpen && !settingsOpen) {
-      return;
-    }
-
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {
-        return;
-      }
-
-      if (settingsOpen) {
-        setSettingsOpen(false);
-        setLegendOpen(false);
-        return;
-      }
-
-      setInfoOpen(false);
-    };
-
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, [infoOpen, settingsOpen]);
 
   function updateSetting<K extends keyof QuranReaderSettings>(key: K, value: QuranReaderSettings[K]) {
     setSettings((current) => normalizeReaderSettings({ ...current, [key]: value }));

@@ -1,4 +1,5 @@
-import { useEffect, useRef, type MouseEvent } from 'react';
+import { useRef, type MouseEvent } from 'react';
+import { useModalFocus } from '../../hooks/useModalFocus';
 import type { EnrichedArticle } from '../../types';
 import { ArticlePresentation } from './ArticlePresentation';
 import articleStyles from '../../pages/Artikel.module.css';
@@ -11,27 +12,14 @@ interface ArticlePreviewDialogProps {
 
 export function ArticlePreviewDialog({ article, onClose }: ArticlePreviewDialogProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    closeRef.current?.focus();
-
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', onKeyDown);
-    };
-  }, [onClose]);
+  const dialogRef = useModalFocus(true, onClose, closeRef);
 
   const stopPanelClick = (event: MouseEvent<HTMLElement>) => event.stopPropagation();
 
   return (
     <div className={styles.overlay} onMouseDown={onClose}>
       <section
+        ref={dialogRef}
         className={styles.panel}
         role="dialog"
         aria-modal="true"
