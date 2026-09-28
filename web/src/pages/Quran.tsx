@@ -4,6 +4,7 @@ import styles from './Quran.module.css';
 import { SURAHS } from '../data/surahs';
 import { JUZS } from '../data/juzs';
 import { cx } from '../lib/cx';
+import { isRevelationPlaceDisputed } from '../lib/surahEditorial';
 import { fetchQuranSearch, primeQuranSearch } from '../lib/quranSearch';
 import { createHighlighter, type HighlightSegment } from '../lib/quran/highlight';
 import type { QuranSearchResponse } from '../types';
@@ -290,7 +291,7 @@ export default function Quran() {
                 <span aria-hidden="true">·</span>
                 <span>{s.ayat} ayat</span>
                 <span aria-hidden="true">·</span>
-                <span>{s.tempat}</span>
+                <span>{isRevelationPlaceDisputed(s.no) ? 'Tempat turun diperselisihkan' : s.tempat}</span>
               </div>
             </Link>
           ))}

@@ -117,6 +117,18 @@ export interface Surah {
 export type SurahInfoTier = 'lengkap' | 'ringkas';
 export type SurahInfoReviewStatus = 'draft' | 'reviewed';
 
+export type SurahInfoSection = 'ringkasan' | 'konteks' | 'kandungan' | 'hikmah';
+
+export interface SurahInfoReviewEvidence {
+  reviewer: string;
+  reviewedAt: string; // YYYY-MM-DD
+  citations: Array<{
+    section: SurahInfoSection;
+    source: string;
+    locator: string; // e.g. surah/verse, volume/page, or a stable URL
+  }>;
+}
+
 export interface SurahInfoRange {
   dari: number;
   sampai: number;
@@ -173,6 +185,8 @@ export interface SurahInfo {
   tier: SurahInfoTier;
   /** Absent entries are treated as draft until a human editorial review records otherwise. */
   reviewStatus?: SurahInfoReviewStatus;
+  /** Provenance required before public explanatory notes can be shown. */
+  reviewEvidence?: SurahInfoReviewEvidence;
 }
 
 export interface Juz {

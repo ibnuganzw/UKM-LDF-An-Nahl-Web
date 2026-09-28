@@ -51,6 +51,7 @@
 .placeSlot { left: var(--place-x); display: grid; place-items: center; }
 .verseSlot { left: var(--verse-x); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .035em; text-align: center; color: var(--text-heading); font-family: var(--font-sans); text-decoration: none; transform: translate(-50%, -50%); }
 .placeIcon { display: block; color: var(--text-heading); font-family: 'quran-common'; font-size: .14em; font-feature-settings: "liga" 1, "calt" 1; line-height: 1; text-decoration: none; margin: 0; transform: translateX(-25%); }
+.placeIcon.placeUncertain { font-family: var(--font-sans); font-size: .34em; font-weight: 900; transform: none; }
 .placeSlot svg, .placeSlot img { display: block; width: 58%; height: 58%; object-fit: contain; margin: 0; transform: none; }
 .verseNumber { display: block; font-size: .18em; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; margin: 0; }
 .verseLabel { display: block; font-size: .1em; font-weight: 850; line-height: 1; opacity: .9; margin: 0; }

@@ -27,7 +27,7 @@ npm run preview  # preview the production build
 
 - Auth, profiles, agenda, registration, attendance, articles, and organisation structure use Supabase with role/RLS checks.
 - Prayer times are fetched by city and date. A same-city, same-date cache may be shown offline; the app never presents a static estimated table as authoritative.
-- Qur'an reading data is bundled in `public/assets/quran-data/`. Encyclopedic surah notes carry a visible editorial-review status until human review is recorded.
+- Qur'an reading data is bundled in `public/assets/quran-data/`. Unreviewed encyclopedic surah notes remain in the editorial source (`src/data/surahInfo.ts`); production builds reject imports of this file. Only approved entries copied to `src/data/reviewedSurahInfo.ts` can appear in explanation panels. Readers still see basic metadata, the editorial status, and a Qur'an Kemenag reference link. A `reviewed` label alone cannot release a note: `reviewEvidence` must name the human reviewer, record a valid review date, and locate sources for all four explanatory sections.
 - Known internal agenda fixtures are withheld from public routes but remain visible to admins for source-level cleanup.
 - Registration and password reset enforce at least ten characters containing letters and digits. The hosted Supabase Auth policy must match `supabase/config.toml` before this branch is released.
 - Apply `supabase/migrations/20260809160000_phase11_auth_rate_limits.sql` before deploying the NIM login/reset Edge Functions from this branch; the functions deliberately fail closed when the limiter is unavailable.
