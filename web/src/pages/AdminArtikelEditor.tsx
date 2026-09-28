@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import styles from './AdminArtikelEditor.module.css';
 import { Button } from '../components/ui';
 import ArticleEditor from '../components/editor/ArticleEditor';
+import { ArticlePreviewDialog } from '../components/article/ArticlePreviewDialog';
 import { supabase } from '../lib/supabaseClient';
 import { uploadArticleImage } from '../lib/articleImages';
 import { parseDocxArticle } from '../lib/docxImport';
@@ -14,6 +15,7 @@ import {
   isEditorialSchemaUnavailable,
 } from '../lib/articleSchema';
 import { sanitizeArticleHtml } from '../lib/sanitizeHtml';
+import { buildArticlePreview } from '../lib/articlePreview';
 import { slugify } from '../lib/slugify';
 import { loadJSON, saveJSON, removeKey } from '../lib/storage';
 import type { ArticleCategory, ArticleReviewStatus, ArticleStatus } from '../types';
@@ -178,6 +180,7 @@ export default function AdminArtikelEditor() {
   const [error, setError] = useState<string | null>(null);
   const [recoveredDraft, setRecoveredDraft] = useState<ArticleDraft | null>(null);
   const [serverUpdatedAt, setServerUpdatedAt] = useState<number | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const draftKey = id ? `annahl_article_draft_${id}` : `annahl_article_draft_new_${newArticleSessionId()}`;
 
@@ -465,6 +468,28 @@ export default function AdminArtikelEditor() {
   // for every draft, stale or not, before serverUpdatedAt is populated.
   const draftIsStale = isEdit && serverUpdatedAt !== null && !!recoveredDraft && recoveredDraft.savedAt < serverUpdatedAt;
   const editorialDisabled = editorialSchemaReady !== true;
+  const previewArticle = buildArticlePreview({
+    slug,
+    category,
+    status,
+    title,
+    excerpt,
+    dek,
+    topicsInput,
+    contentHtml,
+    coverImageUrl,
+    coverImageAlt,
+    coverImageCaption,
+    authorName,
+    authorRole,
+    scientificReviewerName,
+    scientificReviewerRole,
+    shariaReviewerName,
+    shariaReviewerRole,
+    reviewStatus,
+    verificationSummary,
+    isFeatured,
+  });
 
   return (
     <div className={styles.page}>
@@ -713,6 +738,9 @@ export default function AdminArtikelEditor() {
           {error && <div className={styles.errorText}>{error}</div>}
 
           <div className={styles.submitRow}>
+            <Button type="button" variant="secondary" onClick={() => setPreviewOpen(true)}>
+              Pratinjau Artikel
+            </Button>
             <Button type="submit" variant="primary" disabled={submitting}>
               {submitting ? 'Menyimpan…' : isEdit ? 'Simpan Perubahan' : 'Simpan Artikel'}
             </Button>
@@ -722,6 +750,7 @@ export default function AdminArtikelEditor() {
           </div>
         </form>
       </div>
+      {previewOpen && <ArticlePreviewDialog article={previewArticle} onClose={() => setPreviewOpen(false)} />}
     </div>
   );
 }

@@ -5,6 +5,7 @@ import styles from './QuranReader.module.css';
 import { Button, Hex } from '../components/ui';
 import { SurahHeader } from '../components/SurahHeader';
 import { QuranLibraryPanel } from '../components/quran/QuranLibraryPanel';
+import { useModalFocus } from '../hooks/useModalFocus';
 import { JUZS } from '../data/juzs';
 import { SURAHS } from '../data/surahs';
 import { cx } from '../lib/cx';
@@ -318,6 +319,7 @@ interface ReaderSettingsPanelProps {
 }
 
 function ReaderSettingsPanel({ legendClasses, legendOpen, onChange, onClose, onToggleLegend, settings }: ReaderSettingsPanelProps) {
+  const dialogRef = useModalFocus(true, onClose);
   const knownLegendItems = legendClasses
     .map((className) => TAJWEED_LEGEND[className])
     .filter((item): item is TajweedLegendItem => Boolean(item));
@@ -326,6 +328,7 @@ function ReaderSettingsPanel({ legendClasses, legendOpen, onChange, onClose, onT
   return (
     <div className={styles.settingsOverlay} role="presentation" onMouseDown={onClose}>
       <section
+        ref={dialogRef}
         className={cx(styles.settingsPanel, 'reader-settings-panel')}
         role="dialog"
         aria-modal="true"
@@ -473,7 +476,6 @@ export default function JuzReader() {
   const [juzQuery, setJuzQuery] = useState(formatJuzOption(rd));
   const [ayahQuery, setAyahQuery] = useState(String(selectedPosition));
   const [dockOpen, setDockOpen] = useState(false);
-  const [infoOpen, setInfoOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState<string | null>(null);
@@ -491,10 +493,8 @@ export default function JuzReader() {
   const currentReaderAudio = audioPlayer.sourceTitle === `Juz ${rd.juz_number}`;
   const {
     activeCollection,
-    focusMode,
     isBookmarked,
     saveProgress,
-    setFocusMode,
     toggleBookmark,
   } = useQuranLibrary();
 
@@ -530,8 +530,6 @@ export default function JuzReader() {
   useEffect(() => {
     setAudioReciter(settings.reciter);
   }, [setAudioReciter, settings.reciter]);
-
-  useEffect(() => () => setFocusMode(false), [setFocusMode]);
 
   useEffect(() => {
     if (!audioPlayer.currentVerse || audioPlayer.sourceTitle !== `Juz ${rd.juz_number}`) {
@@ -658,29 +656,6 @@ export default function JuzReader() {
     return () => window.clearTimeout(timer);
   }, [activeChapterId, activeVerseNumber, readerReady, location.pathname]);
 
-  useEffect(() => {
-    if (!infoOpen && !settingsOpen) {
-      return;
-    }
-
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {
-        return;
-      }
-
-      if (settingsOpen) {
-        setSettingsOpen(false);
-        setLegendOpen(false);
-        return;
-      }
-
-      setInfoOpen(false);
-    };
-
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, [infoOpen, settingsOpen]);
-
   function updateSetting<K extends keyof QuranReaderSettings>(key: K, value: QuranReaderSettings[K]) {
     setSettings((current) => normalizeReaderSettings({ ...current, [key]: value }));
   }
@@ -741,10 +716,7 @@ export default function JuzReader() {
   }
 
   return (
-    <main
-      className={cx(styles.page, focusMode && styles.pageFocused)}
-      style={{ '--arabic-font-size': `${settings.arabicFontSize}px` } as CSSProperties}
-    >
+    <main className={styles.page} style={{ '--arabic-font-size': `${settings.arabicFontSize}px` } as CSSProperties}>
       {quranPageFontCss && <style>{quranPageFontCss}</style>}
       <div className={cx(styles.readerDock, dockOpen && styles.readerDockOpen)} aria-label="Pencarian cepat bacaan">
         <button
@@ -844,9 +816,6 @@ export default function JuzReader() {
         <div className={styles.topbarActions}>
           <button type="button" className={styles.settingsTrigger} aria-label="Buka bookmark dan koleksi" onClick={() => setLibraryOpen(true)}>
             <span aria-hidden="true">♡</span>
-          </button>
-          <button type="button" className={styles.settingsTrigger} aria-label="Aktifkan mode fokus" onClick={() => setFocusMode(true)}>
-            <span aria-hidden="true">◫</span>
           </button>
           <button
             type="button"
@@ -1019,11 +988,6 @@ export default function JuzReader() {
         />
       )}
       <QuranLibraryPanel open={libraryOpen} onClose={() => setLibraryOpen(false)} />
-      {focusMode && (
-        <button type="button" className={styles.focusExit} onClick={() => setFocusMode(false)}>
-          Keluar mode fokus
-        </button>
-      )}
       {shareStatus && (
         <button type="button" className={styles.shareStatus} onClick={() => setShareStatus(null)}>
           {shareStatus}

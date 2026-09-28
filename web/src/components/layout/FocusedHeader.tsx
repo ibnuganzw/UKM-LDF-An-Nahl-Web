@@ -23,7 +23,6 @@ export function FocusedHeader() {
         </Link>
         <div className={styles.actions}>
           <ThemeToggle compact />
-          <Link to="/" className={styles.backLink}>← Beranda</Link>
         </div>
       </div>
     </header>

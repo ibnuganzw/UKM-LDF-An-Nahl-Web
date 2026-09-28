@@ -123,6 +123,15 @@ describe('Phase 3 Quran continuity', () => {
     expect(surahReader).not.toContain('useQuranAudioPlayer');
     expect(juzReader).not.toContain('useQuranAudioPlayer');
   });
+
+  it('gives the mobile surah ornament a full-width, readable composition', () => {
+    const styles = readFileSync(new URL('../components/SurahHeader.module.css', import.meta.url), 'utf8');
+
+    expect(styles).toMatch(/@media \(max-width: 480px\)[\s\S]*\.wrapper[\s\S]*width: calc\(100% \+ 32px\)/);
+    expect(styles).toMatch(/@media \(max-width: 480px\)[\s\S]*\.titleName \{ font-size: \.68em; \}/);
+    expect(styles).toMatch(/@media \(max-width: 480px\)[\s\S]*\.verseNumber \{ font-size: \.19em; \}/);
+    expect(styles).toContain('transform: translate(-50%, -50%)');
+  });
 });
 
 describe('Phase 3 offline, calendar, and operations', () => {
@@ -133,10 +142,28 @@ describe('Phase 3 offline, calendar, and operations', () => {
   });
 
   it('ships an installable manifest and same-origin service worker shell', () => {
-    const manifest = JSON.parse(readFileSync(new URL('../../public/manifest.webmanifest', import.meta.url), 'utf8')) as Record<string, unknown>;
+    const manifest = JSON.parse(readFileSync(new URL('../../public/manifest.webmanifest', import.meta.url), 'utf8')) as {
+      display: string;
+      icons: Array<{ purpose?: string; sizes: string; src: string; type: string }>;
+      id: string;
+      lang: string;
+      start_url: string;
+    };
     const worker = readFileSync(new URL('../../public/sw.js', import.meta.url), 'utf8');
     const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
-    expect(manifest).toMatchObject({ display: 'standalone', start_url: '/', lang: 'id-ID' });
+    expect(manifest).toMatchObject({ display: 'standalone', id: '/', start_url: '/', lang: 'id-ID' });
+    expect(manifest.icons).toEqual(expect.arrayContaining([
+      expect.objectContaining({ sizes: '192x192', purpose: 'any' }),
+      expect.objectContaining({ sizes: '512x512', purpose: 'any', type: 'image/png' }),
+      expect.objectContaining({ sizes: '512x512', purpose: 'maskable', type: 'image/png' }),
+    ]));
+    for (const filename of ['logo-512.png', 'logo-maskable-512.png']) {
+      const icon = readFileSync(new URL(`../../public/assets/${filename}`, import.meta.url));
+      expect(icon.subarray(1, 4).toString('ascii')).toBe('PNG');
+      expect(icon.readUInt32BE(16)).toBe(512);
+      expect(icon.readUInt32BE(20)).toBe(512);
+      expect(worker).toContain(`/assets/${filename}`);
+    }
     expect(worker).toContain("url.origin !== self.location.origin");
     expect(worker).toContain("request.mode === 'navigate'");
     expect(html).toContain('rel="manifest"');

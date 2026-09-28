@@ -11,6 +11,13 @@ describe('Phase 0 publication guards', () => {
     expect(isInternalTestAgenda({ title: 'Review', eventDate: '2026-08-10' })).toBe(false);
   });
 
+  it('keeps the staging acceptance fixture private even after title or date edits', () => {
+    const agenda = { title: 'Kajian', eventDate: '2026-10-01' };
+    expect(isInternalTestAgenda({ ...agenda, id: '5ca48413-2ddf-4708-96bd-8669b2ceb768' })).toBe(true);
+    expect(isInternalTestAgenda({ ...agenda, id: '32e2bd52-4000-4438-bc10-3ef1c76b04db' })).toBe(true);
+    expect(isInternalTestAgenda({ ...agenda, id: 'real-event' })).toBe(false);
+  });
+
   it('never re-labels the final past holiday as today', () => {
     const result = getIslamicHolidayCountdown(new Date(2027, 0, 1, 12));
     expect(result).toEqual({

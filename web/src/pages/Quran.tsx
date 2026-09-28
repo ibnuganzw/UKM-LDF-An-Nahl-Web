@@ -10,6 +10,7 @@ import type { QuranSearchResponse } from '../types';
 import { QuranLibraryPanel } from '../components/quran/QuranLibraryPanel';
 import { QuranOfflineCard } from '../components/quran/QuranOfflineCard';
 import { useQuranLibrary } from '../state/QuranLibraryContext';
+import { useModalFocus } from '../hooks/useModalFocus';
 
 type SearchStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -45,17 +46,7 @@ export default function Quran() {
   const trimmedSearchQuery = searchQuery.trim();
   const controllerRef = useRef<AbortController | null>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (isSearchOpen) {
-      setTimeout(() => searchInputRef.current?.focus(), 50);
-      const handleKeyDown = (e: KeyboardEvent) => {
-        if (e.key === 'Escape') setIsSearchOpen(false);
-      };
-      window.addEventListener('keydown', handleKeyDown);
-      return () => window.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [isSearchOpen]);
+  const searchDialogRef = useModalFocus<HTMLDivElement>(isSearchOpen, () => setIsSearchOpen(false), searchInputRef);
 
   useEffect(() => {
     controllerRef.current?.abort();
@@ -181,7 +172,7 @@ export default function Quran() {
 
       {isSearchOpen && (
         <div className={styles.modalOverlay} onClick={() => setIsSearchOpen(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+          <div ref={searchDialogRef} className={styles.modalContent} role="dialog" aria-modal="true" aria-label="Pencarian ayat Al-Qur'an" onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <form className={styles.ayatSearch} onSubmit={(event) => event.preventDefault()}>
                 <div className={styles.searchMain}>

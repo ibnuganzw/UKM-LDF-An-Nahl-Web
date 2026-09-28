@@ -1,6 +1,14 @@
 const SHELL_CACHE = 'annahl-shell-v1';
 const QURAN_CACHE = 'annahl-quran-offline-v1';
-const SHELL_URLS = ['/', '/quran', '/manifest.webmanifest', '/assets/favicon.svg', '/assets/logo-192.jpg'];
+const SHELL_URLS = [
+  '/',
+  '/quran',
+  '/manifest.webmanifest',
+  '/assets/favicon.svg',
+  '/assets/logo-192.jpg',
+  '/assets/logo-512.png',
+  '/assets/logo-maskable-512.png',
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(SHELL_CACHE).then((cache) => cache.addAll(SHELL_URLS)));

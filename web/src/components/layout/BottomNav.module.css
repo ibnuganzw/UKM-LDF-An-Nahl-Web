@@ -16,6 +16,28 @@
 @media (max-width: 919px) {
   .nav {
     display: flex;
+    will-change: transform, opacity;
+    transition:
+      transform 320ms cubic-bezier(.22, 1, .36, 1),
+      opacity 190ms ease;
+  }
+
+  .navHidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, 110%, 0);
+  }
+
+  .nav:focus-within {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (max-width: 919px) and (prefers-reduced-motion: reduce) {
+  .nav {
+    transition-duration: 1ms;
   }
 }
 

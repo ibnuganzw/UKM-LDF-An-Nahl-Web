@@ -421,6 +421,7 @@
   }
 
   .aboutJoinSection {
+    grid-template-columns: minmax(0, 1fr);
     padding-bottom: 64px;
   }
 

@@ -5,6 +5,7 @@ import styles from './QuranReader.module.css';
 import { Button, Hex } from '../components/ui';
 import { SurahHeader } from '../components/SurahHeader';
 import { QuranLibraryPanel } from '../components/quran/QuranLibraryPanel';
+import { useModalFocus } from '../hooks/useModalFocus';
 import { SURAHS } from '../data/surahs';
 import { cx } from '../lib/cx';
 import { fetchQuranChapter, fetchQuranSupplements, getFallbackQuranVerses, mergeQuranSupplements } from '../lib/quranClient';
@@ -271,6 +272,7 @@ interface ReaderSettingsPanelProps {
 }
 
 function ReaderSettingsPanel({ legendClasses, legendOpen, onChange, onClose, onToggleLegend, settings }: ReaderSettingsPanelProps) {
+  const dialogRef = useModalFocus(true, onClose);
   const knownLegendItems = legendClasses
     .map((className) => TAJWEED_LEGEND[className])
     .filter((item): item is TajweedLegendItem => Boolean(item));
@@ -279,6 +281,7 @@ function ReaderSettingsPanel({ legendClasses, legendOpen, onChange, onClose, onT
   return (
     <div className={styles.settingsOverlay} role="presentation" onMouseDown={onClose}>
       <section
+        ref={dialogRef}
         className={cx(styles.settingsPanel, 'reader-settings-panel')}
         role="dialog"
         aria-modal="true"
@@ -443,10 +446,8 @@ export default function QuranReader() {
   const currentReaderAudio = audioPlayer.currentVerse?.chapter_id === rd.no;
   const {
     activeCollection,
-    focusMode,
     isBookmarked,
     saveProgress,
-    setFocusMode,
     toggleBookmark,
   } = useQuranLibrary();
 
@@ -482,8 +483,6 @@ export default function QuranReader() {
   useEffect(() => {
     setAudioReciter(settings.reciter);
   }, [setAudioReciter, settings.reciter]);
-
-  useEffect(() => () => setFocusMode(false), [setFocusMode]);
 
   useEffect(() => {
     if (!audioPlayer.currentVerse || audioPlayer.currentVerse.chapter_id !== rd.no) {
@@ -622,29 +621,6 @@ export default function QuranReader() {
     return () => window.clearTimeout(timer);
   }, [activeAyah, readerReady, location.pathname]);
 
-  useEffect(() => {
-    if (!infoOpen && !settingsOpen) {
-      return;
-    }
-
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') {
-        return;
-      }
-
-      if (settingsOpen) {
-        setSettingsOpen(false);
-        setLegendOpen(false);
-        return;
-      }
-
-      setInfoOpen(false);
-    };
-
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, [infoOpen, settingsOpen]);
-
   function updateSetting<K extends keyof QuranReaderSettings>(key: K, value: QuranReaderSettings[K]) {
     setSettings((current) => normalizeReaderSettings({ ...current, [key]: value }));
   }
@@ -695,10 +671,7 @@ export default function QuranReader() {
   }
 
   return (
-    <main
-      className={cx(styles.page, focusMode && styles.pageFocused)}
-      style={{ '--arabic-font-size': `${settings.arabicFontSize}px` } as CSSProperties}
-    >
+    <main className={styles.page} style={{ '--arabic-font-size': `${settings.arabicFontSize}px` } as CSSProperties}>
       {quranPageFontCss && <style>{quranPageFontCss}</style>}
       <div className={cx(styles.readerDock, dockOpen && styles.readerDockOpen)} aria-label="Pencarian cepat bacaan">
         <button
@@ -810,9 +783,6 @@ export default function QuranReader() {
         <div className={styles.topbarActions}>
           <button type="button" className={styles.settingsTrigger} aria-label="Buka bookmark dan koleksi" onClick={() => setLibraryOpen(true)}>
             <span aria-hidden="true">♡</span>
-          </button>
-          <button type="button" className={styles.settingsTrigger} aria-label="Aktifkan mode fokus" onClick={() => setFocusMode(true)}>
-            <span aria-hidden="true">◫</span>
           </button>
           <button
             type="button"
@@ -976,11 +946,6 @@ export default function QuranReader() {
         </Suspense>
       )}
       <QuranLibraryPanel open={libraryOpen} onClose={() => setLibraryOpen(false)} />
-      {focusMode && (
-        <button type="button" className={styles.focusExit} onClick={() => setFocusMode(false)}>
-          Keluar mode fokus
-        </button>
-      )}
       {shareStatus && (
         <button type="button" className={styles.shareStatus} onClick={() => setShareStatus(null)}>
           {shareStatus}

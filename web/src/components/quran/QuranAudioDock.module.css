@@ -103,12 +103,18 @@
     min-height: 64px;
     padding: 9px 10px 9px 13px;
     border-radius: 18px;
+    transition: bottom 320ms cubic-bezier(.22, 1, .36, 1);
   }
+  .mobileChromeHidden { bottom: calc(10px + env(safe-area-inset-bottom)); }
   .timeline,
   .error { display: none; }
   .controls button { width: 34px; height: 34px; }
   .controls .play { width: 40px; height: 40px; }
   .track strong { font-size: 12px; }
+}
+
+@media (max-width: 919px) and (prefers-reduced-motion: reduce) {
+  .dock { transition-duration: 1ms; }
 }
 
 @media (max-width: 480px) {

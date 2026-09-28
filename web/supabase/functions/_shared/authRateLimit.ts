@@ -34,19 +34,37 @@ export async function consumeRateLimits(
   pepper: string,
   rules: RateLimitRule[],
 ): Promise<RateLimitResult> {
-  const results = await Promise.all(rules.map(async (rule) => {
+  const results: Array<{
+    data: boolean | null;
+    error: { code?: string; message?: string } | null;
+  }> = [];
+
+  // Keep these calls sequential. A freshly-created service-role client can
+  // intermittently send one of multiple concurrent RPCs without a usable
+  // authorization context, which the API gateway rejects with 401. Apart
+  // from making valid logins fail closed, parallel calls also make the
+  // affected rule ambiguous in production logs.
+  for (const rule of rules) {
     const keyHash = await sha256(`${rule.scope}:${rule.identifier}:${pepper}`);
-    return client.rpc('consume_auth_rate_limit', {
+    results.push(await client.rpc('consume_auth_rate_limit', {
       p_scope: rule.scope,
       p_key_hash: keyHash,
       p_limit: rule.limit,
       p_window_seconds: rule.windowSeconds,
-    });
-  }));
+    }));
+  }
 
-  if (results.some(({ error }) => error)) {
+  const errors = results.flatMap(({ error }) => error ? [error] : []);
+  if (errors.length > 0) {
     // Never log the identifier, password, IP address, or derived key.
-    console.error('[auth-rate-limit] limiter unavailable');
+    const classifications = errors.map((error) => {
+      const message = error.message?.toLowerCase() ?? '';
+      if (message.includes('jwt') || message.includes('api key') || message.includes('authoriz')) {
+        return 'authorization';
+      }
+      return error.code?.slice(0, 32) || 'unknown';
+    });
+    console.error(`[auth-rate-limit] limiter unavailable (${classifications.join(',')})`);
     return { allowed: false, available: false };
   }
 

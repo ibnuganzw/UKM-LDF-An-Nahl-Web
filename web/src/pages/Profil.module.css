@@ -5,9 +5,8 @@
 }
 
 .intro {
-  text-align: center;
-  max-width: 660px;
-  margin: 0 auto 34px;
+  max-width: 760px;
+  margin: 0 0 34px;
 }
 
 .eyebrow {
@@ -19,130 +18,131 @@
 }
 
 .h1 {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: clamp(34px, 5vw, 56px);
+  margin: 10px 0 13px;
   color: var(--text-heading);
-  margin: 10px 0 12px;
-  line-height: 1.05;
+  font-family: var(--font-sans);
+  font-size: clamp(38px, 5vw, 58px);
+  font-weight: 800;
+  line-height: 1.04;
+  letter-spacing: -.05em;
+  text-wrap: balance;
 }
 
 .introLead {
+  max-width: 690px;
   color: var(--text-body);
-  font-size: 15px;
-  line-height: 1.8;
+  font-size: 16px;
+  line-height: 1.75;
   text-wrap: pretty;
 }
 
-.groupPhotoCard {
-  --bg-deep: #070E22;
-  --text-heading: #F5EFDC;
-  --gold-light: #E8C766;
+.introMeta {
+  margin-top: 18px;
+  padding-left: 12px;
+  border-left: 2px solid var(--gold-dark);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .05em;
+}
 
-  position: relative;
-  min-height: 420px;
-  margin: 0 0 18px;
+.groupPhotoCard {
+  margin: 0 0 64px;
   overflow: hidden;
-  border: 1px solid rgba(232, 199, 102, .22);
-  border-radius: 26px;
-  background: var(--bg-deep);
-  box-shadow: 0 28px 70px -42px rgba(0, 0, 0, .85);
+  border: 1px solid var(--surface-border-strong);
+  border-radius: 16px;
+  background: var(--surface-1);
 }
 
 .groupPhoto {
   width: 100%;
-  height: 100%;
-  min-height: 420px;
   display: block;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
   object-position: center center;
-  filter: saturate(.92) contrast(1.02);
-}
-
-.groupPhotoCard::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 45%, rgba(6, 13, 32, .24) 64%, rgba(6, 13, 32, .96) 100%);
-  pointer-events: none;
+  filter: saturate(.94) contrast(1.015);
 }
 
 .groupPhotoCaption {
-  position: absolute;
-  z-index: 1;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 64px 34px 28px;
-}
-
-.groupPhotoEyebrow {
-  color: var(--gold-light);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-}
-
-.groupPhotoTitle {
-  max-width: 620px;
-  margin-top: 7px;
-  color: var(--text-heading);
-  font-family: var(--font-serif);
-  font-size: clamp(27px, 3.5vw, 38px);
-  font-weight: 600;
-  line-height: 1.08;
-}
-
-.groupPhotoCaption p {
-  margin-top: 8px;
-  color: rgba(215, 220, 236, .78);
-  font-size: 13px;
-  font-weight: 650;
-}
-
-.identityGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 16px;
-  margin-bottom: 56px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px 15px;
+  border-top: 1px solid var(--surface-border);
 }
 
-.maknaCard {
-  position: relative;
-  overflow: hidden;
+.groupPhotoCaption strong {
+  color: var(--text-heading);
+  font-size: 13.5px;
+  line-height: 1.4;
 }
 
-.maknaHex {
-  position: absolute;
-  top: -20px;
-  right: -16px;
-  width: 90px;
-  height: 99px;
-  background: #E8C766;
-  opacity: .12;
-  clip-path: var(--hex-clip);
+.groupPhotoCaption span {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.structureSection {
+  margin-bottom: 72px;
+  scroll-margin-top: 96px;
+}
+
+.identitySection {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+  margin-bottom: 72px;
+  border-top: 2px solid var(--text-heading);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.nameStory,
+.workScope {
+  padding: 30px 0 32px;
+}
+
+.nameStory {
+  padding-right: clamp(28px, 5vw, 58px);
+}
+
+.workScope {
+  padding-left: clamp(28px, 5vw, 48px);
+  border-left: 1px solid var(--surface-border);
+}
+
+.nameLockup {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 12px;
 }
 
 .maknaArabic {
   font-family: var(--font-arabic);
-  font-size: 38px;
+  font-size: 34px;
   color: var(--gold-light);
-  margin: 12px 0 2px;
-  text-shadow: 0 0 24px rgba(232, 199, 102, .35);
+  line-height: 1;
 }
 
-.maknaName {
-  font-weight: 700;
-  font-size: var(--text-lg);
+.nameStory h2,
+.workScope h2 {
   color: var(--text-heading);
+  font-family: var(--font-sans);
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.3;
+  letter-spacing: -.025em;
 }
 
-.maknaText {
+.nameStory p {
+  max-width: 540px;
+  margin-top: 14px;
   font-size: 14px;
-  line-height: 1.8;
+  line-height: 1.78;
   color: var(--text-body);
-  margin: 12px 0 0;
   text-wrap: pretty;
 }
 
@@ -154,165 +154,254 @@
   color: var(--gold-dark);
 }
 
-.spaceCard {
+.workScope h2 {
+  margin-top: 12px;
+}
+
+.workScope ul {
+  display: grid;
+  gap: 0;
+  margin: 13px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.workScope li {
+  position: relative;
+  padding: 10px 0 10px 17px;
+  border-top: 1px solid var(--surface-border);
+  color: var(--text-body);
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.workScope li::before {
+  content: '';
+  position: absolute;
+  top: 17px;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold-dark);
+}
+
+.historySection {
+  margin: 0 0 72px;
+}
+
+.historyHeading {
+  max-width: 720px;
+  margin: 0 0 30px;
+}
+
+.historyTitle {
+  margin: 9px 0 10px;
+  color: var(--text-heading);
+  font-family: var(--font-sans);
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 780;
+  line-height: 1.12;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+
+.historyDek {
+  max-width: 640px;
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.historyStory {
+  display: grid;
+  grid-template-columns: minmax(112px, 170px) minmax(0, 1fr);
+  gap: clamp(28px, 6vw, 72px);
+  padding: clamp(26px, 5vw, 48px) 0;
+  border-top: 1px solid var(--surface-border-strong);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.historyDate {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: flex-start;
+  padding-top: 2px;
+  color: var(--gold-dark);
 }
 
-.spaceTitle {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: 26px;
-  line-height: 1.3;
-  margin-top: 14px;
+.historyDate span {
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+}
+
+.historyDate strong {
+  margin-top: 4px;
   color: var(--text-heading);
+  font-family: var(--font-sans);
+  font-size: clamp(42px, 6vw, 66px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.06em;
+}
+
+.historyNarrative {
+  max-width: 700px;
+}
+
+.historyNarrative p {
+  color: var(--text-body);
+  font-size: 15px;
+  line-height: 1.85;
   text-wrap: pretty;
 }
 
-.spaceText {
-  margin-top: 11px;
-  font-size: 14px;
-  line-height: 1.8;
-  color: var(--text-body);
-  text-wrap: pretty;
+.historyNarrative p + p {
+  margin-top: 13px;
+}
+
+.historyNarrative time {
+  color: var(--text-heading);
+  font-weight: 800;
+}
+
+.historyNarrative strong {
+  color: var(--text-heading);
+  font-weight: 780;
+}
+
+.historyOpening {
+  color: var(--text-heading) !important;
+  font-size: 16px !important;
+  font-weight: 620;
+  line-height: 1.75 !important;
+}
+
+.founderPassage {
+  margin: 25px 0 24px;
+  padding: 20px 0 21px;
+  border-top: 1px solid var(--surface-border);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.founderPassage p + p {
+  margin-top: 13px;
+}
+
+.historyKicker {
+  margin-bottom: 10px;
+  color: var(--gold-dark);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.historySource {
+  margin-top: 20px;
+  padding-left: 13px;
+  border-left: 2px solid var(--gold-dark);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.65;
 }
 
 .strukturHead {
-  text-align: center;
-  margin-bottom: 28px;
+  max-width: 720px;
+  margin-bottom: 26px;
 }
 
 .strukturHeading {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  font-size: clamp(28px, 4vw, 42px);
+  margin: 9px 0 8px;
   color: var(--text-heading);
-  margin: 8px 0 0;
-  line-height: 1.1;
+  font-family: var(--font-sans);
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 780;
+  line-height: 1.12;
+  letter-spacing: -.035em;
+}
+
+.strukturHead p {
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.7;
 }
 
 .strukturWrap {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0;
+  align-items: stretch;
 }
 
-.ketuaCard {
-  text-align: center;
-  box-shadow: 0 22px 46px -24px rgba(201, 162, 39, .35), inset 0 1px 0 rgba(255, 255, 255, .07);
+.leadershipRoster {
+  width: 100%;
+  margin-bottom: 38px;
+  border-top: 2px solid var(--text-heading);
 }
 
-.ketuaAvatar {
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  background: var(--gold-gradient);
-  color: var(--text-on-gold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 20px;
-  margin: 0 auto 10px;
-  box-shadow: 0 0 24px rgba(232, 199, 102, .35);
-}
-
-.ketuaAvatarPhoto {
-  width: 58px;
-  height: 58px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto 10px;
-  box-shadow: 0 0 24px rgba(232, 199, 102, .35);
-}
-
-.ketuaName {
-  font-weight: 800;
-  font-size: 15.5px;
-  color: var(--text-heading);
-}
-
-.ketuaRole {
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+.leadershipRosterLabel {
+  padding: 12px 0 6px;
   color: var(--gold-dark);
-  margin-top: 3px;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .18em;
+  text-transform: uppercase;
 }
 
-.connector {
-  width: 1px;
-  height: 26px;
-  background: rgba(232, 199, 102, .3);
+.leadershipRow {
+  display: grid;
+  grid-template-columns: minmax(130px, 190px) minmax(0, 1fr);
+  align-items: center;
+  gap: 22px;
+  min-height: 62px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--surface-border);
 }
 
-.intiRow {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
+.leadershipRole {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 }
 
-.intiCard {
-  text-align: center;
-}
-
-.intiAvatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(232, 199, 102, .12);
-  color: var(--gold-light);
+.leadershipPerson {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 16px;
-  margin: 0 auto 8px;
+  gap: 12px;
+  min-width: 0;
 }
 
-.intiAvatarPhoto {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto 8px;
-}
-
-.intiName {
-  font-weight: 800;
-  font-size: 14px;
+.leadershipPerson strong {
   color: var(--text-heading);
+  font-size: 16px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
-.intiRole {
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-top: 2px;
+.leadershipRowFeatured .leadershipPerson strong {
+  color: var(--gold-dark);
 }
 
-/* ── Division tree: each divisi is one column (ketua → pengurus → anggota).
-   A row subgrid keeps the three bands level across every column ("sejajar"). ── */
-.branch {
-  align-self: stretch;
-  height: 0;
-  margin: 0 calc(50% / var(--cols));
-  border-top: 1px solid rgba(232, 199, 102, .28);
+.leadershipPhoto {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 6px;
+  object-fit: cover;
 }
 
+/* Desktop keeps each field in one aligned column; mobile switches to a compact directory. */
 .treeScroll {
   align-self: stretch;
   width: 100%;
-  overflow-x: auto;
-  padding-bottom: 4px;
+  overflow-x: visible;
+  padding-bottom: 8px;
 }
 
 .mobileDivisionList {
@@ -321,181 +410,174 @@
 
 .divisionTree {
   display: grid;
-  grid-template-columns: repeat(var(--cols), minmax(152px, 1fr));
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
   grid-template-rows: auto auto auto;
-  column-gap: 12px;
-  row-gap: 16px;
-  padding-top: 14px;
-  min-width: min-content;
+  column-gap: 18px;
+  row-gap: 14px;
 }
 
 .divisionCol {
   display: grid;
   grid-row: 1 / span 3;
   grid-template-rows: subgrid;
-  row-gap: 12px;
+  row-gap: 14px;
 }
 
 .divisionHead {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: border-color .3s;
+  align-items: stretch;
+  padding: 16px 0 14px;
+  border-top: 3px solid var(--div-color);
 }
-/* Stub that reaches up from the head into the tree's top padding, meeting the
-   horizontal .branch rail (which sits directly above, gap-free). */
-.divisionHead::before {
-  content: '';
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  width: 1px;
-  height: 14px;
-  background: rgba(232, 199, 102, .28);
-  transform: translateX(-50%);
+
+.divisionTitleBlock span {
+  color: var(--div-color);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.divisionTitleBlock h3 {
+  margin-top: 5px;
+  color: var(--text-heading);
+  font-size: 15px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.divisionLead {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--surface-border);
 }
 
 .headPhoto {
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 5px;
   object-fit: cover;
-  border: 2px solid;
 }
 
 .headName {
   font-weight: 800;
-  font-size: 14px;
+  font-size: 12.5px;
   color: var(--text-heading);
-  line-height: 1.2;
-  margin-top: 8px;
+  line-height: 1.3;
+  margin-top: 2px;
   overflow-wrap: anywhere;
 }
 
 .headRole {
-  font-size: 10px;
+  color: var(--text-muted);
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: .06em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  margin-top: 3px;
 }
 
 .headDesc {
   font-size: 11px;
-  line-height: 1.55;
+  line-height: 1.65;
   color: var(--text-muted);
-  margin-top: 7px;
+  margin-top: 9px;
   text-wrap: pretty;
 }
 
 .officerBand {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .officerCard {
   display: flex;
   align-items: center;
   gap: 9px;
-  padding: 9px 11px;
-  border: 1px solid rgba(232, 199, 102, .12);
-  border-radius: 13px;
-  background: var(--surface-1);
+  min-height: 49px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--surface-border);
 }
 
-.officerPhoto,
-.officerInitial {
+.officerPhoto {
   width: 30px;
   height: 30px;
-  border-radius: 50%;
+  border-radius: 5px;
   flex: none;
   object-fit: cover;
-}
-.officerInitial {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 12px;
 }
 
 .officerText {
   min-width: 0;
-  text-align: left;
 }
+
 .officerName {
   font-weight: 800;
-  font-size: 12.5px;
+  font-size: 12px;
   color: var(--text-heading);
-  line-height: 1.2;
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
+
 .officerRole {
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 800;
-  letter-spacing: .07em;
+  letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--text-muted);
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 .memberBand {
   display: flex;
   flex-direction: column;
-  gap: 6px;
 }
 
 .memberChip {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: var(--glass-fill-faint);
-  border: 1px solid var(--surface-border);
+  min-height: 38px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--surface-border);
 }
 
-.memberChipPhoto,
-.memberChipInitial {
+.memberChipPhoto {
   width: 24px;
   height: 24px;
-  border-radius: 50%;
+  border-radius: 4px;
   flex: none;
   object-fit: cover;
 }
-.memberChipInitial {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(232, 199, 102, .12);
-  color: var(--gold-light);
-  font-weight: 800;
-  font-size: 10.5px;
-}
+
 .memberChipName {
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11.5px;
+  font-weight: 650;
   color: var(--text-body);
   overflow-wrap: anywhere;
 }
 
 .divisionAccordion {
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--div-color) 34%, var(--surface-border));
-  border-radius: 20px;
-  background: var(--surface-1);
-  box-shadow: 0 18px 38px -32px rgba(0, 0, 0, .72);
+  border-top: 1px solid var(--surface-border-strong);
+  background: transparent;
+}
+
+.divisionAccordion:last-child {
+  border-bottom: 1px solid var(--surface-border-strong);
 }
 
 .divisionSummary {
   display: grid;
-  grid-template-columns: 42px minmax(0, 1fr) 24px;
+  grid-template-columns: 4px minmax(0, 1fr) 28px;
   align-items: center;
-  gap: 12px;
-  min-height: 70px;
-  padding: 12px 14px;
+  gap: 14px;
+  min-height: 68px;
+  padding: 12px 2px;
   color: var(--text-heading);
   cursor: pointer;
   list-style: none;
@@ -507,19 +589,14 @@
 
 .divisionSummary:focus-visible {
   outline: 2px solid var(--gold-light);
-  outline-offset: -3px;
+  outline-offset: 3px;
 }
 
 .divisionSummaryMark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--div-color) 18%, transparent);
-  color: var(--div-color);
-  font-size: 14px;
-  font-weight: 850;
+  width: 3px;
+  height: 34px;
+  border-radius: 2px;
+  background: var(--div-color);
 }
 
 .divisionSummaryCopy {
@@ -530,7 +607,8 @@
 
 .divisionSummaryCopy strong {
   overflow-wrap: anywhere;
-  font-size: 14px;
+  font-size: 14.5px;
+  line-height: 1.35;
 }
 
 .divisionSummaryCopy small {
@@ -540,19 +618,66 @@
 }
 
 .divisionSummaryChevron {
-  color: var(--gold-dark);
-  font-size: 22px;
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  color: var(--text-muted);
+  font-size: 20px;
   line-height: 1;
-  transition: transform .2s ease;
 }
 
-.divisionAccordion[open] .divisionSummaryChevron {
-  transform: rotate(180deg);
+.divisionSummaryChevron::before {
+  content: '+';
+}
+
+.divisionAccordion[open] .divisionSummaryChevron::before {
+  content: '−';
 }
 
 .mobileDivisionBody {
-  padding: 0 14px 16px;
-  border-top: 1px solid var(--surface-border);
+  padding: 0 0 18px 18px;
+}
+
+@media (max-width: 860px) {
+  .treeScroll {
+    display: none;
+  }
+
+  .mobileDivisionList {
+    align-self: stretch;
+    display: grid;
+    gap: 0;
+  }
+
+  .mobileDivisionBody .divisionCol {
+    display: grid;
+    grid-row: auto;
+    grid-template-rows: auto;
+    gap: 11px;
+  }
+
+  .mobileDivisionBody .divisionHead {
+    padding: 0 0 9px;
+    border-top: 0;
+  }
+
+  .mobileDivisionBody .headDesc {
+    margin-top: 0;
+    padding: 2px 0 13px;
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  .mobileDivisionBody .divisionLead {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .mobileDivisionBody .officerCard,
+  .mobileDivisionBody .memberChip {
+    padding-right: 4px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -564,55 +689,113 @@
     margin-bottom: 28px;
   }
 
-  .groupPhotoCard,
-  .groupPhoto {
-    min-height: 0;
+  .h1 {
+    font-size: clamp(36px, 11vw, 46px);
   }
 
-  .groupPhoto {
-    height: auto;
-    aspect-ratio: 16 / 9;
-    object-position: center center;
+  .introLead {
+    font-size: 15px;
   }
 
-  .groupPhotoCard::after {
-    display: none;
+  .groupPhotoCard {
+    margin-bottom: 54px;
+    border-radius: 12px;
   }
 
   .groupPhotoCaption {
-    position: relative;
-    padding: 20px;
-    background: linear-gradient(145deg, rgba(20, 31, 68, .98), rgba(8, 16, 37, .98));
+    grid-template-columns: 1fr;
+    gap: 3px;
+    padding: 13px 14px 14px;
   }
 
-  .groupPhotoTitle {
-    font-size: 25px;
+  .groupPhotoCaption span {
+    text-align: left;
   }
 
-  .identityGrid {
-    margin-bottom: 48px;
+  .structureSection,
+  .identitySection {
+    margin-bottom: 58px;
   }
 
-  .branch,
-  .treeScroll {
-    display: none;
+  .identitySection {
+    grid-template-columns: 1fr;
   }
 
-  .mobileDivisionList {
-    align-self: stretch;
-    display: grid;
-    gap: 12px;
+  .nameStory,
+  .workScope {
+    padding: 24px 0 26px;
   }
 
-  .mobileDivisionBody .divisionCol {
-    display: grid;
-    grid-row: auto;
-    grid-template-rows: auto;
-    gap: 12px;
-    padding-top: 14px;
+  .nameStory {
+    padding-right: 0;
   }
 
-  .mobileDivisionBody .divisionHead::before {
-    display: none;
+  .workScope {
+    padding-left: 0;
+    border-top: 1px solid var(--surface-border);
+    border-left: 0;
   }
+
+  .nameLockup {
+    align-items: center;
+  }
+
+  .historySection {
+    margin-bottom: 58px;
+  }
+
+  .historyHeading {
+    margin-bottom: 22px;
+  }
+
+  .historyStory {
+    grid-template-columns: 1fr;
+    gap: 21px;
+    padding: 26px 0 27px;
+  }
+
+  .historyDate {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 9px;
+  }
+
+  .historyDate strong {
+    font-size: 44px;
+  }
+
+  .historyNarrative p {
+    font-size: 14px;
+    line-height: 1.82;
+  }
+
+  .historyOpening {
+    font-size: 14.5px !important;
+    line-height: 1.78 !important;
+  }
+
+  .founderPassage {
+    margin: 21px 0 20px;
+    padding: 17px 0 18px;
+  }
+
+  .strukturHead {
+    margin-bottom: 22px;
+  }
+
+  .leadershipRoster {
+    margin-bottom: 32px;
+  }
+
+  .leadershipRow {
+    grid-template-columns: minmax(105px, 38%) minmax(0, 1fr);
+    gap: 14px;
+    min-height: 58px;
+    padding: 11px 0;
+  }
+
+  .leadershipPerson strong {
+    font-size: 14px;
+  }
+
 }
