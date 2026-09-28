@@ -17,6 +17,7 @@ const INTERNAL_TEST_AGENDA_SIGNATURES = new Set([
 // Use its ID so edits to the test title/date cannot publish it accidentally.
 const INTERNAL_TEST_AGENDA_IDS = new Set([
   '5ca48413-2ddf-4708-96bd-8669b2ceb768',
+  '32e2bd52-4000-4438-bc10-3ef1c76b04db',
 ]);
 
 export function isInternalTestAgenda(agenda: Pick<Agenda, 'title' | 'eventDate'> & Partial<Pick<Agenda, 'id'>>): boolean {
