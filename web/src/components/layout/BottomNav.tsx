@@ -34,7 +34,7 @@ function NavIcon({ name }: { name: IconName }) {
   return <svg {...common}><circle cx="12" cy="8" r="3.5" /><path d="M5 20c.7-4 3-6 7-6s6.3 2 7 6" /></svg>;
 }
 
-export function BottomNav() {
+export function BottomNav({ hidden = false }: { hidden?: boolean }) {
   const { profile } = useApp();
   const location = useLocation();
   const group = getNavGroup(location.pathname);
@@ -49,7 +49,7 @@ export function BottomNav() {
   ];
 
   return (
-    <nav className={styles.nav} aria-label="Navigasi utama mobile">
+    <nav className={cx(styles.nav, hidden && styles.navHidden)} aria-label="Navigasi utama mobile">
       {items.map((item) => {
         const active = item.group === group;
         return (

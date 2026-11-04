@@ -15,16 +15,12 @@
   --tajweed-idgham-mutajanisayn: #C39BE8;
   --tajweed-idgham-mutaqaribayn: #8FAAF5;
   --tajweed-ghunnah: #F48FB1;
+  --tajweed-laam-shamsiyah: #E6B85C;
   --tajweed-unknown: #D8DEEF;
 
   width: min(1040px, calc(100vw - 40px));
   margin: 0 auto;
   padding: 36px 0 96px;
-}
-
-.pageFocused {
-  width: min(860px, calc(100vw - 40px));
-  padding-top: 24px;
 }
 
 .readerDock {
@@ -534,7 +530,6 @@
   transform: translateY(1px) scale(.92);
 }
 
-.focusExit,
 .shareStatus {
   position: fixed;
   z-index: 82;
@@ -549,12 +544,6 @@
   font: 800 11px/1 var(--font-sans);
   letter-spacing: .08em;
   text-transform: uppercase;
-}
-
-.focusExit {
-  top: 16px;
-  right: 18px;
-  padding: 13px 17px;
 }
 
 .shareStatus {
@@ -707,6 +696,11 @@
 :global(.quran-arabic tajweed.ghunnah),
 :global(.quran-arabic span.ghunnah) {
   color: var(--tajweed-ghunnah);
+}
+
+:global(.quran-arabic tajweed.laam_shamsiyah),
+:global(.quran-arabic span.laam_shamsiyah) {
+  color: var(--tajweed-laam-shamsiyah);
 }
 
 .tajweedContent {
@@ -1164,10 +1158,6 @@
     padding-top: 24px;
   }
 
-  .pageFocused {
-    width: min(100% - 24px, 860px);
-  }
-
   .readerDock {
     top: calc(var(--header-h) + 2px);
     padding: 0 12px;
@@ -1309,6 +1299,7 @@
   --tajweed-idgham-mutajanisayn: #73518F;
   --tajweed-idgham-mutaqaribayn: #465E9F;
   --tajweed-ghunnah: #9A3C72;
+  --tajweed-laam-shamsiyah: #855A12;
   --tajweed-unknown: #344462;
 }
 
@@ -1328,7 +1319,6 @@
 }
 
 :global(html[data-theme='light']) .ayatActionButton,
-:global(html[data-theme='light']) .focusExit,
 :global(html[data-theme='light']) .shareStatus {
   background: rgba(255, 255, 255, .94);
   border-color: var(--control-border);

@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
+import { useMemo, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useModalFocus } from '../../hooks/useModalFocus';
 import { DEFAULT_QURAN_COLLECTION } from '../../lib/quranLibrary';
 import { useQuranLibrary } from '../../state/QuranLibraryContext';
 import styles from './QuranLibraryPanel.module.css';
@@ -15,19 +16,11 @@ export function QuranLibraryPanel({ open, onClose }: { open: boolean; onClose: (
     setActiveCollection,
   } = useQuranLibrary();
   const [collectionName, setCollectionName] = useState('');
+  const dialogRef = useModalFocus<HTMLDivElement>(open, onClose);
   const visibleBookmarks = useMemo(
     () => bookmarks.filter((bookmark) => bookmark.collection === activeCollection),
     [activeCollection, bookmarks],
   );
-
-  useEffect(() => {
-    if (!open) return;
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeydown);
-    return () => window.removeEventListener('keydown', handleKeydown);
-  }, [onClose, open]);
 
   if (!open) return null;
 
@@ -40,7 +33,7 @@ export function QuranLibraryPanel({ open, onClose }: { open: boolean; onClose: (
 
   return (
     <div className={styles.overlay} role="presentation" onMouseDown={onClose}>
-      <div className={styles.panel} role="dialog" aria-modal="true" aria-labelledby="quran-library-title" onMouseDown={stopPanelClick}>
+      <div ref={dialogRef} className={styles.panel} role="dialog" aria-modal="true" aria-labelledby="quran-library-title" onMouseDown={stopPanelClick}>
         <div className={styles.header}>
           <div>
             <div className={styles.eyebrow}>Pustaka Pribadi</div>

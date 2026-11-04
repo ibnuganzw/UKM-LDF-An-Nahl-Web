@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { getReciter } from '../../lib/quranAudio';
 import { useQuranAudio } from '../../state/QuranAudioContext';
+import { cx } from '../../lib/cx';
 import styles from './QuranAudioDock.module.css';
 
 function formatTime(value: number): string {
@@ -10,13 +11,13 @@ function formatTime(value: number): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
-export function QuranAudioDock() {
+export function QuranAudioDock({ mobileChromeVisible = true }: { mobileChromeVisible?: boolean }) {
   const audio = useQuranAudio();
   if (!audio.currentVerse) return null;
   const reciter = getReciter(audio.reciterId);
 
   return (
-    <aside className={styles.dock} aria-label="Pemutar murottal persisten">
+    <aside className={cx(styles.dock, !mobileChromeVisible && styles.mobileChromeHidden)} aria-label="Pemutar murottal persisten">
       <div className={styles.identity}>
         <span className={styles.pulse} aria-hidden="true" />
         <Link to={audio.currentHref} className={styles.track}>

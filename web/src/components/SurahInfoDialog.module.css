@@ -146,6 +146,22 @@
   text-transform: uppercase;
 }
 
+.pendingReference {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin-top: 14px;
+  color: var(--gold-light);
+  font-size: 14px;
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.pendingReference:focus-visible {
+  outline: 2px solid var(--gold-light);
+  outline-offset: 3px;
+}
+
 /* ---------- Tabs ---------- */
 
 .tabList {

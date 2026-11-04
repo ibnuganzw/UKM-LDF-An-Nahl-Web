@@ -104,9 +104,16 @@ export const TAJWEED_LEGEND: Record<string, TajweedLegendItem> = {
     description: 'Dengung pada nun atau mim.',
     color: 'var(--tajweed-ghunnah)',
   },
+  laam_shamsiyah: {
+    className: 'laam_shamsiyah',
+    label: 'Lam syamsiyah',
+    description: 'Lam takrif yang tidak dibunyikan sebelum huruf syamsiyah.',
+    color: 'var(--tajweed-laam-shamsiyah)',
+  },
 };
 
-const TAJWEED_CLASS_PATTERN = /<(?:tajweed|span)\b[^>]*\bclass\s*=\s*["']([^"']+)["'][^>]*>/gi;
+const TAJWEED_CLASS_PATTERN = /<(?:tajweed|span)\b[^>]*\bclass\s*=\s*(?:"([^"]+)"|'([^']+)'|([^\s>]+))[^>]*>/gi;
+const STRUCTURAL_CLASSES = new Set(['end']);
 
 export function scanTajweedClasses(verses: QuranVerse[]): string[] {
   const classes = new Set<string>();
@@ -115,10 +122,12 @@ export function scanTajweedClasses(verses: QuranVerse[]): string[] {
     TAJWEED_CLASS_PATTERN.lastIndex = 0;
 
     for (const match of verse.text_uthmani_tajweed.matchAll(TAJWEED_CLASS_PATTERN)) {
-      for (const className of match[1].split(/\s+/)) {
+      const classValue = match[1] ?? match[2] ?? match[3] ?? '';
+
+      for (const className of classValue.split(/\s+/)) {
         const cleanClassName = className.trim();
 
-        if (cleanClassName) {
+        if (cleanClassName && !STRUCTURAL_CLASSES.has(cleanClassName)) {
           classes.add(cleanClassName);
         }
       }

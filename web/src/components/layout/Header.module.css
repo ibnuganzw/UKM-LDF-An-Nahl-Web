@@ -212,6 +212,25 @@
 }
 
 @media (max-width: 919px) {
+  .header {
+    will-change: transform, opacity;
+    transition:
+      transform 300ms cubic-bezier(.22, 1, .36, 1),
+      opacity 180ms ease;
+  }
+
+  .headerHidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, calc(-100% - 1px), 0);
+  }
+
+  .header:focus-within {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0);
+  }
+
   .desktopNav {
     display: none;
   }
@@ -223,5 +242,11 @@
   .loginBtn,
   .accountPill {
     display: none;
+  }
+}
+
+@media (max-width: 919px) and (prefers-reduced-motion: reduce) {
+  .header {
+    transition-duration: 1ms;
   }
 }

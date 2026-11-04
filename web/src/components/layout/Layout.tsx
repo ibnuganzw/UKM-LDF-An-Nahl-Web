@@ -10,7 +10,7 @@ import { initReveal } from '../../lib/reveal';
 import { setRouteSeo } from '../../lib/pageTitle';
 import { QuranAudioDock } from '../quran/QuranAudioDock';
 import { useQuranAudio } from '../../state/QuranAudioContext';
-import { useQuranLibrary } from '../../state/QuranLibraryContext';
+import { useAutoHideChrome } from './useAutoHideChrome';
 
 const AUTH_PATHS = ['/login', '/register', '/lupa-password', '/reset-password', '/menunggu-persetujuan'];
 
@@ -26,11 +26,12 @@ function RouteFallback() {
 export function Layout() {
   const location = useLocation();
   const { currentVerse } = useQuranAudio();
-  const { focusMode } = useQuranLibrary();
   const isAuthRoute = AUTH_PATHS.includes(location.pathname);
   const isReaderRoute = /^\/quran\/(?:juz\/)?\d+\/?$/.test(location.pathname);
   const isUtilityRoute = /^(?:\/admin(?:\/|$)|\/dashboard\/?$|\/scan\/)/.test(location.pathname);
   const isScanRoute = location.pathname.startsWith('/scan/');
+  const autoHideChrome = !isAuthRoute && !isUtilityRoute && !isScanRoute;
+  const chromeVisible = useAutoHideChrome(autoHideChrome, location.pathname);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -76,11 +77,11 @@ export function Layout() {
 
   return (
     <>
-      {!focusMode && <Header />}
+      <Header hidden={!chromeVisible} />
       {outlet}
-      {!focusMode && !isReaderRoute && !isUtilityRoute && <Footer />}
-      {!focusMode && !isScanRoute && <BottomNav />}
-      <QuranAudioDock />
+      {!isReaderRoute && !isUtilityRoute && <Footer />}
+      {!isScanRoute && <BottomNav hidden={!chromeVisible} />}
+      <QuranAudioDock mobileChromeVisible={chromeVisible} />
     </>
   );
 }

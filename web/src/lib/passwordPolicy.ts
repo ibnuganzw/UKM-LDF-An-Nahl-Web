@@ -9,3 +9,15 @@ export function passwordPolicyError(password: string): string | null {
   }
   return null;
 }
+
+export function passwordAuthError(message: string): string {
+  const normalized = message.toLowerCase();
+  if (
+    normalized.includes('password should contain')
+    || normalized.includes('password should be at least')
+    || normalized.includes('weak password')
+  ) {
+    return `Kata sandi minimal ${MIN_PASSWORD_LENGTH} karakter dan harus memuat setidaknya satu huruf dan satu angka.`;
+  }
+  return message;
+}

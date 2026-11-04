@@ -7,7 +7,7 @@ import { NAV_LINKS, getNavGroup } from '../../lib/nav';
 import { cx } from '../../lib/cx';
 import { isAdminRole } from '../../lib/roles';
 
-export function Header() {
+export function Header({ hidden = false }: { hidden?: boolean }) {
   const { profile } = useApp();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -35,7 +35,7 @@ export function Header() {
   ];
 
   return (
-    <header className={styles.header}>
+    <header className={cx(styles.header, hidden && !menuOpen && styles.headerHidden)}>
       <div className={styles.inner}>
         <Link to="/" className={styles.brand}>
           <img

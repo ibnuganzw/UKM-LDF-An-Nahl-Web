@@ -2,8 +2,10 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import styles from './SurahInfoDialog.module.css';
 import { Badge, Hex } from './ui';
 import { cx } from '../lib/cx';
-import type { Surah, SurahInfo, SurahInfoStruktur } from '../types';
-import { SURAH_INFO } from '../data/surahInfo';
+import { canShowSurahExplanation, isRevelationPlaceDisputed } from '../lib/surahEditorial';
+import type { Surah, SurahInfoRange, SurahInfoStruktur } from '../types';
+import { JUZS } from '../data/juzs';
+import { REVIEWED_SURAH_INFO } from '../data/reviewedSurahInfo';
 
 interface SurahInfoDialogProps {
   surah: Surah;
@@ -20,8 +22,14 @@ const TABS: { id: TabId; label: string }[] = [
   { id: 'hikmah', label: 'Hikmah' },
 ];
 
-function formatJuz(juz: SurahInfo['juz']): string {
+function formatJuz(juz: SurahInfoRange): string {
   return juz.dari === juz.sampai ? `Juz ${juz.dari}` : `Juz ${juz.dari}–${juz.sampai}`;
+}
+
+function getJuzRange(surahNo: number): SurahInfoRange | undefined {
+  const numbers = JUZS.filter((juz) => juz.verse_mapping[String(surahNo)] !== undefined)
+    .map((juz) => juz.juz_number);
+  return numbers.length ? { dari: Math.min(...numbers), sampai: Math.max(...numbers) } : undefined;
 }
 
 function parseRange(rentang: string): [number, number] {
@@ -46,8 +54,9 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
-  const info = SURAH_INFO.find((item) => item.no === surah.no);
-  const editoriallyReviewed = info?.reviewStatus === 'reviewed';
+  const info = REVIEWED_SURAH_INFO.find((item) => item.no === surah.no);
+  const editoriallyReviewed = canShowSurahExplanation(info);
+  const juz = getJuzRange(surah.no);
 
   useEffect(() => {
     const previouslyFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -108,7 +117,7 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
         role="dialog"
         aria-modal="true"
         aria-labelledby="surah-info-title"
-        aria-describedby={info ? 'surah-info-editorial-status' : undefined}
+        aria-describedby="surah-info-editorial-status"
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className={styles.header}>
@@ -127,13 +136,12 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
             <div className={styles.heroFacts}>
               <span>{surah.ayat} Ayat</span>
               <span>
-                {revelationPlace}
-                {info?.tempatTurunCatatan ? ' · diperselisihkan' : ''}
+                {isRevelationPlaceDisputed(surah.no) ? 'Tempat turun diperselisihkan' : revelationPlace}
               </span>
-              {info && <span>{formatJuz(info.juz)}</span>}
-              {info && <span>Wahyu ke-{info.urutanTurun}</span>}
+              {juz && <span>{formatJuz(juz)}</span>}
+              {info && editoriallyReviewed && <span>Wahyu ke-{info.urutanTurun}</span>}
             </div>
-            {info && info.namaLain.length > 0 && (
+            {info && editoriallyReviewed && info.namaLain.length > 0 && (
               <div className={styles.heroAliases}>
                 {info.namaLain.map((name) => (
                   <Badge key={name} color="var(--gold-light)" uppercase={false}>
@@ -145,18 +153,16 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
           </div>
         </div>
 
-        {!info ? (
-          <p className={styles.emptyState}>Informasi mendalam untuk surah ini belum tersedia.</p>
-        ) : (
+        <div id="surah-info-editorial-status" className={styles.editorialNote} role="note">
+          <strong>{editoriallyReviewed ? 'Sudah ditelaah' : 'Dalam penelaahan editorial'}</strong>
+          <span>
+            {editoriallyReviewed
+              ? 'Ringkasan ini telah melalui pemeriksaan editorial internal; rujukan tetap tercantum di bawah.'
+              : 'Uraian tafsir sedang diperiksa sumber dan redaksinya. Ayat serta terjemahan tetap tersedia di halaman bacaan.'}
+          </span>
+        </div>
+        {editoriallyReviewed && info ? (
           <>
-            <div id="surah-info-editorial-status" className={styles.editorialNote} role="note">
-              <strong>{editoriallyReviewed ? 'Sudah ditelaah' : 'Dalam penelaahan editorial'}</strong>
-              <span>
-                {editoriallyReviewed
-                  ? 'Ringkasan ini telah melalui pemeriksaan editorial internal; rujukan tetap tercantum di bawah.'
-                  : 'Gunakan sebagai pengantar, bukan pengganti mushaf dan tafsir primer. Rujukan tercantum di bawah.'}
-              </span>
-            </div>
             <div role="tablist" aria-label="Bagian informasi surah" className={styles.tabList}>
               {TABS.map((tab, index) => (
                 <button
@@ -286,6 +292,15 @@ export function SurahInfoDialog({ surah, revelationPlace, onClose }: SurahInfoDi
 
             {info.sumberRujukan.length > 0 && <p className={styles.sources}>Rujukan: {info.sumberRujukan.join(', ')}</p>}
           </>
+        ) : (
+          <a
+            className={styles.pendingReference}
+            href={`https://quran.kemenag.go.id/quran/per-ayat/surah/${surah.no}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Baca rujukan di Qur’an Kemenag ↗
+          </a>
         )}
       </section>
     </div>

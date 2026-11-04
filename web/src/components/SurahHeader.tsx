@@ -1,4 +1,6 @@
 import styles from './SurahHeader.module.css';
+import { cx } from '../lib/cx';
+import { isRevelationPlaceDisputed } from '../lib/surahEditorial';
 
 interface SurahHeaderProps {
   chapterId: number;
@@ -12,6 +14,7 @@ function getSurahLigature(chapterId: number): string {
 
 export function SurahHeader({ chapterId, revelationPlace, versesCount }: SurahHeaderProps) {
   const isMakki = revelationPlace === 'Makkiyah';
+  const placeDisputed = isRevelationPlaceDisputed(chapterId);
 
   return (
     <div className={styles.wrapper}>
@@ -22,8 +25,13 @@ export function SurahHeader({ chapterId, revelationPlace, versesCount }: SurahHe
 
         <div className={styles.frameContent}>
           <div className={styles.placeSlot}>
-            <span className={styles.placeIcon} title={revelationPlace} translate="no">
-              {isMakki ? 'makkah' : 'madinah'}
+            <span
+              className={cx(styles.placeIcon, placeDisputed && styles.placeUncertain)}
+              title={placeDisputed ? 'Tempat turun diperselisihkan' : revelationPlace}
+              aria-label={placeDisputed ? 'Tempat turun diperselisihkan' : revelationPlace}
+              translate="no"
+            >
+              {placeDisputed ? '?' : isMakki ? 'makkah' : 'madinah'}
             </span>
           </div>
 

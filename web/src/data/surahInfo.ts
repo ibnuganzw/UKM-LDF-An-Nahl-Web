@@ -3210,11 +3210,11 @@ export const SURAH_INFO: SurahInfo[] = [
     urutanTurun: 79,
     juz: { dari: 29, sampai: 29 },
     temaUtama: "Tema besar Surat Al-Ma'arij merangkai rentang ruang waktu antara arogansi tantangan kaum kafir yang menyepelekan azab di bumi, dihadapkan dengan perjalanan eksistensial dimensi gaib menuju kebesaran Arasy Tuhan (Al-Ma'arij). Tujuan utama surat ini adalah membedah secara revolusioner patologi mental dan kerentanan psikologis sifat dasar manusia (keluh kesah, kikir, gelisah, panik). Selanjutnya, surat ini membentangkan \"SOP Karakteristik Manusia Unggul\" berupa 8 poin karakter pengecualian bagi mereka yang menjaga shalat dan menunaikan hak moral sosial; memberikan rumusan mutlak untuk terapi ketenangan mental dan kesuksesan di padang hisab.",
-    konteksTurun: "Surat ini diturunkan di Makkah merespons tantangan provokatif bernada ejekan dari tokoh musyrik, An-Nadhr bin Al-Harits (dalam riwayat Ibnu Abbas). Dengan congkak dan sombong ia berdoa menantang Allah, \"Jika memang Al-Qur'an ini benar dari-Mu, maka hujanilah kami dengan batu dari langit, atau datangkan azab yang pedih!\" Merespons kelancangan yang melewati batas ini, Allah menurunkan pembukaan Sa'ala Saa'ilun bi'adzabin waaqi' (Seseorang penanya meminta didatangkan azab yang pasti akan terjadi). Surat ini tidak hanya mengonfirmasi datangnya azab, tapi menjelaskan bahwa dimensi waktu eksekusi Tuhan sangat berbeda dengan ketidaksabaran dimensi kalkulasi biologis manusia (sehari bagai 50. tahun).",
+    konteksTurun: "Surat ini diturunkan di Makkah merespons tantangan provokatif bernada ejekan dari tokoh musyrik, An-Nadhr bin Al-Harits (dalam riwayat Ibnu Abbas). Dengan congkak dan sombong ia berdoa menantang Allah, \"Jika memang Al-Qur'an ini benar dari-Mu, maka hujanilah kami dengan batu dari langit, atau datangkan azab yang pedih!\" Merespons kelancangan yang melewati batas ini, Allah menurunkan pembukaan Sa'ala Saa'ilun bi'adzabin waaqi' (Seseorang penanya meminta didatangkan azab yang pasti akan terjadi). Surat ini tidak hanya mengonfirmasi datangnya azab, tapi menjelaskan bahwa dimensi waktu eksekusi Tuhan sangat berbeda dengan ketidaksabaran dimensi kalkulasi biologis manusia (sehari bagai 50.000 tahun).",
     asbabunNuzul: "Jawaban spontan Ilahi atas tantangan ejekan musyrik yang meremehkan lambatnya realisasi Kiamat di bumi.",
     alasanPenamaan: "Kata Al-Ma'arij bermakna \"Tangga-tangga Langit/Tempat Naik\" (Ascending Stairways). Diambil dari ayat ke-3 yang mendeskripsikan Allah sebagai \"Dhil-Ma'arij\" (Pemilik tempat-tempat naik/tingkat-tingkat kemuliaan langit). Pemilihan nama ini memproyeksikan lintasan dimensi spiritual dan fisika ruang angkasa yang dilalui para malaikat dan Jibril (Ar-Ruh) untuk menghadap dan melaporkan takdir ke hadirat Allah dalam ukuran relativitas waktu kosmik yang melampaui imajinasi manusia.",
     gambaranIsi: [
-      { rentang: "Ayat 1-7", fokus: "Tantangan azab orang kafir, relativitas dimensi waktu langit (50. tahun), dan perintah kesabaran yang elegan (shabran jamiila) bagi Rasulullah." },
+      { rentang: "Ayat 1-7", fokus: "Tantangan azab orang kafir, relativitas dimensi waktu langit (50.000 tahun), dan perintah kesabaran yang elegan (shabran jamiila) bagi Rasulullah." },
       { rentang: "Ayat 8-18", fokus: "Horor kedahsyatan Kiamat (langit bak luluhan perak, gunung bak bulu, sahabat lari menghindari sahabatnya, rela menumbalkan anak kandung demi selamat dari neraka Laza)." },
       { rentang: "Ayat 19-35", fokus: "Diagnosis psikologi kelabilan sifat dasar manusia (Halu'a: rakus & kikir). Diikuti solusi penyembuhan mental lewat 8 pilar karakter hamba (mulai dari shalat konstan hingga penjagaan kemaluan)." },
       { rentang: "Ayat 36-44", fokus: "Bantahan sinis kepada kafir yang rakus berharap tiket surga, ancaman penggantian mereka dengan kaum yang lebih baik, dan perumpamaan kebangkitan cepat bak lari berpacu." },
@@ -3232,7 +3232,7 @@ export const SURAH_INFO: SurahInfo[] = [
       { kategori: "Eskatologi (Neraka Laza)", isi: "Kedahsyatan api Laza (neraka yang mengelupas kulit kepala), memanggil orang yang dulu di dunia berpaling dan gemar menumpuk harta tanpa dikeluarkan pajaknya (zakat)." },
     ],
     ayatKunci: [
-      { ayat: "Ayat 4", makna: "Perjalanan Malaikat dan Jibril menghadap Allah dalam tempo \"Sehari setara 50. tahun waktu bumi.\" 54", catatan: "Mengajarkan kerendahan hati sains; parameter dimensi dan ruang ukur kalender alam gaib jauh melampaui limitasi kalkulator logika fisika astronomi konvensional bumi." },
+      { ayat: "Ayat 4", makna: "Ayat ini menyebut satu hari yang kadarnya lima puluh ribu tahun dalam perjalanan para malaikat dan Ruh kepada Allah.", catatan: "Mengajarkan kerendahan hati sains; parameter dimensi dan ruang ukur kalender alam gaib jauh melampaui limitasi kalkulator logika fisika astronomi konvensional bumi." },
       { ayat: "Ayat 11-14", makna: "Orang berdosa saat melihat azab rela menebus dirinya menumbalkan anak kandungnya, istri, saudara, keluarga besar, dan seluruh penduduk bumi demi keselamatan egoistik dirinya.", catatan: "Puncak penelanjangan sifat egois manusia. Cinta mati sedarah di dunia akan langsung kandas terbakar di hadapan horor Kiamat." },
       { ayat: "Ayat 19-22", makna: "\"Sungguh manusia diciptakan bersifat keluh-kesah lagi kikir... Kecuali orang-orang yang melaksanakan shalat (berkelanjutan).\"", catatan: "Teori psikologi Al-Qur'an terbaik (Psikoterapi Islam): Shalat yang konstan (daimun) adalah satu-satunya peredam kejut stabilitas emosional penolak stres, panik, dan depresi jiwa." },
     ],
@@ -3241,7 +3241,7 @@ export const SURAH_INFO: SurahInfo[] = [
     munasabah: "Terletak menyempurnakan Surat Al-Haqqah. Al-Haqqah menelanjangi kegagalan historis umat terdahulu dan pembagian rapot eskatologis (kanan dan kiri). Maka Al-Ma'arij datang menjawab tantangan kausalitas praktis: \"Apa kriteria syarat untuk masuk dalam barisan tangan kanan?\". Jawabannya diuraikan presisi di Al-Ma'arij melalui 8 modul kurikulum sifat keimanan (dari menjaga shalat hingga bersaksi jujur).",
     pesanPraktis: "Bila Anda didera krisis kepanikan, stres pekerjaan, atau tagihan, sadarilah bahwa keluh kesah dan pelit (Halu'a) adalah mode default bawaan pabrik manusia. Satu-satunya cara menetralkan kepanikan tersebut adalah dengan memperbaiki kualitas shalat wajib (disiplin waktu dan khusyuk) dan mencairkan kikir dengan menyisihkan sebagian harta untuk kaum duafa (infak). Harta yang dibagikan dan sujud yang dijaga adalah resep farmasi penenang kecemasan terbaik dari Tuhan.",
     pertanyaanTadabbur: "Akankah ketakutan di Mahsyar kelak mendorong rasa egois liar kita hingga tega berniat menumbalkan nasib anak dan istri kandung demi membebaskan leher kita dari api Laza (ayat 11)? Dari 8 syarat kualitas ahli surga yang disebut dari ayat 23 hingga 34, berapa banyak poin yang sudah sukses kita pertahankan dalam keseharian, ataukah semuanya masih jebol?",
-    catatanIkhtilaf: "Banyak kelompok modernis ekstrem sering memaksakan penafsiran kata \"Sehari setara 50. tahun\" (Ayat 4) pada teori fisika mekanika kuantum, gravitasi relativitas Einstein, atau lubang hitam (black hole) tanpa batas metodologi yang benar. Harap diingat: Al-Qur'an adalah kitab petunjuk teologi (Hudan), bukan buku saku kalkulasi fisika astrofisika. Penggunaan sains sebagai pendekatan inspirasi hikmah diperbolehkan (tafsir ilmi), namun dilarang keras memaksakan cocoklogi untuk mematenkan doktrin gaib langit yang hakikatnya jauh berada di luar kemampuan mikroskop fisika modern.",
+    catatanIkhtilaf: "Banyak kelompok modernis ekstrem sering memaksakan penafsiran kata \"Sehari setara 50.000 tahun\" (Ayat 4) pada teori fisika mekanika kuantum, gravitasi relativitas Einstein, atau lubang hitam (black hole) tanpa batas metodologi yang benar. Harap diingat: Al-Qur'an adalah kitab petunjuk teologi (Hudan), bukan buku saku kalkulasi fisika astrofisika. Penggunaan sains sebagai pendekatan inspirasi hikmah diperbolehkan (tafsir ilmi), namun dilarang keras memaksakan cocoklogi untuk mematenkan doktrin gaib langit yang hakikatnya jauh berada di luar kemampuan mikroskop fisika modern.",
     ringkasanSingkat: "Merespons ejekan musyrik yang menantang turunnnya azab, Al-Ma'arij mendeklarasikan relativitas dimensi waktu kosmik tempat naiknya para malaikat. Surat ini membongkar kengerian sifat egoisme Kiamat, membedah tabiat dasar psikologi manusia yang gampang panik dan rakus, untuk kemudian ditutup apik dengan rumusan 8 pilar karakter penyembuhan yang harus dianut (diapit oleh kedisiplinan shalat dan sedekah) guna mencetak entitas manusia ahli surga.",
     sumberRujukan: [
       "Tafsir Ath-Thabari",
@@ -5193,6 +5193,7 @@ export const SURAH_INFO: SurahInfo[] = [
   },
   {
     no: 113,
+    tempatTurunCatatan: "Klasifikasi Makkiyah/Madaniyah diperselisihkan; riwayat penggunaan surah setelah hijrah tidak otomatis menentukan waktu turunnya.",
     namaLain: [
       "Al-Mu'awwidzah Al-Ula (Pelindung Pertama)",
     ],
@@ -5236,6 +5237,7 @@ export const SURAH_INFO: SurahInfo[] = [
   },
   {
     no: 114,
+    tempatTurunCatatan: "Klasifikasi Makkiyah/Madaniyah diperselisihkan; riwayat penggunaan surah setelah hijrah tidak otomatis menentukan waktu turunnya.",
     namaLain: [
       "Al-Mu'awwidzah Ats-Tsaniyah (Pelindung Kedua)",
     ],

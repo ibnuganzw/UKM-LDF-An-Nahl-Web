@@ -13,6 +13,14 @@ const INTERNAL_TEST_AGENDA_SIGNATURES = new Set([
   'Review|2026-07-10',
 ]);
 
-export function isInternalTestAgenda(agenda: Pick<Agenda, 'title' | 'eventDate'>): boolean {
-  return INTERNAL_TEST_AGENDA_SIGNATURES.has(`${agenda.title.trim()}|${agenda.eventDate}`);
+// Staging acceptance record observed in the public feed after project restore.
+// Use its ID so edits to the test title/date cannot publish it accidentally.
+const INTERNAL_TEST_AGENDA_IDS = new Set([
+  '5ca48413-2ddf-4708-96bd-8669b2ceb768',
+  '32e2bd52-4000-4438-bc10-3ef1c76b04db',
+]);
+
+export function isInternalTestAgenda(agenda: Pick<Agenda, 'title' | 'eventDate'> & Partial<Pick<Agenda, 'id'>>): boolean {
+  return (agenda.id !== undefined && INTERNAL_TEST_AGENDA_IDS.has(agenda.id))
+    || INTERNAL_TEST_AGENDA_SIGNATURES.has(`${agenda.title.trim()}|${agenda.eventDate}`);
 }
