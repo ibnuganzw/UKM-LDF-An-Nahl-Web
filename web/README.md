@@ -52,6 +52,13 @@ npm run preview  # preview the production build
 
 ## Discovery and public metadata
 
+Production/domain preparation and the exact Auth/CORS settings are documented in
+[`docs/production-release.md`](docs/production-release.md). Before uploading a build,
+run `npm.cmd run release:verify -- --target staging --site https://ldf-annahl-fkh-usk-staging.pages.dev`
+or use `--target production --site` with the confirmed production HTTPS origin.
+This offline check validates the artifact's Supabase target and discovery URLs;
+it does not deploy or verify hosted Auth, database policies, or DNS.
+
 - Set `VITE_SITE_URL` to the final HTTPS origin in the production build environment. Cloudflare preview builds can fall back to `CF_PAGES_URL`; local artifacts deliberately use `http://127.0.0.1:5174` when neither value exists.
 - `npm run build` generates route-specific HTML, canonical URLs, Open Graph/Twitter metadata, JSON-LD, `sitemap.xml`, `robots.txt`, and `prerender-manifest.json`.
 - The guaranteed build covers the six main public routes, all 114 surahs, and all 30 juz. Published article and agenda detail routes are added when the Supabase variables are available through `.env` locally or the build environment in CI/Cloudflare.

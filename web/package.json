@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "test": "vitest run",
     "audit:security": "node scripts/auditProduction.mjs",
+    "release:verify": "node scripts/verifyRelease.mjs",
     "check": "npm run lint && npm run test && npm run build && npm run audit:security",
     "preview": "vite preview",
     "quran:sync": "node scripts/quranSync.mjs",
